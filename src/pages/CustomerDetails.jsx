@@ -7,6 +7,7 @@ import { PaymentStatusBadge, InsuranceTypeBadge, RenewalUrgencyBadge } from '../
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
 import { PaymentModal } from '../components/payments/PaymentModal';
 import { PdfViewerModal } from '../components/common/PdfViewerModal';
+import { RenewalReminderModal } from '../components/customers/RenewalReminderModal';
 import { getPdfDocument } from '../utils/indexedDb';
 import heroCarShieldImg from '../assets/hero-insurance-car-shield.png';
 import {
@@ -31,13 +32,15 @@ import {
   RefreshCw,
   ShieldCheck,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  BellRing,
+  Send
 } from 'lucide-react';
 
 export function CustomerDetails({ onOpenEditCustomer }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getCustomerById, deleteCustomer } = useCustomers();
+  const { getCustomerById, deleteCustomer, recordRenewalReminder } = useCustomers();
 
   const customer = getCustomerById(id);
 
@@ -46,6 +49,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
 
   // Modals state
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showReminderModal, setShowReminderModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [pdfMeta, setPdfMeta] = useState(null);
@@ -149,6 +153,23 @@ export function CustomerDetails({ onOpenEditCustomer }) {
         </button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          {/* 30-Day Renewal Reminder Action Button */}
+          <button
+            className="btn btn-secondary btn-sm"
+            onClick={() => setShowReminderModal(true)}
+            style={{
+              padding: '7px 16px',
+              borderRadius: '10px',
+              borderColor: customer.reminderSent ? '#22C55E' : 'var(--primary-orange)',
+              color: customer.reminderSent ? '#16A34A' : 'var(--primary-orange)',
+              backgroundColor: customer.reminderSent ? '#F0FDF4' : '#FFF8F3',
+              fontWeight: 700
+            }}
+          >
+            <BellRing size={15} />
+            <span>{customer.reminderSent ? 'Reminder Sent' : 'Renewal Reminder'}</span>
+          </button>
+
           {remaining > 0 && (
             <button
               className="btn btn-primary btn-sm"
@@ -269,6 +290,65 @@ export function CustomerDetails({ onOpenEditCustomer }) {
       {/* TAB 1: OVERVIEW (Exact Reference Mockup Layout) */}
       {activeTab === 'overview' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/* 30-Day Policy Renewal Reminder Alert Banner */}
+          {daysLeft <= 30 && (
+            <div className={`renewal-reminder-banner ${isExpired ? 'banner-critical' : ''}`}>
+              <div className="renewal-reminder-banner-left">
+                <div className="reminder-bell-icon-box">
+                  <BellRing size={20} />
+                </div>
+                <div>
+                  <div className="renewal-reminder-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    <span>{isExpired ? 'Policy Has Expired - Renewal Required' : '30-Day Renewal Reminder Notice'}</span>
+                    <span
+                      className="badge"
+                      style={{
+                        backgroundColor: isExpired ? '#FEE2E2' : '#FFEDD5',
+                        color: isExpired ? '#DC2626' : '#C2410C',
+                        fontWeight: 700,
+                        fontSize: '11px',
+                        padding: '2px 8px'
+                      }}
+                    >
+                      {isExpired ? `Expired (${Math.abs(daysLeft)}d ago)` : `${daysLeft} days left`}
+                    </span>
+                    {customer.reminderSent && (
+                      <span
+                        className="badge"
+                        style={{
+                          backgroundColor: '#DCFCE7',
+                          color: '#15803D',
+                          fontWeight: 700,
+                          fontSize: '11px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '3px',
+                          padding: '2px 8px'
+                        }}
+                      >
+                        <CheckCircle2 size={12} /> Notice Sent ({customer.lastReminderChannel?.toUpperCase() || 'WHATSAPP'})
+                      </span>
+                    )}
+                  </div>
+                  <div className="renewal-reminder-desc">
+                    Policy with {customer.insuranceCompany} {isExpired ? 'expired on' : 'expires on'} {formatIndianDate(customer.policyEndDate)}. Dispatch renewal notice via WhatsApp or SMS before 30 days.
+                  </div>
+                </div>
+              </div>
+
+              <div className="renewal-reminder-actions">
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => setShowReminderModal(true)}
+                  style={{ padding: '7px 16px', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <BellRing size={14} />
+                  <span>{customer.reminderSent ? 'Send Another Reminder' : 'Send Renewal Reminder'}</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Two-Column Grid: Financial Summary & Policy Duration */}
           <div style={{
             display: 'grid',
@@ -403,6 +483,36 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                     </div>
                     <span className="validity-row-right" style={{ color: urgency.color }}>
                       {urgency.label}
+                    </span>
+                  </div>
+
+                  <div className="validity-list-row">
+                    <div className="validity-row-left">
+                      <BellRing size={16} color="var(--primary-orange)" />
+                      <span>30-Day Renewal Reminder</span>
+                    </div>
+                    <span className="validity-row-right">
+                      {customer.reminderSent ? (
+                        <span style={{ color: '#16A34A', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <CheckCircle2 size={14} />
+                          Notice Sent ({customer.lastReminderChannel?.toUpperCase() || 'WHATSAPP'})
+                        </span>
+                      ) : (
+                        <button
+                          className="btn btn-secondary btn-xs"
+                          onClick={() => setShowReminderModal(true)}
+                          style={{
+                            fontSize: '11.5px',
+                            padding: '3px 10px',
+                            borderRadius: '6px',
+                            color: 'var(--primary-orange)',
+                            borderColor: 'var(--primary-orange)',
+                            fontWeight: 600
+                          }}
+                        >
+                          Send Notice
+                        </button>
+                      )}
                     </span>
                   </div>
                 </div>
@@ -633,6 +743,47 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                   </div>
                 </div>
               </div>
+
+              {/* Renewal Reminders in Activity Timeline */}
+              {customer.renewalReminders && customer.renewalReminders.length > 0 ? (
+                customer.renewalReminders.map((rem) => (
+                  <div key={rem.id} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#FFF7ED', color: 'var(--primary-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <BellRing size={16} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: '14.5px', color: '#0F172A' }}>
+                        Renewal Notice Sent ({rem.channel?.toUpperCase() || 'WHATSAPP'})
+                      </div>
+                      <div style={{ fontSize: '12.5px', color: '#64748B', marginTop: '2px' }}>
+                        {rem.note || '30-day policy renewal reminder notice'}
+                      </div>
+                      <div style={{ fontSize: '11.5px', color: '#94A3B8', marginTop: '4px' }}>
+                        Dispatched on {formatIndianDate(rem.sentAt)}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : customer.reminderSent ? (
+                <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#FFF7ED', color: 'var(--primary-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <BellRing size={16} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: '14.5px', color: '#0F172A' }}>
+                      Renewal Notice Sent ({customer.lastReminderChannel?.toUpperCase() || 'WHATSAPP'})
+                    </div>
+                    <div style={{ fontSize: '12.5px', color: '#64748B', marginTop: '2px' }}>
+                      30-day renewal notification recorded
+                    </div>
+                    {customer.lastReminderDate && (
+                      <div style={{ fontSize: '11.5px', color: '#94A3B8', marginTop: '4px' }}>
+                        Dispatched on {formatIndianDate(customer.lastReminderDate)}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
@@ -643,6 +794,14 @@ export function CustomerDetails({ onOpenEditCustomer }) {
         isOpen={showPaymentModal}
         customer={customer}
         onClose={() => setShowPaymentModal(false)}
+      />
+
+      {/* Renewal Reminder Modal */}
+      <RenewalReminderModal
+        isOpen={showReminderModal}
+        customer={customer}
+        onClose={() => setShowReminderModal(false)}
+        onRecordReminder={recordRenewalReminder}
       />
 
       {/* PDF Viewer Modal */}

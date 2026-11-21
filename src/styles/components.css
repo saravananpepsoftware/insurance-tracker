@@ -1153,6 +1153,176 @@
   gap: 10px;
 }
 
+/* Renewal Reminder Banner & Modal Styles */
+.renewal-reminder-banner {
+  background: linear-gradient(135deg, #FFF8F3 0%, #FFF2E8 100%);
+  border: 1px solid #FED7AA;
+  border-left: 4px solid var(--primary-orange);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(255, 107, 0, 0.06);
+  flex-wrap: wrap;
+}
+
+.renewal-reminder-banner.banner-critical {
+  background: linear-gradient(135deg, #FEF2F2 0%, #FFF1F2 100%);
+  border-color: #FECACA;
+  border-left-color: #DC2626;
+}
+
+.renewal-reminder-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reminder-bell-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--light-orange);
+  color: var(--primary-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(255, 107, 0, 0.15);
+}
+
+.banner-critical .reminder-bell-icon-box {
+  background-color: #FEE2E2;
+  color: #DC2626;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15);
+}
+
+.renewal-reminder-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.renewal-reminder-desc {
+  font-size: 12.5px;
+  color: #64748B;
+  margin-top: 2px;
+}
+
+.renewal-reminder-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-whatsapp {
+  background-color: #25D366;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 6px rgba(37, 211, 102, 0.25);
+}
+
+.btn-whatsapp:hover {
+  background-color: #20BD5A;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(37, 211, 102, 0.35);
+}
+
+/* Reminder Modal Styles */
+.reminder-timing-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.reminder-timing-btn {
+  background-color: #FFFDFB;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.reminder-timing-btn:hover {
+  border-color: var(--primary-orange);
+  background-color: var(--light-orange);
+}
+
+.reminder-timing-btn.active {
+  background: var(--light-orange);
+  border-color: var(--primary-orange);
+  color: var(--primary-orange);
+  font-weight: 700;
+}
+
+.reminder-channel-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.reminder-channel-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--card-border);
+  background-color: #FFFFFF;
+  color: #64748B;
+  transition: all var(--transition-fast);
+}
+
+.reminder-channel-tab.active {
+  border-color: var(--primary-orange);
+  background-color: #FFF8F3;
+  color: var(--primary-orange);
+}
+
+.reminder-message-preview {
+  width: 100%;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #1E293B;
+  background-color: #FFFDFB;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 120px;
+  resize: vertical;
+}
+
+.reminder-message-preview:focus {
+  outline: none;
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 3px var(--orange-ring);
+}
+
 /* Keyframes */
 @keyframes fadeIn {
   from { opacity: 0; }

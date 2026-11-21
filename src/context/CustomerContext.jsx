@@ -252,6 +252,36 @@ export function CustomerProvider({ children }) {
     return updated;
   }, []);
 
+  // Record renewal reminder sent
+  const recordRenewalReminder = useCallback((id, reminderData) => {
+    const customer = customers.find(c => c.id === id);
+    if (!customer) return false;
+
+    const reminderEntry = {
+      id: 'rem-' + Date.now(),
+      sentAt: new Date().toISOString(),
+      channel: reminderData.channel || 'whatsapp',
+      timingDays: reminderData.timingDays || 30,
+      customMessage: reminderData.message || '',
+      note: reminderData.note || '30-day renewal reminder dispatched'
+    };
+
+    const existingReminders = Array.isArray(customer.renewalReminders) ? customer.renewalReminders : [];
+
+    const updatedCustomer = {
+      ...customer,
+      reminderSent: true,
+      lastReminderDate: reminderEntry.sentAt,
+      lastReminderChannel: reminderEntry.channel,
+      renewalReminders: [reminderEntry, ...existingReminders]
+    };
+
+    const updated = customers.map(c => c.id === id ? updatedCustomer : c);
+    persistCustomers(updated);
+    addToast('Renewal reminder notice recorded successfully!', 'success');
+    return true;
+  }, [customers, persistCustomers, addToast]);
+
   // Dashboard metrics
   const metrics = useMemo(() => {
     return calculateDashboardMetrics(customers);
@@ -271,6 +301,7 @@ export function CustomerProvider({ children }) {
         addPayment,
         deleteCustomer,
         getCustomerById,
+        recordRenewalReminder,
         resetDemo,
         clearAll,
         metrics
