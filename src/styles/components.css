@@ -1338,3 +1338,360 @@
   from { opacity: 0; transform: translateX(20px); }
   to { opacity: 1; transform: translateX(0); }
 }
+
+/* ============================================================
+   CUSTOMER REGISTRY - EXACT REFERENCE STYLING
+   ============================================================ */
+
+/* Header Section with Icon Badge and Artwork */
+.customer-registry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: visible;
+  padding: 4px 0;
+  gap: 16px;
+}
+
+.customer-registry-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.customer-registry-icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #FF6B00 0%, #FA5A00 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.28);
+  flex-shrink: 0;
+}
+
+.customer-registry-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.customer-registry-subtitle {
+  font-size: 13.5px;
+  color: #64748B;
+  margin: 3px 0 0 0;
+  font-weight: 500;
+}
+
+.customer-registry-header-art {
+  display: flex;
+  align-items: center;
+  height: 68px;
+  flex-shrink: 0;
+}
+
+.customer-registry-art-img {
+  height: 68px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(255, 107, 0, 0.15));
+}
+
+/* Single-row Filter & Controls Bar */
+.customer-registry-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.search-pill-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 9999px;
+  padding: 0 16px;
+  height: 42px;
+  flex: 1;
+  min-width: 280px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: all var(--transition-fast);
+}
+
+.search-pill-container:focus-within {
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 3px var(--orange-ring);
+}
+
+.search-pill-container input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 13.5px;
+  color: #0F172A;
+}
+
+.search-pill-container input::placeholder {
+  color: #94A3B8;
+}
+
+.filter-pills-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-pill-select-box {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 9999px;
+  padding: 0 14px;
+  height: 42px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: all var(--transition-fast);
+}
+
+.filter-pill-select-box:hover,
+.filter-pill-select-box:focus-within {
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 2px var(--orange-ring);
+}
+
+.filter-pill-select-box select {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  padding: 0 22px 0 6px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.filter-pill-chevron {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+}
+
+.btn-add-customer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 42px;
+  padding: 0 22px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #FF6B00 0%, #FA5A00 100%);
+  color: #FFFFFF;
+  border: none;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(255, 107, 0, 0.28);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-add-customer-pill:hover {
+  background: linear-gradient(135deg, #FA5A00 0%, #E05300 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(255, 107, 0, 0.35);
+}
+
+/* Pure White Elevated Table Container */
+.customer-table-card {
+  background-color: #FFFFFF;
+  border-radius: 18px;
+  border: 1px solid #F1F5F9;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  overflow-x: auto;
+}
+
+.exact-customer-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+  font-size: 13.5px;
+}
+
+.exact-customer-table th {
+  background-color: #FFFFFF;
+  padding: 16px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1E293B;
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid #F1F5F9;
+  white-space: nowrap;
+}
+
+.exact-customer-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #F8FAFC;
+  color: #1E293B;
+  vertical-align: middle;
+  background-color: #FFFFFF;
+  transition: background-color var(--transition-fast);
+}
+
+.exact-customer-table tbody tr:hover td {
+  background-color: #FFFDFB;
+}
+
+.exact-customer-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Column 1: Customer initial avatar & info */
+.table-avatar-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: #FFF4EC;
+  color: #EA580C;
+  font-weight: 800;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Column 2: Carrier Logo Badge */
+.table-carrier-badge {
+  border-radius: 6px;
+  min-width: 48px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: #FFFFFF;
+  padding: 0 6px;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+/* Column 7: Policy Expiry Pill */
+.table-expiry-pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2.5px 9px;
+  border-radius: 9999px;
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+.table-expiry-pill.pill-danger {
+  background-color: #FEE2E2;
+  color: #DC2626;
+}
+
+.table-expiry-pill.pill-warning {
+  background-color: #FEF3C7;
+  color: #D97706;
+}
+
+.table-expiry-pill.pill-success {
+  background-color: #DCFCE7;
+  color: #16A34A;
+}
+
+/* Column 8: Status Pill */
+.table-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.table-status-pill.status-partial {
+  background-color: #FFF7ED;
+  border: 1px solid #FED7AA;
+  color: #EA580C;
+}
+
+.table-status-pill.status-paid {
+  background-color: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  color: #16A34A;
+}
+
+.table-status-pill.status-pending {
+  background-color: #FEFCE8;
+  border: 1px solid #FEF08A;
+  color: #CA8A04;
+}
+
+/* Column 9: Action Icon Buttons */
+.table-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.table-action-btn:hover {
+  transform: scale(1.1);
+}
+
+.table-action-btn.action-pay {
+  color: #EA580C;
+}
+.table-action-btn.action-pay:hover {
+  background-color: #FFF7ED;
+}
+
+.table-action-btn.action-view {
+  color: #2563EB;
+}
+.table-action-btn.action-view:hover {
+  background-color: #EFF6FF;
+}
+
+.table-action-btn.action-edit {
+  color: #475569;
+}
+.table-action-btn.action-edit:hover {
+  background-color: #F1F5F9;
+}
+
+.table-action-btn.action-delete {
+  color: #DC2626;
+}
+.table-action-btn.action-delete:hover {
+  background-color: #FEF2F2;
+}
+

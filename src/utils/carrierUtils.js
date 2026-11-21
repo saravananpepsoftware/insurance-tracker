@@ -2,13 +2,13 @@
  * Utility for insurance company carrier badges and brand colors
  */
 export const CARRIER_BADGES = {
-  HDFC: { bg: '#D32F2F', label: 'HDFC' },
-  ICICI: { bg: '#B91C1C', label: 'ICICI' },
-  TATA: { bg: '#1D4ED8', label: 'TATA' },
-  BAJAJ: { bg: '#0369A1', label: 'BAJAJ' },
-  STAR: { bg: '#047857', label: 'STAR' },
-  NIA: { bg: '#B45309', label: 'NIA' },
-  SBI: { bg: '#1E40AF', label: 'SBI' },
+  HDFC: { bg: '#C8102E', label: 'HDFC' },
+  ICICI: { bg: '#A61D24', label: 'ICICI' },
+  TATA: { bg: '#004B87', label: 'TATA' },
+  BAJAJ: { bg: '#0066B2', label: 'BAJAJ' },
+  STAR: { bg: '#00843D', label: 'STAR' },
+  NIA: { bg: '#D9531E', label: 'NIA' },
+  SBI: { bg: '#004890', label: 'SBI' },
   REL: { bg: '#4338CA', label: 'REL' },
   ACKO: { bg: '#7C3AED', label: 'ACKO' },
   DIGIT: { bg: '#D97706', label: 'DIGIT' },

@@ -7,7 +7,8 @@ import { CustomerFilterBar } from '../components/customers/CustomerFilterBar';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
 import { PaymentModal } from '../components/payments/PaymentModal';
 import { EmptyState } from '../components/common/EmptyState';
-import { Plus, Users } from 'lucide-react';
+import { Plus, Users, User } from 'lucide-react';
+import sidebarArtworkImg from '../assets/sidebar-insurance-artwork.png';
 
 export function Customers({ onOpenAddCustomer, onOpenEditCustomer }) {
   const { customers, searchTerm, setSearchTerm, deleteCustomer } = useCustomers();
@@ -68,24 +69,30 @@ export function Customers({ onOpenAddCustomer, onOpenEditCustomer }) {
 
   return (
     <div className="page-container">
-      {/* Header with accent bar */}
-      <div className="page-header">
-        <div className="header-with-accent">
-          <div className="header-accent-bar" />
+      {/* Header matching exact reference */}
+      <div className="customer-registry-header">
+        <div className="customer-registry-header-left">
+          <div className="customer-registry-icon-badge">
+            <User size={22} color="#FFFFFF" strokeWidth={2.4} />
+          </div>
           <div>
-            <h1 className="page-title">Customer Registry</h1>
-            <p className="page-subtitle">
+            <h1 className="customer-registry-title">Customer Registry</h1>
+            <p className="customer-registry-subtitle">
               Manage policyholders, track payment standing, and access policy records ({filteredCustomers.length} of {customers.length} total)
             </p>
           </div>
         </div>
-        <button className="btn btn-primary" onClick={onOpenAddCustomer}>
-          <Plus size={16} />
-          <span>Add Customer</span>
-        </button>
+
+        <div className="customer-registry-header-art">
+          <img
+            src={sidebarArtworkImg}
+            alt="Insurance Registry Protection"
+            className="customer-registry-art-img"
+          />
+        </div>
       </div>
 
-      {/* Filter and Search Bar */}
+      {/* Filter and Search Bar in Exact Single-Row Format */}
       <CustomerFilterBar
         search={searchTerm}
         onSearchChange={setSearchTerm}
@@ -96,6 +103,7 @@ export function Customers({ onOpenAddCustomer, onOpenEditCustomer }) {
         expiryFilter={expiryFilter}
         onExpiryFilterChange={setExpiryFilter}
         onResetFilters={handleResetFilters}
+        onOpenAddCustomer={onOpenAddCustomer}
       />
 
       {/* Content: Desktop Table & Mobile Cards */}
