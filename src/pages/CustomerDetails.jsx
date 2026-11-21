@@ -7,7 +7,7 @@ import { PaymentStatusBadge, InsuranceTypeBadge, RenewalUrgencyBadge } from '../
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
 import { PaymentModal } from '../components/payments/PaymentModal';
 import { PdfViewerModal } from '../components/common/PdfViewerModal';
-import { RenewalReminderModal } from '../components/customers/RenewalReminderModal';
+import { RenewalReminderModal, WhatsAppIcon } from '../components/customers/RenewalReminderModal';
 import { getPdfDocument } from '../utils/indexedDb';
 import heroCarShieldImg from '../assets/hero-insurance-car-shield.png';
 import {
@@ -160,14 +160,17 @@ export function CustomerDetails({ onOpenEditCustomer }) {
             style={{
               padding: '7px 16px',
               borderRadius: '10px',
-              borderColor: customer.reminderSent ? '#22C55E' : 'var(--primary-orange)',
-              color: customer.reminderSent ? '#16A34A' : 'var(--primary-orange)',
-              backgroundColor: customer.reminderSent ? '#F0FDF4' : '#FFF8F3',
-              fontWeight: 700
+              borderColor: customer.reminderSent ? '#22C55E' : '#25D366',
+              color: customer.reminderSent ? '#16A34A' : '#15803D',
+              backgroundColor: customer.reminderSent ? '#F0FDF4' : '#F0FDF4',
+              fontWeight: 700,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            <BellRing size={15} />
-            <span>{customer.reminderSent ? 'Reminder Sent' : 'Renewal Reminder'}</span>
+            <WhatsAppIcon size={16} color={customer.reminderSent ? '#16A34A' : '#25D366'} />
+            <span>{customer.reminderSent ? 'Reminder Sent' : 'Send Reminder in WhatsApp'}</span>
           </button>
 
           {remaining > 0 && (
@@ -338,12 +341,13 @@ export function CustomerDetails({ onOpenEditCustomer }) {
 
               <div className="renewal-reminder-actions">
                 <button
-                  className="btn btn-primary btn-sm"
+                  type="button"
+                  className="btn-whatsapp"
                   onClick={() => setShowReminderModal(true)}
-                  style={{ padding: '7px 16px', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  style={{ padding: '8px 16px', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '13px' }}
                 >
-                  <BellRing size={14} />
-                  <span>{customer.reminderSent ? 'Send Another Reminder' : 'Send Renewal Reminder'}</span>
+                  <WhatsAppIcon size={16} color="#FFFFFF" />
+                  <span>Send Reminder in WhatsApp</span>
                 </button>
               </div>
             </div>
@@ -488,14 +492,14 @@ export function CustomerDetails({ onOpenEditCustomer }) {
 
                   <div className="validity-list-row">
                     <div className="validity-row-left">
-                      <BellRing size={16} color="var(--primary-orange)" />
+                      <WhatsAppIcon size={16} color="#25D366" />
                       <span>30-Day Renewal Reminder</span>
                     </div>
                     <span className="validity-row-right">
                       {customer.reminderSent ? (
                         <span style={{ color: '#16A34A', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                           <CheckCircle2 size={14} />
-                          Notice Sent ({customer.lastReminderChannel?.toUpperCase() || 'WHATSAPP'})
+                          Notice Sent (WhatsApp)
                         </span>
                       ) : (
                         <button
@@ -505,12 +509,16 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                             fontSize: '11.5px',
                             padding: '3px 10px',
                             borderRadius: '6px',
-                            color: 'var(--primary-orange)',
-                            borderColor: 'var(--primary-orange)',
-                            fontWeight: 600
+                            color: '#15803D',
+                            borderColor: '#25D366',
+                            fontWeight: 700,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '5px'
                           }}
                         >
-                          Send Notice
+                          <WhatsAppIcon size={13} color="#25D366" />
+                          <span>Send Reminder</span>
                         </button>
                       )}
                     </span>

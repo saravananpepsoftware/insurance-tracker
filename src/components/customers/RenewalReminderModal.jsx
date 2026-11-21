@@ -17,6 +17,21 @@ import { formatIndianDate, calculateDaysRemaining } from '../../utils/dateUtils'
 import { formatCurrency } from '../../utils/formatCurrency';
 import { useToast } from '../../context/ToastContext';
 
+export function WhatsAppIcon({ size = 16, color = "currentColor", style = {} }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill={color}
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0, ...style }}
+    >
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.456 5.711 1.457h.005c6.554 0 11.89-5.335 11.893-11.893a11.82 11.82 0 00-3.486-8.413Z" />
+    </svg>
+  );
+}
+
 export function RenewalReminderModal({ isOpen, onClose, customer, onRecordReminder }) {
   const { addToast } = useToast();
   const [timing, setTiming] = useState('30_days');
@@ -215,7 +230,7 @@ export function RenewalReminderModal({ isOpen, onClose, customer, onRecordRemind
                 className={`reminder-channel-tab ${channel === 'whatsapp' ? 'active' : ''}`}
                 onClick={() => setChannel('whatsapp')}
               >
-                <Smartphone size={15} color={channel === 'whatsapp' ? '#25D366' : 'currentColor'} />
+                <WhatsAppIcon size={16} color={channel === 'whatsapp' ? '#25D366' : '#64748B'} />
                 <span>WhatsApp</span>
               </button>
               <button
@@ -281,33 +296,41 @@ export function RenewalReminderModal({ isOpen, onClose, customer, onRecordRemind
           </button>
 
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={handleLogAsSent}
-              style={{ fontWeight: 600 }}
-            >
-              <Check size={14} />
-              <span>Log as Sent</span>
-            </button>
-
             {channel === 'whatsapp' ? (
               <button
                 type="button"
                 className="btn-whatsapp"
                 onClick={handleSendWhatsApp}
+                style={{
+                  padding: '9px 18px',
+                  borderRadius: '10px',
+                  fontSize: '13.5px',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
               >
-                <Send size={14} />
-                <span>Open WhatsApp</span>
+                <WhatsAppIcon size={17} color="#FFFFFF" />
+                <span>Send Reminder in WhatsApp</span>
               </button>
             ) : (
               <button
                 type="button"
                 className="btn btn-primary btn-sm"
                 onClick={handleLogAsSent}
+                style={{
+                  padding: '9px 18px',
+                  borderRadius: '10px',
+                  fontSize: '13.5px',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
               >
-                <Send size={14} />
-                <span>Dispatch {channel.toUpperCase()}</span>
+                <Send size={15} />
+                <span>Send Reminder in {channel.toUpperCase()}</span>
               </button>
             )}
           </div>
@@ -318,3 +341,4 @@ export function RenewalReminderModal({ isOpen, onClose, customer, onRecordRemind
 }
 
 export default RenewalReminderModal;
+
