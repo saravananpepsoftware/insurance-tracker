@@ -52,7 +52,7 @@
   /* Mobile App Bar Header */
   .navbar {
     height: 56px !important;
-    padding: 0 14px !important;
+    padding: 0 12px !important;
     position: sticky !important;
     top: 0 !important;
     z-index: 40 !important;
@@ -63,11 +63,24 @@
     backdrop-filter: blur(10px) !important;
   }
 
-  /* Show Logo on Mobile */
+  /* Show Logo on Mobile — Clean Single-line Fit */
   .navbar-mobile-brand {
     display: flex !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 7px !important;
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
+  }
+
+  .navbar-mobile-brand-text {
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+    color: #111827 !important;
+    letter-spacing: -0.02em !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.2 !important;
   }
 
   .navbar-left {
@@ -77,13 +90,23 @@
   .navbar-right {
     display: flex !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 6px !important;
+    flex-shrink: 0 !important;
   }
 
   .btn-navbar-add {
-    padding: 6px 12px !important;
-    font-size: 12.5px !important;
+    padding: 6px 10px !important;
+    font-size: 12px !important;
     gap: 4px !important;
+    border-radius: var(--radius-full) !important;
+  }
+
+  .navbar-add-text-desktop {
+    display: none !important;
+  }
+
+  .navbar-add-text-mobile {
+    display: inline !important;
   }
 
   .user-profile-widget {
@@ -104,13 +127,19 @@
 
   /* Page Container */
   .page-container {
-    padding: 14px 12px 32px !important;
+    padding: 12px 12px 32px !important;
     width: 100% !important;
     max-width: 100vw !important;
     box-sizing: border-box !important;
   }
 
   /* Dashboard Header on Mobile */
+  .dashboard-header-wrapper {
+    margin-bottom: 12px !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
   .header-with-accent {
     width: 100% !important;
     gap: 10px !important;
@@ -124,14 +153,17 @@
   }
 
   .page-title {
-    font-size: 20px !important;
+    font-size: 19px !important;
+    font-weight: 800 !important;
     line-height: 1.25 !important;
+    color: #0F172A !important;
     word-break: break-word !important;
   }
 
   .page-subtitle {
-    font-size: 13px !important;
-    line-height: 1.4 !important;
+    font-size: 12.5px !important;
+    line-height: 1.35 !important;
+    color: #64748B !important;
     margin-top: 2px !important;
     word-break: break-word !important;
   }
@@ -141,7 +173,96 @@
     display: none !important;
   }
 
-  /* 2x2 Stat Cards Grid on Mobile */
+  /* Interconnected Stat Ribbon Bar on Mobile */
+  .stat-ribbon-container {
+    width: 100% !important;
+    margin-bottom: 16px !important;
+    margin-top: 0 !important;
+    filter: drop-shadow(0 4px 14px rgba(255, 107, 0, 0.05)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.02)) !important;
+    clear: both !important;
+    border-radius: 18px !important;
+  }
+
+  .stat-ribbon-bar {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: auto !important;
+    background: #FFFFFF !important;
+    border-radius: 18px !important;
+    border: 1px solid #F1E9E2 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .stat-ribbon-segment {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    clip-path: none !important;
+    margin-left: 0 !important;
+    padding: 12px 16px !important;
+    border-radius: 0 !important;
+    border-bottom: 1px solid #F1E9E2 !important;
+    box-sizing: border-box !important;
+  }
+
+  .stat-ribbon-segment .segment-content {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  .stat-ribbon-segment.segment-dark {
+    border-radius: 17px 17px 0 0 !important;
+    clip-path: none !important;
+    background-color: #1E2330 !important;
+    background-image: radial-gradient(circle at 10% 120%, rgba(255, 107, 0, 0.9) 0%, rgba(255, 122, 0, 0.4) 45%, transparent 75%) !important;
+  }
+
+  .stat-ribbon-segment.segment-business {
+    border-radius: 0 !important;
+    margin-left: 0 !important;
+    padding-left: 16px !important;
+  }
+
+  .stat-ribbon-segment.segment-payments {
+    border-radius: 0 !important;
+  }
+
+  .stat-ribbon-segment.segment-renewals {
+    border-radius: 0 0 17px 17px !important;
+    border-bottom: none !important;
+  }
+
+  .stat-icon-circle {
+    width: 40px !important;
+    height: 40px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .stat-metric {
+    font-size: 19px !important;
+    line-height: 1.15 !important;
+  }
+
+  .stat-metric.text-white {
+    font-size: 21px !important;
+  }
+
+  .stat-title {
+    font-size: 11px !important;
+  }
+
+  .stat-subtitle {
+    font-size: 10.5px !important;
+  }
+
+  .segment-slant-line {
+    display: none !important;
+  }
+
+  /* 2x2 Stat Cards Grid on Mobile (for Payments / Reports pages) */
   .stat-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 10px !important;
@@ -307,6 +428,43 @@
 
   .mobile-only {
     display: block !important;
+  }
+
+  .dashboard-table-tabs {
+    width: 100% !important;
+    gap: 6px !important;
+  }
+
+  .dashboard-filter-tab {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    gap: 6px !important;
+  }
+
+  .dashboard-filter-tab .tab-count-pill {
+    font-size: 10.5px !important;
+    padding: 2px 6px !important;
+  }
+
+  .dashboard-table-subbar {
+    padding: 10px 12px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .days-filter-container {
+    width: 100% !important;
+    gap: 6px !important;
+  }
+
+  .days-filter-pills {
+    gap: 4px !important;
+  }
+
+  .days-filter-pill {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
   }
 
   .mobile-card-list {

@@ -66,10 +66,10 @@ export function Navbar({ onOpenAddCustomer }) {
     <header className="navbar">
       {/* Mobile Brand for small screens */}
       <div className="navbar-mobile-brand">
-        <div className="logo-icon-box" style={{ width: '32px', height: '32px' }}>
-          <ShieldCheck size={18} strokeWidth={2.4} />
+        <div className="logo-icon-box" style={{ width: '28px', height: '28px', borderRadius: '8px' }}>
+          <ShieldCheck size={16} strokeWidth={2.4} />
         </div>
-        <div style={{ fontWeight: 800, fontSize: '16px', color: '#111827', letterSpacing: '-0.02em' }}>
+        <div className="navbar-mobile-brand-text">
           Ashok Auto <span style={{ color: 'var(--primary-orange)' }}>Insurance</span>
         </div>
       </div>
@@ -105,7 +105,8 @@ export function Navbar({ onOpenAddCustomer }) {
           title="Add New Customer"
         >
           <Plus size={15} strokeWidth={2.5} />
-          <span>Add Customer</span>
+          <span className="navbar-add-text-desktop">Add Customer</span>
+          <span className="navbar-add-text-mobile">Add</span>
         </button>
 
         {/* User Admin Profile Widget with Dropdown */}

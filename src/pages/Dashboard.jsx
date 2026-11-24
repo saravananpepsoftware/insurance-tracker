@@ -12,7 +12,7 @@ export function Dashboard() {
   return (
     <div className="page-container">
       {/* Header with Orange Accent Bar and Right Artwork from Reference */}
-      <div style={{
+      <div className="dashboard-header-wrapper" style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',

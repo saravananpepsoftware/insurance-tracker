@@ -391,6 +391,18 @@
   gap: 14px;
 }
 
+.navbar-add-text-mobile {
+  display: none;
+}
+
+.navbar-mobile-brand-text {
+  font-weight: 800;
+  font-size: 16px;
+  color: #111827;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
 .notification-btn {
   width: 38px;
   height: 38px;
