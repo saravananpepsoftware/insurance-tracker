@@ -5,24 +5,24 @@ import { Car, ShieldCheck } from 'lucide-react';
 export function PaymentStatusBadge({ status }) {
   if (status === 'Paid') {
     return (
-      <span className="badge badge-paid">
-        <span className="badge-dot" />
-        Paid
+      <span className="table-status-clean status-paid">
+        <span className="table-status-dot" />
+        <span>Paid</span>
       </span>
     );
   }
   if (status === 'Partial Payment') {
     return (
-      <span className="badge badge-partial">
-        <span className="badge-dot" />
-        Partial Payment
+      <span className="table-status-clean status-partial">
+        <span className="table-status-dot" />
+        <span>Partial Payment</span>
       </span>
     );
   }
   return (
-    <span className="badge badge-pending">
-      <span className="badge-dot" />
-      Pending
+    <span className="table-status-clean status-pending">
+      <span className="table-status-dot" />
+      <span>Pending</span>
     </span>
   );
 }

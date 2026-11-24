@@ -4,6 +4,7 @@ import { formatCurrency } from '../../utils/formatCurrency';
 import { calculateRemaining, getPaymentStatus } from '../../utils/calculations';
 import { formatIndianDate, calculateDaysRemaining } from '../../utils/dateUtils';
 import { getCarrierBadge } from '../../utils/carrierUtils';
+import { PaymentStatusBadge } from '../common/StatusBadge';
 import {
   Eye,
   Edit3,
@@ -147,22 +148,7 @@ export function CustomerTable({
 
                 {/* 8. Status Column (Left-Aligned) */}
                 <td style={{ textAlign: 'left', whiteSpace: 'nowrap' }}>
-                  {status === 'Paid' ? (
-                    <span className="table-status-pill status-paid">
-                      <CheckCircle2 size={13} />
-                      <span>Paid</span>
-                    </span>
-                  ) : status === 'Partial Payment' ? (
-                    <span className="table-status-pill status-partial">
-                      <Clock size={13} />
-                      <span>Partial Payment</span>
-                    </span>
-                  ) : (
-                    <span className="table-status-pill status-pending">
-                      <Clock size={13} />
-                      <span>Pending</span>
-                    </span>
-                  )}
+                  <PaymentStatusBadge status={status} />
                 </td>
 
                 {/* 9. Actions Column (Center-Aligned) */}

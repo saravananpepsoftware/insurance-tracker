@@ -1833,34 +1833,80 @@
   color: #16A34A;
 }
 
-/* Column 8: Status Pill */
-.table-status-pill {
+/* Clean Table Status Indicator - Zero Pill/Bubble Styling */
+.table-status-clean {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 12px;
-  border-radius: 9999px;
-  font-size: 12px;
-  font-weight: 700;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
   white-space: nowrap;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  line-height: 1.2;
 }
 
-.table-status-pill.status-partial {
-  background-color: #FFF7ED;
-  border: 1px solid #FED7AA;
-  color: #EA580C;
+.table-status-clean .table-status-dot {
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
-.table-status-pill.status-paid {
-  background-color: #F0FDF4;
-  border: 1px solid #BBF7D0;
+.table-status-clean.status-paid {
   color: #16A34A;
 }
+.table-status-clean.status-paid .table-status-dot {
+  background-color: #16A34A;
+  box-shadow: 0 0 0 2.5px rgba(22, 163, 74, 0.18);
+}
 
-.table-status-pill.status-pending {
-  background-color: #FEFCE8;
-  border: 1px solid #FEF08A;
-  color: #CA8A04;
+.table-status-clean.status-partial {
+  color: #EA580C;
+}
+.table-status-clean.status-partial .table-status-dot {
+  background-color: #EA580C;
+  box-shadow: 0 0 0 2.5px rgba(234, 88, 12, 0.18);
+}
+
+.table-status-clean.status-pending {
+  color: #D97706;
+}
+.table-status-clean.status-pending .table-status-dot {
+  background-color: #D97706;
+  box-shadow: 0 0 0 2.5px rgba(217, 119, 6, 0.18);
+}
+
+/* Also strip pill styles from any legacy table badge */
+table .badge-paid,
+table .badge-partial,
+table .badge-pending,
+table .table-status-pill {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+  gap: 7px !important;
+}
+
+table .badge-paid .badge-dot {
+  background-color: #16A34A !important;
+  box-shadow: 0 0 0 2.5px rgba(22, 163, 74, 0.18) !important;
+}
+
+table .badge-partial .badge-dot {
+  background-color: #EA580C !important;
+  box-shadow: 0 0 0 2.5px rgba(234, 88, 12, 0.18) !important;
+}
+
+table .badge-pending .badge-dot {
+  background-color: #D97706 !important;
+  box-shadow: 0 0 0 2.5px rgba(217, 119, 6, 0.18) !important;
 }
 
 /* Column 9: Action Icon Buttons */
