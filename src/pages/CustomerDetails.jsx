@@ -332,148 +332,29 @@ export function CustomerDetails({ onOpenEditCustomer }) {
             {/* Dropdown Popover */}
             {showTabReminderMenu && (
               <div className="customer-nav-reminder-dropdown">
-                <div className="customer-nav-reminder-dropdown-header">
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span style={{ fontWeight: 800, fontSize: '13.5px', color: '#0F172A' }}>
-                        Customer Reminders
-                      </span>
-                      <span className="badge-fcm-tag">FCM Push</span>
-                    </div>
-                    <div style={{ fontSize: '11.5px', color: '#64748B', marginTop: '2px' }}>
-                      Pop-up notification for {customer.name} ({customer.phone})
-                    </div>
-                  </div>
-                  <span
-                    className="badge"
-                    style={{
-                      backgroundColor: alertCount > 0 ? '#FFEDD5' : '#F0FDF4',
-                      color: alertCount > 0 ? '#C2410C' : '#16A34A',
-                      fontWeight: 700,
-                      fontSize: '11px',
-                      padding: '2px 8px'
-                    }}
-                  >
-                    2 Messages
-                  </span>
-                </div>
+                <button
+                  type="button"
+                  className="reminder-dropdown-title-item"
+                  onClick={() => {
+                    dispatchCustomerReminder(customer, 'expiry', 'Your policy expires soon, renew quick');
+                    setShowTabReminderMenu(false);
+                  }}
+                >
+                  Your policy expires soon, renew quick
+                </button>
 
-                {/* 2 Messages Options List */}
-                <div className="reminder-dropdown-messages-list">
-                  {/* Message 1: Your policy expires soon, renew quick */}
-                  <div
-                    className="reminder-message-item-card"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      dispatchCustomerReminder(customer, 'expiry', 'Your policy expires soon, renew quick');
-                      setShowTabReminderMenu(false);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        dispatchCustomerReminder(customer, 'expiry', 'Your policy expires soon, renew quick');
-                        setShowTabReminderMenu(false);
-                      }
-                    }}
-                  >
-                    <div className="reminder-message-item-top">
-                      <div className="reminder-message-icon-box expiry">
-                        <Shield size={18} />
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                          <span className="reminder-message-title-text">
-                            Your policy expires soon, renew quick
-                          </span>
-                          <span
-                            className="reminder-message-status-pill"
-                            style={{
-                              backgroundColor: isExpired ? '#FEE2E2' : daysLeft <= 7 ? '#FEE2E2' : daysLeft <= 30 ? '#FEF3C7' : '#DCFCE7',
-                              color: isExpired ? '#DC2626' : daysLeft <= 7 ? '#DC2626' : daysLeft <= 30 ? '#D97706' : '#16A34A'
-                            }}
-                          >
-                            {isExpired ? `Expired (${Math.abs(daysLeft)}d)` : `${daysLeft}d left`}
-                          </span>
-                        </div>
-                        <div className="reminder-message-preview-text">
-                          Expires on {formatIndianDate(customer.policyEndDate)} ({customer.insuranceCompany} • {customer.insuranceType}).
-                        </div>
-                      </div>
-                    </div>
+                <div className="reminder-dropdown-divider" />
 
-                    <div className="reminder-message-action-btn-row">
-                      <span style={{ fontSize: '11px', color: '#64748B', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <Radio size={12} color="var(--primary-orange)" />
-                        <span>FCM App Pop-up Notification</span>
-                      </span>
-                      <span className="reminder-send-pill">
-                        <Send size={12} />
-                        <span>Send FCM Notification</span>
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Message 2: Pay the pending amount */}
-                  <div
-                    className="reminder-message-item-card"
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => {
-                      dispatchCustomerReminder(customer, 'payment', 'Pay the pending amount');
-                      setShowTabReminderMenu(false);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        dispatchCustomerReminder(customer, 'payment', 'Pay the pending amount');
-                        setShowTabReminderMenu(false);
-                      }
-                    }}
-                  >
-                    <div className="reminder-message-item-top">
-                      <div className="reminder-message-icon-box payment">
-                        <Wallet size={18} />
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                          <span className="reminder-message-title-text">
-                            Pay the pending amount
-                          </span>
-                          <span
-                            className="reminder-message-status-pill"
-                            style={{
-                              backgroundColor: remaining > 0 ? '#FEE2E2' : '#DCFCE7',
-                              color: remaining > 0 ? '#DC2626' : '#16A34A'
-                            }}
-                          >
-                            {remaining > 0 ? `${formatCurrency(remaining)} Due` : '₹0 Settled'}
-                          </span>
-                        </div>
-                        <div className="reminder-message-preview-text">
-                          {remaining > 0
-                            ? `Paid ${formatCurrency(paid)} of ${formatCurrency(total)}. Pending balance due: ${formatCurrency(remaining)}.`
-                            : `Full payment of ${formatCurrency(total)} has been cleared.`}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="reminder-message-action-btn-row">
-                      <span style={{ fontSize: '11px', color: '#64748B', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <Radio size={12} color="var(--primary-orange)" />
-                        <span>FCM App Pop-up Notification</span>
-                      </span>
-                      <span className="reminder-send-pill">
-                        <Send size={12} />
-                        <span>Send FCM Notification</span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="reminder-dropdown-footer-hint">
-                  Click either message to send that FCM pop-up notification directly to {customer.name}'s app
-                </div>
+                <button
+                  type="button"
+                  className="reminder-dropdown-title-item"
+                  onClick={() => {
+                    dispatchCustomerReminder(customer, 'payment', 'Pay the pending amount');
+                    setShowTabReminderMenu(false);
+                  }}
+                >
+                  Pay the pending amount
+                </button>
               </div>
             )}
           </div>
