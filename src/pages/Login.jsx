@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { DEFAULT_ADMIN } from '../firebase/authService';
 import {
   ShieldCheck,
   Mail,
@@ -11,8 +10,7 @@ import {
   ArrowRight,
   AlertCircle,
   Loader2,
-  CheckCircle2,
-  KeyRound
+  CheckCircle2
 } from 'lucide-react';
 import '../styles/login.css';
 
@@ -59,12 +57,6 @@ export function Login() {
     }
   };
 
-  const handleQuickFill = () => {
-    setEmail(DEFAULT_ADMIN.email);
-    setPassword(DEFAULT_ADMIN.password);
-    setError('');
-  };
-
   return (
     <div className="login-page-container">
       {/* Decorative ambient backdrop circles */}
@@ -88,21 +80,6 @@ export function Login() {
               Enter your authorized admin credentials to manage policies, customers, and payments.
             </p>
           </div>
-        </div>
-
-        {/* Quick Fill Admin Helper */}
-        <div className="login-quickfill-box">
-          <div className="login-quickfill-text">
-            <strong>Default Admin:</strong> {DEFAULT_ADMIN.email}
-          </div>
-          <button
-            type="button"
-            className="login-quickfill-btn"
-            onClick={handleQuickFill}
-            title="Auto-fill default admin credentials"
-          >
-            Auto Fill
-          </button>
         </div>
 
         {/* Error Alert */}
@@ -206,3 +183,4 @@ export function Login() {
 }
 
 export default Login;
+
