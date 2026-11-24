@@ -164,12 +164,7 @@ export function Reports({ onOpenAddCustomer }) {
                 return (
                   <tr key={item.name}>
                     <td>
-                      <div className="table-company-cell">
-                        <div className="carrier-logo-box" style={{ backgroundColor: carrier.bg }}>
-                          {carrier.label}
-                        </div>
-                        <span className="carrier-name" style={{ fontWeight: 700 }}>{item.name}</span>
-                      </div>
+                      <span className="carrier-name" style={{ fontWeight: 700, fontSize: '13.5px', color: '#1E293B' }}>{item.name}</span>
                     </td>
                     <td style={{ textAlign: 'center', fontWeight: 600 }}>
                       {item.count}

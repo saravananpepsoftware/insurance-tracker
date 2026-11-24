@@ -1862,7 +1862,11 @@
 table .table-status-dot,
 table .badge-dot,
 table .status-dot,
-table .urgency-dot {
+table .urgency-dot,
+table .carrier-logo-box,
+table .table-carrier-badge,
+.data-table .carrier-logo-box,
+.data-table .table-carrier-badge {
   display: none !important;
 }
 

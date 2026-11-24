@@ -77,17 +77,9 @@ export function CustomerTable({
 
                 {/* 2. Insurance Company Column (Left-Aligned) */}
                 <td style={{ textAlign: 'left' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div
-                      className="table-carrier-badge"
-                      style={{ backgroundColor: carrier.bg }}
-                    >
-                      {carrier.label}
-                    </div>
-                    <span style={{ fontWeight: 600, fontSize: '13px', color: '#1E293B', lineHeight: '1.3' }}>
-                      {c.insuranceCompany}
-                    </span>
-                  </div>
+                  <span style={{ fontWeight: 600, fontSize: '13.5px', color: '#1E293B', lineHeight: '1.3' }}>
+                    {c.insuranceCompany}
+                  </span>
                 </td>
 
                 {/* 3. Policy Type Column (Left-Aligned) */}

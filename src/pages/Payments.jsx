@@ -191,15 +191,9 @@ export function Payments() {
                         </div>
                       </td>
                       <td>
-                        <div className="table-company-cell">
-                          <div
-                            className="carrier-logo-box"
-                            style={{ backgroundColor: carrier.bg }}
-                          >
-                            {carrier.label.split(' ')[0]}
-                          </div>
-                          <span className="carrier-name">{c.insuranceCompany}</span>
-                        </div>
+                        <span className="carrier-name" style={{ fontWeight: 600, fontSize: '13.5px', color: '#1E293B' }}>
+                          {c.insuranceCompany}
+                        </span>
                       </td>
                       <td style={{ textAlign: 'right' }} className="table-amount-cell">
                         {formatCurrency(total)}
@@ -281,17 +275,9 @@ export function Payments() {
                   </div>
 
                   <div className="mobile-renewal-meta">
-                    <div className="table-company-cell" style={{ gap: '6px' }}>
-                      <div
-                        className="carrier-logo-box"
-                        style={{ backgroundColor: carrier.bg, width: '22px', height: '22px', fontSize: '8px' }}
-                      >
-                        {carrier.label.split(' ')[0]}
-                      </div>
-                      <span style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>
-                        {c.insuranceCompany.split(' ')[0]}
-                      </span>
-                    </div>
+                    <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#334155' }}>
+                      {c.insuranceCompany}
+                    </span>
 
                     <div style={{ fontSize: '12px', color: '#64748B' }}>
                       Total: <strong style={{ color: '#1E293B' }}>{formatCurrency(c.totalAmount)}</strong>
