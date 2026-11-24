@@ -171,7 +171,7 @@ export function CustomerProvider({ children }) {
       return false;
     }
 
-    const currentPaid = Number(customer.partialAmount) || 0;
+    const currentPaid = Number(customer.partialAmount ?? customer.paidAmount) || 0;
     const total = Number(customer.totalAmount) || 0;
     const remaining = calculateRemaining(total, currentPaid);
 
@@ -183,7 +183,7 @@ export function CustomerProvider({ children }) {
     try {
       const updatedCustomer = await addPaymentToFirebase(id, customer, numPayment);
       setCustomers((prev) => prev.map((c) => (c.id === id ? updatedCustomer : c)));
-      addToast(`Payment of ₹${numPayment.toLocaleString('en-IN')} recorded in Firebase for ${customer.name}!`, 'success');
+      addToast(`Payment of ₹${numPayment.toLocaleString('en-IN')} recorded! New Paid: ₹${updatedCustomer.partialAmount.toLocaleString('en-IN')}, Remaining: ₹${updatedCustomer.remainingAmount.toLocaleString('en-IN')}`, 'success');
       return true;
     } catch (err) {
       console.warn('Payment saved locally due to Firebase error:', err);
@@ -194,6 +194,7 @@ export function CustomerProvider({ children }) {
       const localCustomer = {
         ...customer,
         partialAmount: newPaid,
+        paidAmount: newPaid,
         remainingAmount: newRemaining,
         paymentStatus: newStatus,
         lastPaymentDate: new Date().toISOString()
@@ -201,7 +202,7 @@ export function CustomerProvider({ children }) {
 
       const updated = customers.map((c) => (c.id === id ? localCustomer : c));
       persistCustomers(updated);
-      addToast(`Payment saved locally (${err?.code || 'offline'})`, 'info');
+      addToast(`Payment recorded locally: Paid ₹${newPaid.toLocaleString('en-IN')}, Remaining ₹${newRemaining.toLocaleString('en-IN')}`, 'info');
       return true;
     }
   }, [customers, persistCustomers, addToast]);

@@ -20,7 +20,7 @@ export function PaymentModal({ isOpen, customer, onClose }) {
   if (!isOpen || !customer) return null;
 
   const total = Number(customer.totalAmount) || 0;
-  const previousPaid = Number(customer.partialAmount) || 0;
+  const previousPaid = Number(customer.partialAmount ?? customer.paidAmount) || 0;
   const currentRemaining = calculateRemaining(total, previousPaid);
 
   const parsedNewAmount = Math.max(0, parseFloat(newAmount) || 0);
@@ -49,7 +49,7 @@ export function PaymentModal({ isOpen, customer, onClose }) {
     setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const num = parseFloat(newAmount);
 
@@ -64,11 +64,16 @@ export function PaymentModal({ isOpen, customer, onClose }) {
     }
 
     setIsSubmitting(true);
-    const success = addPayment(customer.id, num);
-    setIsSubmitting(false);
-
-    if (success) {
-      onClose();
+    try {
+      const success = await addPayment(customer.id, num);
+      if (success) {
+        onClose();
+      }
+    } catch (err) {
+      console.error('Payment submission error:', err);
+      setError(err?.message || 'Failed to record payment');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -189,21 +194,44 @@ export function PaymentModal({ isOpen, customer, onClose }) {
                 gap: '8px'
               }}>
                 <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--primary-orange)', textTransform: 'uppercase' }}>
-                  Updated Payment Preview
+                  Live Calculation Preview
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                  <span>Updated Total Paid:</span>
-                  <strong style={{ color: 'var(--status-success)' }}>{formatCurrency(updatedPaid)}</strong>
+                  <span style={{ color: 'var(--text-secondary)' }}>Current Paid Amount:</span>
+                  <span style={{ fontWeight: 600 }}>{formatCurrency(previousPaid)}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                  <span>New Balance Remaining:</span>
-                  <strong style={{ color: updatedRemaining > 0 ? 'var(--status-danger)' : 'var(--text-secondary)' }}>
+                  <span style={{ color: 'var(--primary-orange)', fontWeight: 600 }}>+ Adding Payment:</span>
+                  <strong style={{ color: 'var(--primary-orange)' }}>+ {formatCurrency(parsedNewAmount)}</strong>
+                </div>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  fontSize: '13.5px',
+                  paddingTop: '6px',
+                  borderTop: '1px dashed #FDBA74'
+                }}>
+                  <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>= New Paid Amount:</span>
+                  <strong style={{ color: 'var(--status-paid)', fontSize: '14.5px' }}>{formatCurrency(updatedPaid)}</strong>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13.5px' }}>
+                  <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>New Remaining Balance:</span>
+                  <strong style={{ color: updatedRemaining > 0 ? '#DC2626' : 'var(--status-paid)', fontSize: '14.5px' }}>
                     {formatCurrency(updatedRemaining)}
                   </strong>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                  <span>New Payment Standing:</span>
-                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{updatedStatus}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', paddingTop: '4px' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Updated Payment Status:</span>
+                  <span style={{
+                    fontWeight: 700,
+                    color: updatedStatus === 'Paid' ? 'var(--status-paid)' : 'var(--primary-orange)',
+                    backgroundColor: updatedStatus === 'Paid' ? '#DCFCE7' : '#FFEFE5',
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    fontSize: '12px'
+                  }}>
+                    {updatedStatus}
+                  </span>
                 </div>
               </div>
             )}

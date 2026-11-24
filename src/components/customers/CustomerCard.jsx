@@ -1,13 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { calculateRemaining, getPaymentStatus } from '../../utils/calculations';
 import { formatIndianDate } from '../../utils/dateUtils';
 import { PaymentStatusBadge, InsuranceTypeBadge, RenewalUrgencyBadge } from '../common/StatusBadge';
 import { Phone, ChevronRight, PlusCircle } from 'lucide-react';
 
 export function CustomerCard({ customer, onAddPayment }) {
   const navigate = useNavigate();
-  const remaining = Number(customer.remainingAmount) || 0;
+  const paid = Number(customer.partialAmount ?? customer.paidAmount) || 0;
+  const total = Number(customer.totalAmount) || 0;
+  const remaining = calculateRemaining(total, paid);
+  const status = getPaymentStatus(total, paid);
 
   return (
     <div
@@ -28,7 +32,7 @@ export function CustomerCard({ customer, onAddPayment }) {
             </a>
           </div>
         </div>
-        <PaymentStatusBadge status={customer.paymentStatus} />
+        <PaymentStatusBadge status={status} />
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>

@@ -219,8 +219,8 @@ export function CustomerDetails({ onOpenEditCustomer }) {
   }
 
   const total = Number(customer.totalAmount) || 0;
-  const paid = Number(customer.partialAmount) || 0;
-  const remaining = Number(customer.remainingAmount) || 0;
+  const paid = Number(customer.partialAmount ?? customer.paidAmount) || 0;
+  const remaining = calculateRemaining(total, paid);
   const paidPercent = total > 0 ? Math.min(100, Math.round((paid / total) * 100)) : 0;
   const daysLeft = calculateDaysRemaining(customer.policyEndDate);
   const urgency = getUrgencyInfo(customer.policyEndDate);
@@ -916,7 +916,30 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                 </tr>
               </thead>
               <tbody>
-                {paid > 0 ? (
+                {Array.isArray(customer.paymentHistory) && customer.paymentHistory.length > 0 ? (
+                  customer.paymentHistory.map((item, idx) => (
+                    <tr key={item.id || `pay-hist-${idx}`}>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Calendar size={14} color="var(--primary-orange)" />
+                          <span>{formatIndianDate(item.date)}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span style={{ fontWeight: 600 }}>{item.type || `Installment #${idx + 1}`}</span>
+                      </td>
+                      <td style={{ textAlign: 'right', color: 'var(--status-paid)', fontWeight: 700 }}>
+                        {formatCurrency(item.amount)}
+                      </td>
+                      <td style={{ textAlign: 'right', fontWeight: 700, color: (Number(item.remainingAfter) || 0) > 0 ? '#DC2626' : 'var(--text-secondary)' }}>
+                        {formatCurrency(item.remainingAfter)}
+                      </td>
+                      <td>
+                        <PaymentStatusBadge status={item.status || (Number(item.remainingAfter) === 0 ? 'Paid' : 'Partial Payment')} />
+                      </td>
+                    </tr>
+                  ))
+                ) : paid > 0 ? (
                   <tr>
                     <td>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -925,7 +948,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                       </div>
                     </td>
                     <td>
-                      <span style={{ fontWeight: 600 }}>Partial / Initial Premium Payment</span>
+                      <span style={{ fontWeight: 600 }}>Initial Down Payment</span>
                     </td>
                     <td style={{ textAlign: 'right', color: 'var(--status-paid)', fontWeight: 700 }}>
                       {formatCurrency(paid)}

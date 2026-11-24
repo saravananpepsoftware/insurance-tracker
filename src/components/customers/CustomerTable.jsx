@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../../utils/formatCurrency';
+import { calculateRemaining, getPaymentStatus } from '../../utils/calculations';
 import { formatIndianDate, calculateDaysRemaining } from '../../utils/dateUtils';
 import { getCarrierBadge } from '../../utils/carrierUtils';
 import {
@@ -42,7 +43,10 @@ export function CustomerTable({
         </thead>
         <tbody>
           {customers.map((c) => {
-            const remaining = Number(c.remainingAmount) || 0;
+            const paid = Number(c.partialAmount ?? c.paidAmount) || 0;
+            const total = Number(c.totalAmount) || 0;
+            const remaining = calculateRemaining(total, paid);
+            const status = getPaymentStatus(total, paid);
             const carrier = getCarrierBadge(c.insuranceCompany, c.carrierCode);
             const daysLeft = calculateDaysRemaining(c.policyEndDate);
 
@@ -107,7 +111,7 @@ export function CustomerTable({
                 {/* 5. Paid Amount Column (Right-Aligned, Green) */}
                 <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
                   <span style={{ fontWeight: 700, fontSize: '14.5px', color: '#16A34A', fontVariantNumeric: 'tabular-nums' }}>
-                    {formatCurrency(c.partialAmount)}
+                    {formatCurrency(paid)}
                   </span>
                 </td>
 
@@ -143,12 +147,12 @@ export function CustomerTable({
 
                 {/* 8. Status Column (Left-Aligned) */}
                 <td style={{ textAlign: 'left', whiteSpace: 'nowrap' }}>
-                  {c.paymentStatus === 'Paid' ? (
+                  {status === 'Paid' ? (
                     <span className="table-status-pill status-paid">
                       <CheckCircle2 size={13} />
                       <span>Paid</span>
                     </span>
-                  ) : c.paymentStatus === 'Partial Payment' ? (
+                  ) : status === 'Partial Payment' ? (
                     <span className="table-status-pill status-partial">
                       <Clock size={13} />
                       <span>Partial Payment</span>

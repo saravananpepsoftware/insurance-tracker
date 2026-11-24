@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCustomers } from '../context/CustomerContext';
 import { formatCurrency } from '../utils/formatCurrency';
+import { calculateRemaining, getPaymentStatus } from '../utils/calculations';
 import { getCarrierBadge } from '../utils/carrierUtils';
 import { PaymentStatusBadge } from '../components/common/StatusBadge';
 import { StatCard } from '../components/common/StatCard';
@@ -163,7 +164,10 @@ export function Payments() {
               </thead>
               <tbody>
                 {filteredCustomers.map((c) => {
-                  const remaining = Number(c.remainingAmount) || 0;
+                  const paid = Number(c.partialAmount ?? c.paidAmount) || 0;
+                  const total = Number(c.totalAmount) || 0;
+                  const remaining = calculateRemaining(total, paid);
+                  const status = getPaymentStatus(total, paid);
                   const carrier = getCarrierBadge(c.insuranceCompany, c.carrierCode);
 
                   return (
@@ -198,10 +202,10 @@ export function Payments() {
                         </div>
                       </td>
                       <td style={{ textAlign: 'right' }} className="table-amount-cell">
-                        {formatCurrency(c.totalAmount)}
+                        {formatCurrency(total)}
                       </td>
                       <td style={{ textAlign: 'right', color: 'var(--status-paid)' }} className="table-amount-cell">
-                        {formatCurrency(c.partialAmount)}
+                        {formatCurrency(paid)}
                       </td>
                       <td
                         style={{ textAlign: 'right' }}
@@ -212,7 +216,7 @@ export function Payments() {
                         </span>
                       </td>
                       <td>
-                        <PaymentStatusBadge status={c.paymentStatus} />
+                        <PaymentStatusBadge status={status} />
                       </td>
                       <td style={{ textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
@@ -248,7 +252,10 @@ export function Payments() {
           {/* Native Mobile Payment Cards (Zero swipe!) */}
           <div className="mobile-only mobile-renewal-card-list">
             {filteredCustomers.map((c) => {
-              const remaining = Number(c.remainingAmount) || 0;
+              const paid = Number(c.partialAmount ?? c.paidAmount) || 0;
+              const total = Number(c.totalAmount) || 0;
+              const remaining = calculateRemaining(total, paid);
+              const status = getPaymentStatus(total, paid);
               const carrier = getCarrierBadge(c.insuranceCompany, c.carrierCode);
 
               return (
@@ -270,7 +277,7 @@ export function Payments() {
                       </div>
                     </div>
 
-                    <PaymentStatusBadge status={c.paymentStatus} />
+                    <PaymentStatusBadge status={status} />
                   </div>
 
                   <div className="mobile-renewal-meta">

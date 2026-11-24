@@ -45,9 +45,19 @@ export function subscribeToCustomers(onData, onError) {
       const customers = [];
       snapshot.forEach((d) => {
         const data = d.data();
+        const total = Number(data.totalAmount) || 0;
+        const paid = Number(data.partialAmount ?? data.paidAmount) || 0;
+        const remaining = data.remainingAmount !== undefined ? Number(data.remainingAmount) : calculateRemaining(total, paid);
+        const status = data.paymentStatus || getPaymentStatus(total, paid);
+
         customers.push({
           id: d.id,
-          ...data
+          ...data,
+          totalAmount: total,
+          partialAmount: paid,
+          paidAmount: paid,
+          remainingAmount: remaining,
+          paymentStatus: status
         });
       });
 
@@ -123,10 +133,21 @@ export async function addCustomerToFirebase(formData, pdfFile) {
     insuranceType: formData.insuranceType,
     totalAmount: total,
     partialAmount: partial,
+    paidAmount: partial,
     remainingAmount: remaining,
     paymentStatus,
     policyStartDate: formData.policyStartDate,
     policyEndDate: formData.policyEndDate,
+    paymentHistory: partial > 0 ? [
+      {
+        id: 'pay-init-' + newId,
+        amount: partial,
+        date: new Date().toISOString(),
+        type: 'Initial Down Payment',
+        remainingAfter: remaining,
+        status: paymentStatus
+      }
+    ] : [],
     pdfFileName,
     pdfFileSize,
     hasPdf,
@@ -218,6 +239,7 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
     insuranceType: formData.insuranceType,
     totalAmount: total,
     partialAmount: partial,
+    paidAmount: partial,
     remainingAmount: remaining,
     paymentStatus,
     policyStartDate: formData.policyStartDate,
@@ -239,17 +261,41 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
  * Record a payment for customer in Firebase Firestore
  */
 export async function addPaymentToFirebase(id, customer, numPayment) {
-  const currentPaid = Number(customer.partialAmount) || 0;
+  const currentPaid = Number(customer.partialAmount ?? customer.paidAmount) || 0;
   const total = Number(customer.totalAmount) || 0;
   const newPaid = currentPaid + numPayment;
   const newRemaining = calculateRemaining(total, newPaid);
   const newStatus = getPaymentStatus(total, newPaid);
 
+  const existingHistory = Array.isArray(customer.paymentHistory) ? customer.paymentHistory : (
+    currentPaid > 0 ? [
+      {
+        id: 'pay-init-' + (customer.id || '0'),
+        amount: currentPaid,
+        date: customer.createdAt || new Date().toISOString(),
+        type: 'Initial Down Payment',
+        remainingAfter: calculateRemaining(total, currentPaid),
+        status: getPaymentStatus(total, currentPaid)
+      }
+    ] : []
+  );
+
+  const newPaymentEntry = {
+    id: 'pay-' + Date.now(),
+    amount: numPayment,
+    date: new Date().toISOString(),
+    type: newRemaining === 0 ? 'Final Settlement' : 'Installment Payment',
+    remainingAfter: newRemaining,
+    status: newStatus
+  };
+
   const updates = {
     partialAmount: newPaid,
+    paidAmount: newPaid,
     remainingAmount: newRemaining,
     paymentStatus: newStatus,
-    lastPaymentDate: new Date().toISOString()
+    lastPaymentDate: new Date().toISOString(),
+    paymentHistory: [...existingHistory, newPaymentEntry]
   };
 
   const docRef = doc(db, COLLECTION_NAME, id);
