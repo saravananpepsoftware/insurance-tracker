@@ -44,6 +44,9 @@ export function calculateDashboardMetrics(customers = []) {
   let partialCount = 0;
   let pendingCount = 0;
 
+  let partialPendingAmount = 0;
+  let unpaidPendingAmount = 0;
+
   let motorCount = 0;
   let motorTotal = 0;
   let accidentalCount = 0;
@@ -59,9 +62,15 @@ export function calculateDashboardMetrics(customers = []) {
     totalCollected += partial;
     totalPending += remaining;
 
-    if (status === 'Paid') paidCount++;
-    else if (status === 'Partial Payment') partialCount++;
-    else pendingCount++;
+    if (status === 'Paid') {
+      paidCount++;
+    } else if (status === 'Partial Payment') {
+      partialCount++;
+      partialPendingAmount += remaining;
+    } else {
+      pendingCount++;
+      unpaidPendingAmount += remaining;
+    }
 
     if (c.insuranceType === 'Motor Insurance') {
       motorCount++;
@@ -88,10 +97,14 @@ export function calculateDashboardMetrics(customers = []) {
     totalCollected,
     upcomingRenewalsCount,
     expiredPoliciesCount,
+    customersWithPendingCount: partialCount + pendingCount,
+    partialPendingAmount,
+    unpaidPendingAmount,
     paymentStatusCounts: {
       paid: paidCount,
       partial: partialCount,
-      pending: pendingCount
+      pending: pendingCount,
+      hasPending: partialCount + pendingCount
     },
     insuranceTypeStats: {
       motor: { count: motorCount, total: motorTotal },

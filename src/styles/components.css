@@ -251,6 +251,54 @@
   padding-right: 8px;
 }
 
+/* Chart View Toggle in Header */
+.chart-view-toggle {
+  display: inline-flex;
+  align-items: center;
+  background-color: #F1E9E2;
+  padding: 3px;
+  border-radius: var(--radius-full);
+  gap: 2px;
+}
+
+.chart-toggle-btn {
+  border: none;
+  background: transparent;
+  padding: 3px 11px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.chart-toggle-btn:hover {
+  color: var(--primary-orange);
+}
+
+.chart-toggle-btn.active {
+  background-color: #FFFFFF;
+  color: var(--primary-orange);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+}
+
+.barchart-pending-alert-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #C2410C;
+  background-color: #FFF7ED;
+  border: 1px solid #FED7AA;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
 .barchart-status-pill {
   display: flex;
   align-items: center;
