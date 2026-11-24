@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import loginIllustrationImg from '../assets/login-illustration-fade.png';
 import {
+  Shield,
   ShieldCheck,
+  Users,
+  CreditCard,
+  BarChart3,
   Mail,
   Lock,
   Eye,
   EyeOff,
-  ArrowRight,
+  LogIn,
   AlertCircle,
-  Loader2,
-  CheckCircle2
+  Loader2
 } from 'lucide-react';
 import '../styles/login.css';
 
@@ -18,9 +22,10 @@ export function Login() {
   const { isAuthenticated, login, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('ashokinsurance@gmail.com');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -34,7 +39,7 @@ export function Login() {
     setError('');
 
     if (!email.trim()) {
-      setError('Please enter your admin email address.');
+      setError('Please enter your admin email ID.');
       return;
     }
     if (!password.trim()) {
@@ -48,10 +53,10 @@ export function Login() {
       if (res.success) {
         navigate('/', { replace: true });
       } else {
-        setError(res.error || 'Authentication failed. Please verify credentials.');
+        setError(res.error || 'Invalid credentials. Please verify and try again.');
       }
     } catch (err) {
-      setError(err.message || 'An unexpected error occurred. Please try again.');
+      setError(err.message || 'Authentication error. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -59,122 +64,295 @@ export function Login() {
 
   return (
     <div className="login-page-container">
-      {/* Decorative ambient backdrop circles */}
-      <div className="login-decorative-circle login-circle-1" />
-      <div className="login-decorative-circle login-circle-2" />
+      {/* Fluid Organic Top-Right Background Wave Accent */}
+      <svg
+        className="login-bg-accent login-bg-top-right"
+        viewBox="0 0 380 280"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="loginWaveGradTR" x1="100%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#FF7A00" stopOpacity="0.95" />
+            <stop offset="60%" stopColor="#FFA64D" stopOpacity="0.75" />
+            <stop offset="100%" stopColor="#FFE0C8" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M 120 0 C 190 70 240 60 280 120 C 320 180 340 240 380 280 L 380 0 Z"
+          fill="url(#loginWaveGradTR)"
+        />
+        <path
+          d="M 210 0 C 260 50 290 80 330 140 C 360 180 370 220 380 240 L 380 0 Z"
+          fill="#FF6B00"
+          opacity="0.9"
+        />
+      </svg>
 
-      <div className="login-card">
-        {/* Brand Header */}
-        <div className="login-brand-header">
-          <div className="login-logo-box">
-            <ShieldCheck size={28} strokeWidth={2.4} />
-          </div>
-          <div className="login-title-row">
-            Insure<span>Track</span>
-          </div>
-          <div className="login-tagline">INSURANCE MANAGEMENT PORTAL</div>
+      {/* Fluid Organic Bottom-Left Background Wave Accent */}
+      <svg
+        className="login-bg-accent login-bg-bottom-left"
+        viewBox="0 0 360 260"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="loginWaveGradBL" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#FF6B00" stopOpacity="0.95" />
+            <stop offset="60%" stopColor="#FFA64D" stopOpacity="0.7" />
+            <stop offset="100%" stopColor="#FFF1E8" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M 0 100 C 50 140 100 120 160 170 C 220 220 250 240 280 260 L 0 260 Z"
+          fill="url(#loginWaveGradBL)"
+        />
+        <path
+          d="M 0 150 C 40 180 80 170 130 205 C 180 240 200 250 220 260 L 0 260 Z"
+          fill="#FF5500"
+          opacity="0.95"
+        />
+      </svg>
 
-          <div className="login-welcome-box">
-            <h1 className="login-welcome-title">Admin Portal Sign In</h1>
-            <p className="login-welcome-subtitle">
-              Enter your authorized admin credentials to manage policies, customers, and payments.
-            </p>
+      {/* Delicate flowing contour ribbon line */}
+      <svg
+        className="login-bg-ribbon"
+        viewBox="0 0 1200 700"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M 0 150 C 250 50 400 350 700 200 C 950 80 1050 300 1200 220"
+          stroke="rgba(255, 107, 0, 0.22)"
+          strokeWidth="1.8"
+          strokeDasharray="4 2"
+        />
+        <path
+          d="M 0 190 C 280 80 430 380 730 230 C 980 110 1070 330 1200 250"
+          stroke="rgba(255, 133, 51, 0.15)"
+          strokeWidth="1.2"
+        />
+      </svg>
+
+      {/* Main Split Card */}
+      <div className="login-split-card">
+        {/* =========================================================
+            LEFT COLUMN: Artwork Showcase & Features
+            ========================================================= */}
+        <div className="login-showcase-column">
+          {/* Top 3D Artwork Illustration */}
+          <div className="showcase-artwork-container">
+            <img
+              src={loginIllustrationImg}
+              alt="Manage Insurance Policies with Ease"
+              className="showcase-artwork-img"
+            />
+          </div>
+
+          {/* Heading */}
+          <div className="showcase-text-block">
+            <h2 className="showcase-headline">
+              Manage Insurance <br />
+              <span>Policies with Ease</span>
+            </h2>
+          </div>
+
+          {/* 4 Feature Items Grid */}
+          <div className="showcase-features-grid">
+            <div className="showcase-feature-item">
+              <div className="showcase-feature-icon-box">
+                <Shield size={18} strokeWidth={2.4} />
+              </div>
+              <span className="showcase-feature-label">
+                Policy<br />Management
+              </span>
+            </div>
+
+            <div className="showcase-feature-item">
+              <div className="showcase-feature-icon-box">
+                <Users size={18} strokeWidth={2.4} />
+              </div>
+              <span className="showcase-feature-label">
+                Customer<br />Management
+              </span>
+            </div>
+
+            <div className="showcase-feature-item">
+              <div className="showcase-feature-icon-box">
+                <CreditCard size={18} strokeWidth={2.4} />
+              </div>
+              <span className="showcase-feature-label">
+                Payment<br />Tracking
+              </span>
+            </div>
+
+            <div className="showcase-feature-item">
+              <div className="showcase-feature-icon-box">
+                <BarChart3 size={18} strokeWidth={2.4} />
+              </div>
+              <span className="showcase-feature-label">
+                Reports &<br />Analytics
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Error Alert */}
-        {error && (
-          <div className="login-error-alert" style={{ marginTop: '14px' }}>
-            <AlertCircle size={18} style={{ flexShrink: 0 }} />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {/* Login Form */}
-        <form className="login-form" onSubmit={handleSubmit} noValidate>
-          <div className="login-field-group">
-            <label className="login-label" htmlFor="admin-email">
-              Admin Email ID
-            </label>
-            <div className="login-input-wrapper">
-              <span className="login-input-icon">
-                <Mail size={17} />
-              </span>
-              <input
-                id="admin-email"
-                type="email"
-                className="login-input"
-                placeholder="ashokinsurance@gmail.com"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (error) setError('');
-                }}
-                autoComplete="email"
-                required
-              />
+        {/* =========================================================
+            RIGHT COLUMN: Admin Sign In Form
+            ========================================================= */}
+        <div className="login-form-column">
+          <div className="login-form-inner">
+            {/* Top Brand Logo */}
+            <div className="login-form-brand-header">
+              <div className="login-form-logo-box">
+                <ShieldCheck size={26} strokeWidth={2.4} />
+              </div>
+              <div className="login-brand-title">
+                Insure<span>Track</span>
+              </div>
+              <div className="login-brand-subtitle">
+                INSURANCE MANAGEMENT PORTAL
+              </div>
             </div>
-          </div>
 
-          <div className="login-field-group">
-            <label className="login-label" htmlFor="admin-password">
-              <span>Password</span>
-            </label>
-            <div className="login-input-wrapper">
-              <span className="login-input-icon">
-                <Lock size={17} />
-              </span>
-              <input
-                id="admin-password"
-                type={showPassword ? 'text' : 'password'}
-                className="login-input"
-                placeholder="••••••••••••"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (error) setError('');
-                }}
-                autoComplete="current-password"
-                required
-              />
-              <button
-                type="button"
-                className="login-password-toggle"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-              </button>
+            {/* Title & Subtitle */}
+            <div className="login-form-title-group">
+              <h1 className="login-portal-title">Admin Portal Sign In</h1>
+              <p className="login-portal-subtitle">
+                Enter your credentials to manage policies, customers, and payments.
+              </p>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            className="login-submit-btn"
-            disabled={isSubmitting || authLoading}
-          >
-            {isSubmitting || authLoading ? (
-              <>
-                <Loader2 size={18} className="spin-animation" />
-                <span>Verifying Admin Credentials...</span>
-              </>
-            ) : (
-              <>
-                <span>Sign In to Dashboard</span>
-                <ArrowRight size={17} strokeWidth={2.4} />
-              </>
+            {/* Error Banner */}
+            {error && (
+              <div className="login-error-banner">
+                <AlertCircle size={16} style={{ flexShrink: 0 }} />
+                <span>{error}</span>
+              </div>
             )}
-          </button>
-        </form>
 
-        {/* Security & Firestore Collection Badge */}
-        <div className="login-footer-security">
-          <div className="login-security-badge">
-            <CheckCircle2 size={13} color="#22C55E" />
-            <span>Encrypted Session • Verified via Firestore</span>
-          </div>
-          <div className="login-collection-badge">
-            Collection: <code>admins</code> (Ashok Auto Insurance)
+            {/* Form */}
+            <form onSubmit={handleSubmit} noValidate>
+              <div className="login-fields-container">
+                {/* Admin Email ID */}
+                <div className="login-input-group">
+                  <label className="login-field-label" htmlFor="adminEmail">
+                    Admin Email ID
+                  </label>
+                  <div className="login-input-shell">
+                    <span className="login-input-leading-icon">
+                      <Mail size={16} />
+                    </span>
+                    <input
+                      id="adminEmail"
+                      type="email"
+                      className="login-native-input"
+                      placeholder="ashokinsurance@gmail.com"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (error) setError('');
+                      }}
+                      autoComplete="username"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Password */}
+                <div className="login-input-group">
+                  <label className="login-field-label" htmlFor="adminPassword">
+                    Password
+                  </label>
+                  <div className="login-input-shell">
+                    <span className="login-input-leading-icon">
+                      <Lock size={16} />
+                    </span>
+                    <input
+                      id="adminPassword"
+                      type={showPassword ? 'text' : 'password'}
+                      className="login-native-input"
+                      placeholder="••••••••••••"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (error) setError('');
+                      }}
+                      autoComplete="current-password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="login-eye-btn"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Remember Me & Forgot Password Row */}
+                <div className="login-aux-row">
+                  <label className="login-checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="login-custom-checkbox"
+                    />
+                    <span>Remember me</span>
+                  </label>
+
+                  <button
+                    type="button"
+                    className="login-forgot-link"
+                    onClick={() => {
+                      alert('Default Administrator Credentials:\nEmail: ashokinsurance@gmail.com\nPassword: Ashok@123');
+                    }}
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+
+                {/* Submit CTA Button */}
+                <button
+                  type="submit"
+                  className="login-cta-button"
+                  disabled={isSubmitting || authLoading}
+                >
+                  {isSubmitting || authLoading ? (
+                    <>
+                      <Loader2 size={18} className="spin-animation" />
+                      <span>Signing In...</span>
+                    </>
+                  ) : (
+                    <>
+                      <LogIn size={17} strokeWidth={2.4} />
+                      <span>Sign In to Dashboard</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+
+            {/* Separator Line */}
+            <div className="login-separator-line">
+              <span className="login-separator-bar" />
+              <span className="login-separator-text">or</span>
+              <span className="login-separator-bar" />
+            </div>
+
+            {/* Secured Footer */}
+            <div className="login-secured-footer">
+              <div className="login-secured-title">
+                <ShieldCheck size={16} color="#16A34A" />
+                <span>Secured Portal</span>
+              </div>
+              <div className="login-secured-desc">
+                Encrypted & Protected with Firebase
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -183,4 +361,3 @@ export function Login() {
 }
 
 export default Login;
-
