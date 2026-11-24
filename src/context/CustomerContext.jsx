@@ -260,10 +260,12 @@ export function CustomerProvider({ children }) {
     const reminderEntry = {
       id: 'rem-' + Date.now(),
       sentAt: new Date().toISOString(),
-      channel: reminderData.channel || 'whatsapp',
+      channel: reminderData.channel || 'fcm_push',
+      type: reminderData.type || 'expiry',
+      title: reminderData.title || '',
       timingDays: reminderData.timingDays || 30,
       customMessage: reminderData.message || '',
-      note: reminderData.note || '30-day renewal reminder dispatched'
+      note: reminderData.note || 'Reminder dispatched'
     };
 
     const existingReminders = Array.isArray(customer.renewalReminders) ? customer.renewalReminders : [];
@@ -273,12 +275,14 @@ export function CustomerProvider({ children }) {
       reminderSent: true,
       lastReminderDate: reminderEntry.sentAt,
       lastReminderChannel: reminderEntry.channel,
+      expiryReminderSent: reminderData.type === 'expiry' ? true : customer.expiryReminderSent,
+      paymentReminderSent: reminderData.type === 'payment' ? true : customer.paymentReminderSent,
       renewalReminders: [reminderEntry, ...existingReminders]
     };
 
     const updated = customers.map(c => c.id === id ? updatedCustomer : c);
     persistCustomers(updated);
-    addToast('Renewal reminder notice recorded successfully!', 'success');
+    addToast(`"${reminderData.title || 'Reminder'}" sent successfully!`, 'success');
     return true;
   }, [customers, persistCustomers, addToast]);
 
@@ -331,38 +335,20 @@ export function CustomerProvider({ children }) {
     // Generated FCM Device Registration Token for this customer app instance
     const fcmDeviceToken = `fcm_${customer.id}_tok_${Math.random().toString(36).substring(2, 9)}`;
 
-    // Record in history as FCM App Notification
+    // Record in history as FCM App Notification and update customer sent state
     recordRenewalReminder(customer.id, {
       channel: 'fcm_push',
+      type: type,
       timingDays: 30,
+      title: finalTitle,
       message: fcmBody,
       fcmToken: fcmDeviceToken,
-      note: `${finalTitle} sent via FCM App Pop-up Notification to customer app`
+      note: `${finalTitle} sent via FCM App Notification`
     });
 
-    // Add toast confirmation
-    addToast(`FCM App Notification dispatched to ${customer.name}: "${finalTitle}"`, 'success');
-
-    // Trigger in-app FCM popup notification banner/modal
-    triggerAppNotification({
-      title: finalTitle,
-      body: fcmBody,
-      channel: 'FCM Push Notification',
-      fcmToken: fcmDeviceToken,
-      recipient: customer.name,
-      phone: customer.phone,
-      formattedPhone,
-      type,
-      amount: remaining,
-      totalAmount: total,
-      paidAmount: paid,
-      daysLeft: daysRemaining,
-      policyEndDate: customer.policyEndDate,
-      company: customer.insuranceCompany,
-      insuranceType: customer.insuranceType,
-      customerId: customer.id
-    });
-  }, [recordRenewalReminder, triggerAppNotification, addToast]);
+    // Note: Do NOT trigger popup notification card modal here per user request:
+    // "after sending message dont show like this card just show tick in near that selected message"
+  }, [recordRenewalReminder]);
 
   // Dashboard metrics
   const metrics = useMemo(() => {

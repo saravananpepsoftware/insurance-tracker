@@ -33,6 +33,7 @@ import {
   ShieldCheck,
   AlertCircle,
   CheckCircle2,
+  Check,
   BellRing,
   Send,
   Radio,
@@ -125,6 +126,16 @@ export function CustomerDetails({ onOpenEditCustomer }) {
   const urgency = getUrgencyInfo(customer.policyEndDate);
   const isExpired = daysLeft < 0;
   const alertCount = (remaining > 0 ? 1 : 0) + (daysLeft <= 30 ? 1 : 0);
+
+  const isExpirySent = Boolean(
+    customer.expiryReminderSent ||
+    customer.renewalReminders?.some(r => r.type === 'expiry' || r.title?.includes('policy expires soon') || r.note?.includes('policy expires soon'))
+  );
+
+  const isPaymentSent = Boolean(
+    customer.paymentReminderSent ||
+    customer.renewalReminders?.some(r => r.type === 'payment' || r.title?.includes('pending amount') || r.note?.includes('pending amount'))
+  );
 
   const handleDownloadPdf = async () => {
     try {
@@ -334,26 +345,36 @@ export function CustomerDetails({ onOpenEditCustomer }) {
               <div className="customer-nav-reminder-dropdown">
                 <button
                   type="button"
-                  className="reminder-dropdown-title-item"
+                  className={`reminder-dropdown-title-item ${isExpirySent ? 'is-sent' : ''}`}
                   onClick={() => {
                     dispatchCustomerReminder(customer, 'expiry', 'Your policy expires soon, renew quick');
-                    setShowTabReminderMenu(false);
                   }}
+                  title={isExpirySent ? 'Policy expiry reminder sent' : 'Click to send reminder'}
                 >
-                  Your policy expires soon, renew quick
+                  <span>Your policy expires soon, renew quick</span>
+                  {isExpirySent && (
+                    <span className="reminder-tick-badge" title="Sent">
+                      <Check size={13} strokeWidth={2.8} />
+                    </span>
+                  )}
                 </button>
 
                 <div className="reminder-dropdown-divider" />
 
                 <button
                   type="button"
-                  className="reminder-dropdown-title-item"
+                  className={`reminder-dropdown-title-item ${isPaymentSent ? 'is-sent' : ''}`}
                   onClick={() => {
                     dispatchCustomerReminder(customer, 'payment', 'Pay the pending amount');
-                    setShowTabReminderMenu(false);
                   }}
+                  title={isPaymentSent ? 'Pending amount reminder sent' : 'Click to send reminder'}
                 >
-                  Pay the pending amount
+                  <span>Pay the pending amount</span>
+                  {isPaymentSent && (
+                    <span className="reminder-tick-badge" title="Sent">
+                      <Check size={13} strokeWidth={2.8} />
+                    </span>
+                  )}
                 </button>
               </div>
             )}
