@@ -558,23 +558,6 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                     >
                       {isExpired ? `Expired (${Math.abs(daysLeft)}d ago)` : `${daysLeft} days left`}
                     </span>
-                    {customer.reminderSent && (
-                      <span
-                        className="badge"
-                        style={{
-                          backgroundColor: '#DCFCE7',
-                          color: '#15803D',
-                          fontWeight: 700,
-                          fontSize: '11px',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '3px',
-                          padding: '2px 8px'
-                        }}
-                      >
-                        <CheckCircle2 size={12} /> Notice Sent ({customer.lastReminderChannel?.toUpperCase() || 'WHATSAPP'})
-                      </span>
-                    )}
                   </div>
                   <div className="renewal-reminder-desc">
                     Policy with {customer.insuranceCompany} {isExpired ? 'expired on' : 'expires on'} {formatIndianDate(customer.policyEndDate)}. Dispatch renewal notice via WhatsApp or SMS before 30 days.
