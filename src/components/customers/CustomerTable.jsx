@@ -4,12 +4,14 @@ import { formatCurrency } from '../../utils/formatCurrency';
 import { calculateRemaining, getPaymentStatus } from '../../utils/calculations';
 import { formatIndianDate, calculateDaysRemaining } from '../../utils/dateUtils';
 import { getCarrierBadge } from '../../utils/carrierUtils';
+import { generateCustomerPdf } from '../../utils/customerPdfGenerator';
 import { PaymentStatusBadge } from '../common/StatusBadge';
 import {
   Eye,
   Edit3,
   Trash2,
   PlusCircle,
+  FileDown,
   Phone,
   Calendar,
   Car,
@@ -157,6 +159,13 @@ export function CustomerTable({
                       onClick={() => navigate(`/customers/${c.id}`)}
                     >
                       <Eye size={17} />
+                    </button>
+                    <button
+                      className="table-action-btn action-pdf"
+                      title="Download Customer Details PDF"
+                      onClick={() => generateCustomerPdf(c)}
+                    >
+                      <FileDown size={17} />
                     </button>
                     <button
                       className="table-action-btn action-edit"

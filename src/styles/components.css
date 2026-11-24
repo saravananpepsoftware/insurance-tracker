@@ -2152,6 +2152,13 @@ table .badge-pending {
   background-color: #EFF6FF;
 }
 
+.table-action-btn.action-pdf {
+  color: #0284C7;
+}
+.table-action-btn.action-pdf:hover {
+  background-color: #F0F9FF;
+}
+
 .table-action-btn.action-edit {
   color: #475569;
 }

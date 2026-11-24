@@ -1,4 +1,4 @@
-import { calculateDaysRemaining } from './dateUtils';
+import { calculateDaysRemaining } from './dateUtils.js';
 
 /**
  * Calculates remaining amount

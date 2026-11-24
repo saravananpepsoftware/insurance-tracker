@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCustomers } from '../context/CustomerContext';
+import { useToast } from '../context/ToastContext';
 import { formatCurrency, formatFileSize } from '../utils/formatCurrency';
 import { formatIndianDate, calculateDaysRemaining, getUrgencyInfo } from '../utils/dateUtils';
 import { calculateRemaining, getPaymentStatus } from '../utils/calculations';
+import { generateCustomerPdf } from '../utils/customerPdfGenerator';
 import { PaymentStatusBadge, InsuranceTypeBadge, RenewalUrgencyBadge } from '../components/common/StatusBadge';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
 import { PaymentModal } from '../components/payments/PaymentModal';
@@ -23,6 +25,7 @@ import {
   Edit3,
   Trash2,
   PlusCircle,
+  FileDown,
   LayoutGrid,
   CreditCard,
   Clock,
@@ -45,6 +48,7 @@ import {
 export function CustomerDetails({ onOpenEditCustomer }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const { getCustomerById, deleteCustomer, recordRenewalReminder, dispatchCustomerReminder } = useCustomers();
 
   const customer = getCustomerById(id);
@@ -268,6 +272,16 @@ export function CustomerDetails({ onOpenEditCustomer }) {
     }
   };
 
+  const handleDownloadDetailsPdf = () => {
+    try {
+      const fileName = generateCustomerPdf(customer);
+      addToast(`Customer details PDF downloaded: ${fileName}`, 'success');
+    } catch (err) {
+      console.error('Failed to generate customer details PDF:', err);
+      addToast('Failed to generate PDF. Please try again.', 'error');
+    }
+  };
+
   // Generate a clean filename for display
   const displayPdfName = customer.pdfFileName || pdfMeta?.fileName || `${customer.name.replace(/\s+/g, '_')}_${customer.insuranceCompany?.split(' ')[0] || 'Policy'}.pdf`;
   const displayPdfSize = customer.pdfFileSize || pdfMeta?.fileSize || 2450000;
@@ -293,6 +307,29 @@ export function CustomerDetails({ onOpenEditCustomer }) {
         </button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          {/* Download Full Customer Details Statement PDF */}
+          <button
+            type="button"
+            className="btn btn-secondary btn-sm"
+            onClick={handleDownloadDetailsPdf}
+            style={{
+              padding: '7px 16px',
+              borderRadius: '10px',
+              fontWeight: 700,
+              color: '#0F172A',
+              borderColor: '#FED7AA',
+              backgroundColor: '#FFFBF7',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: 'pointer'
+            }}
+            title="Download complete customer details, policy coverage, and financial ledger as PDF"
+          >
+            <FileDown size={15} color="var(--primary-orange)" />
+            <span>Download PDF</span>
+          </button>
+
           {/* WhatsApp Reminder Button with Compact Popover */}
           <div style={{ position: 'relative' }} ref={whatsappReminderRef}>
             <button
@@ -1024,6 +1061,33 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                 >
                   <Download size={15} />
                   <span>Download</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Generated Customer Policy Statement PDF Box */}
+            <div className="policy-doc-box" style={{ marginTop: '14px', backgroundColor: '#FFFDFB', borderColor: '#FED7AA' }}>
+              <div className="policy-doc-left">
+                <div className="pdf-icon-badge" style={{ backgroundColor: '#FFF7ED', color: 'var(--primary-orange)', borderColor: '#FED7AA' }}>
+                  PDF
+                </div>
+                <div>
+                  <div className="policy-doc-name">{customer.name.replace(/\s+/g, '_')}_Insurance_Details.pdf</div>
+                  <div className="policy-doc-meta" style={{ color: '#64748B' }}>
+                    Formatted A4 Document • Complete Customer Profile, Coverage Details & Payment Ledger Statement
+                  </div>
+                </div>
+              </div>
+
+              <div className="policy-doc-actions">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleDownloadDetailsPdf}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <FileDown size={15} />
+                  <span>Download Details PDF</span>
                 </button>
               </div>
             </div>
