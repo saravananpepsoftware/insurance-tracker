@@ -1,5 +1,231 @@
 /* Components Styling Matching Reference Design — Medium Professional Fonts & Fitted Cards */
 
+/* ==========================================================================
+   INTERCONNECTED STAT RIBBON BAR (EXACT MATCH TO REFERENCE DESIGN)
+   ========================================================================== */
+
+.stat-ribbon-container {
+  width: 100%;
+  margin-bottom: 22px;
+  filter: drop-shadow(0 6px 20px rgba(255, 107, 0, 0.06)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.02));
+}
+
+.stat-ribbon-bar {
+  display: flex;
+  align-items: stretch;
+  height: 80px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid #F1E9E2;
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-ribbon-segment {
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.stat-ribbon-segment .segment-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+}
+
+/* SEGMENT 1: DARK NAVY WITH ORANGE LIQUID GLOW */
+.stat-ribbon-segment.segment-dark {
+  flex: 1.15;
+  background-color: #1E2330;
+  background-image: 
+    radial-gradient(circle at 10% 135%, rgba(255, 107, 0, 0.95) 0%, rgba(255, 122, 0, 0.45) 45%, transparent 75%);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 24px) 100%, 0 100%);
+  padding: 12px 30px 12px 20px;
+  z-index: 4;
+}
+
+/* SEGMENT 2: TOTAL BUSINESS */
+.stat-ribbon-segment.segment-business {
+  flex: 1.25;
+  background: #FFFFFF;
+  margin-left: -24px;
+  padding: 12px 24px 12px 38px;
+  z-index: 3;
+}
+
+/* SEGMENT 3: PENDING PAYMENTS */
+.stat-ribbon-segment.segment-payments {
+  flex: 1.2;
+  background: #FFFFFF;
+  padding: 12px 24px 12px 24px;
+  z-index: 2;
+}
+
+/* SEGMENT 4: UPCOMING RENEWALS */
+.stat-ribbon-segment.segment-renewals {
+  flex: 1.15;
+  background: #FFFFFF;
+  padding: 12px 24px 12px 24px;
+  z-index: 1;
+}
+
+/* Slanted SVG divider lines between light segments */
+.segment-slant-line {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 24px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Circular Icon Styles */
+.stat-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.stat-ribbon-segment:hover .stat-icon-circle {
+  transform: scale(1.05);
+}
+
+.stat-icon-circle.icon-orange {
+  background: linear-gradient(135deg, #FF7A00 0%, #FA5200 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(255, 107, 0, 0.45);
+}
+
+.stat-icon-circle.icon-peach {
+  background-color: #FFF7ED;
+  border: 1px solid #FED7AA;
+  color: #F59E0B;
+}
+
+.stat-icon-circle.icon-mint {
+  background-color: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  color: #22C55E;
+}
+
+.stat-icon-circle.icon-lavender {
+  background-color: #FAF5FF;
+  border: 1px solid #E9D5FF;
+  color: #8B5CF6;
+}
+
+/* Text Metrics Styling */
+.stat-info-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.stat-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748B;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.stat-title.text-light-muted {
+  color: #CBD5E1;
+}
+
+.stat-metric {
+  font-size: 21px;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.15;
+  margin: 1px 0;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.stat-metric.text-white {
+  color: #FFFFFF;
+  font-size: 23px;
+}
+
+.stat-subtitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748B;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.stat-subtitle.text-light-sub {
+  color: #94A3B8;
+}
+
+/* Responsive Ribbon */
+@media (max-width: 980px) {
+  .stat-ribbon-bar {
+    height: auto;
+    flex-wrap: wrap;
+    border-radius: 16px;
+  }
+  
+  .stat-ribbon-segment.segment-dark {
+    flex: 1 1 50%;
+    clip-path: none;
+    border-radius: 16px 0 0 0;
+  }
+  
+  .stat-ribbon-segment.segment-business {
+    flex: 1 1 50%;
+    margin-left: 0;
+    padding-left: 20px;
+    border-radius: 0 16px 0 0;
+    border-bottom: 1px solid #F1E9E2;
+  }
+  
+  .stat-ribbon-segment.segment-payments {
+    flex: 1 1 50%;
+    border-radius: 0 0 0 16px;
+  }
+  
+  .stat-ribbon-segment.segment-renewals {
+    flex: 1 1 50%;
+    border-radius: 0 0 16px 0;
+  }
+  
+  .segment-slant-line {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .stat-ribbon-bar {
+    flex-direction: column;
+  }
+  
+  .stat-ribbon-segment {
+    flex: 1 1 100% !important;
+    clip-path: none !important;
+    margin-left: 0 !important;
+    padding: 14px 18px !important;
+    border-bottom: 1px solid #F1E9E2;
+  }
+  
+  .stat-ribbon-segment:last-child {
+    border-bottom: none;
+  }
+}
+
 /* Stat Cards Grid */
 .stat-grid {
   display: grid;

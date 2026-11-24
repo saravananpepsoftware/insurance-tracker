@@ -1,11 +1,10 @@
 import React from 'react';
 import { useCustomers } from '../context/CustomerContext';
 import { formatCurrency } from '../utils/formatCurrency';
-import { StatCard } from '../components/common/StatCard';
 import { AnalyticsCharts } from '../components/dashboard/AnalyticsCharts';
 import { UpcomingRenewalsList } from '../components/dashboard/UpcomingRenewalsList';
 import { DashboardHeroArtwork } from '../components/dashboard/DashboardHeroArtwork';
-import { Users, Layers, Coins, CalendarDays } from 'lucide-react';
+import { DashboardStatRibbon } from '../components/dashboard/DashboardStatRibbon';
 
 export function Dashboard() {
   const { customers, metrics } = useCustomers();
@@ -37,44 +36,8 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* 4 Summary Stat Cards Matching Reference */}
-      <div className="stat-grid">
-        <StatCard
-          label="TOTAL CUSTOMERS"
-          value={metrics.totalCustomers ?? 0}
-          badge={`${metrics.insuranceTypeStats?.motor?.count || 0} Motor, ${metrics.insuranceTypeStats?.accidental?.count || 0} Accident`}
-          subtext="Registered clients"
-          icon={Users}
-          colorTheme="orange"
-        />
-
-        <StatCard
-          label="TOTAL BUSINESS"
-          value={formatCurrency(metrics.totalBusiness || 0)}
-          badge={`Collected: ${formatCurrency(metrics.totalCollected || 0)}`}
-          subtext="Gross policy value"
-          icon={Layers}
-          colorTheme="gold"
-        />
-
-        <StatCard
-          label="PENDING PAYMENTS"
-          value={formatCurrency(metrics.pendingPayments || 0)}
-          badge={`${(metrics.paymentStatusCounts?.pending || 0) + (metrics.paymentStatusCounts?.partial || 0)} with balance`}
-          subtext="Unpaid premiums balance"
-          icon={Coins}
-          colorTheme="green"
-        />
-
-        <StatCard
-          label="UPCOMING RENEWALS"
-          value={metrics.upcomingRenewalsCount ?? 0}
-          badge={`${metrics.expiredPoliciesCount || 0} already expired`}
-          subtext="Expiring in next 30 days"
-          icon={CalendarDays}
-          colorTheme="red"
-        />
-      </div>
+      {/* Dynamic Segmented Stat Ribbon Bar (Matches Reference Design) */}
+      <DashboardStatRibbon metrics={metrics} />
 
       {/* Dashboard Analytics Charts */}
       <AnalyticsCharts metrics={metrics} />
