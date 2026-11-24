@@ -222,7 +222,7 @@ export function UpcomingRenewalsList({ customers = [] }) {
                     <th>INSURANCE COMPANY</th>
                     <th>TYPE</th>
                     <th>EXPIRY DATE</th>
-                    <th>{activeTab === 'expiring' ? 'URGENCY / DAYS LEFT' : 'PAYMENT STATUS'}</th>
+                    <th>{activeTab === 'expiring' ? 'DAYS REMAINING' : 'PAYMENT STATUS'}</th>
                     <th style={{ textAlign: 'right' }}>REMAINING AMOUNT</th>
                   </tr>
                 </thead>

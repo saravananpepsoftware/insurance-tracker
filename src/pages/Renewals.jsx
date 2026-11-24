@@ -168,7 +168,7 @@ export function Renewals() {
                   <th>TYPE</th>
                   <th>START DATE</th>
                   <th>EXPIRY DATE</th>
-                  <th>DAYS REMAINING / URGENCY</th>
+                  <th>DAYS REMAINING</th>
                   <th style={{ textAlign: 'right' }}>REMAINING AMOUNT</th>
                   <th>STATUS</th>
                   <th style={{ textAlign: 'center' }}>ACTION</th>

@@ -789,7 +789,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                   <div className="validity-list-row">
                     <div className="validity-row-left">
                       <RefreshCw size={16} color="var(--primary-orange)" />
-                      <span>Renewal Urgency Status</span>
+                      <span>Renewal Status</span>
                     </div>
                     <span className="validity-row-right" style={{ color: urgency.color }}>
                       {urgency.label}
