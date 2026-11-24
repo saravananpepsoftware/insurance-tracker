@@ -134,13 +134,13 @@ export function CustomerTable({
                     </div>
                     <div>
                       {daysLeft < 0 ? (
-                        <span className="table-expiry-pill pill-danger">• Expired</span>
+                        <span className="table-expiry-pill pill-danger">Expired</span>
                       ) : daysLeft <= 7 ? (
-                        <span className="table-expiry-pill pill-danger">• {daysLeft} days left</span>
+                        <span className="table-expiry-pill pill-danger">{daysLeft} days left</span>
                       ) : daysLeft <= 30 ? (
-                        <span className="table-expiry-pill pill-warning">• {daysLeft} days left</span>
+                        <span className="table-expiry-pill pill-warning">{daysLeft} days left</span>
                       ) : (
-                        <span className="table-expiry-pill pill-success">• Active</span>
+                        <span className="table-expiry-pill pill-success">Active</span>
                       )}
                     </div>
                   </div>

@@ -6,23 +6,20 @@ export function PaymentStatusBadge({ status }) {
   if (status === 'Paid') {
     return (
       <span className="table-status-clean status-paid">
-        <span className="table-status-dot" />
-        <span>Paid</span>
+        Paid
       </span>
     );
   }
   if (status === 'Partial Payment') {
     return (
       <span className="table-status-clean status-partial">
-        <span className="table-status-dot" />
-        <span>Partial Payment</span>
+        Partial Payment
       </span>
     );
   }
   return (
     <span className="table-status-clean status-pending">
-      <span className="table-status-dot" />
-      <span>Pending</span>
+      Pending
     </span>
   );
 }
