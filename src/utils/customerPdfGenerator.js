@@ -399,14 +399,12 @@ export function generateCustomerPdf(customer) {
 
   currentY += 7;
 
-  // Table Columns
-  // Total = 182mm
-  // Date: 36mm | Description: 50mm | Mode: 30mm | Amount Paid: 34mm | Remaining: 32mm
-  const colDateW = 36;
-  const colDescW = 50;
-  const colModeW = 30;
-  const colPaidW = 34;
-  const colRemW = 32;
+  // Table Columns (Total = 182mm)
+  // Date: 42mm | Policy Classification: 60mm | Amount Paid: 40mm | Remaining Balance: 40mm
+  const colDateW = 42;
+  const colClassW = 60;
+  const colPaidW = 40;
+  const colRemW = 40;
 
   // Table Header Row
   doc.setFillColor(30, 35, 48); // #1E2330
@@ -420,12 +418,9 @@ export function generateCustomerPdf(customer) {
   doc.text('DATE & TIME', headerX, currentY + 4.8);
 
   headerX += colDateW;
-  doc.text('DESCRIPTION / REFERENCE', headerX, currentY + 4.8);
+  doc.text('POLICY CLASSIFICATION', headerX, currentY + 4.8);
 
-  headerX += colDescW;
-  doc.text('PAYMENT MODE', headerX, currentY + 4.8);
-
-  headerX += colModeW;
+  headerX += colClassW;
   doc.text('PAID (INR)', headerX + colPaidW - 6, currentY + 4.8, { align: 'right' });
 
   headerX += colPaidW;
@@ -442,8 +437,7 @@ export function generateCustomerPdf(customer) {
           date: customer.createdAt || customer.policyStartDate || new Date().toISOString(),
           amount: paid,
           remainingAfter: remaining,
-          notes: paid > 0 ? 'Initial Registration Payment' : 'Policy Account Created (No payment recorded)',
-          paymentMethod: 'Cash / Transfer'
+          notes: paid > 0 ? 'Initial Registration Payment' : 'Policy Account Created'
         }
       ];
 
@@ -472,18 +466,20 @@ export function generateCustomerPdf(customer) {
     doc.text(formatIndianDate(item.date), cellX, rowY + 5);
 
     cellX += colDateW;
-    doc.text((item.notes || 'Premium Payment').slice(0, 32), cellX, rowY + 5);
-
-    cellX += colDescW;
-    doc.text(item.paymentMethod || 'Online / Cash', cellX, rowY + 5);
-
-    cellX += colModeW;
     doc.setFont('helvetica', 'bold');
+    doc.setTextColor(15, 23, 42);
+    doc.text(customer.insuranceType || 'Motor Insurance', cellX, rowY + 5);
+
+    cellX += colClassW;
     doc.setTextColor(22, 163, 74);
     doc.text(formatPdfCurrency(item.amount), cellX + colPaidW - 6, rowY + 5, { align: 'right' });
 
     cellX += colPaidW;
-    doc.setTextColor(Number(item.remainingAfter) > 0 ? 220 : 71, Number(item.remainingAfter) > 0 ? 38 : 85, Number(item.remainingAfter) > 0 ? 38 : 105);
+    doc.setTextColor(
+      Number(item.remainingAfter) > 0 ? 220 : 71,
+      Number(item.remainingAfter) > 0 ? 38 : 85,
+      Number(item.remainingAfter) > 0 ? 38 : 105
+    );
     doc.text(formatPdfCurrency(item.remainingAfter), cellX + colRemW - 6, rowY + 5, { align: 'right' });
   });
 
