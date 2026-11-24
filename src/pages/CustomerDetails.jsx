@@ -333,10 +333,10 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                 <div className="customer-nav-reminder-dropdown-header">
                   <div>
                     <span style={{ fontWeight: 800, fontSize: '13.5px', color: '#0F172A' }}>
-                      Send App Notification
+                      Customer Reminders
                     </span>
                     <div style={{ fontSize: '11.5px', color: '#64748B', marginTop: '1px' }}>
-                      Choose reminder for {customer.name} ({customer.phone})
+                      {customer.name} ({customer.phone})
                     </div>
                   </div>
                   <span
@@ -349,94 +349,123 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                       padding: '2px 8px'
                     }}
                   >
-                    {alertCount} {alertCount === 1 ? 'Notice' : 'Notices'}
+                    2 Messages
                   </span>
                 </div>
 
-                <div className="reminder-dropdown-options-list">
-                  {/* Option 1: Your policy will expire soon, renew soon */}
+                {/* 2 Messages Options List */}
+                <div className="reminder-dropdown-messages-list">
+                  {/* Message 1: Your policy expires soon, renew quick */}
                   <div
+                    className="reminder-message-item-card"
                     role="button"
                     tabIndex={0}
-                    className={`reminder-dropdown-option-item ${daysLeft <= 30 ? 'is-active-alert' : ''}`}
                     onClick={() => {
-                      dispatchCustomerReminder(customer, 'expiry', 'Your policy will expire soon, renew soon');
+                      dispatchCustomerReminder(customer, 'expiry', 'Your policy expires soon, renew quick');
                       setShowTabReminderMenu(false);
                     }}
-                    title="Click to trigger app pop-up notification & send WhatsApp reminder"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        dispatchCustomerReminder(customer, 'expiry', 'Your policy expires soon, renew quick');
+                        setShowTabReminderMenu(false);
+                      }
+                    }}
                   >
-                    <div className="reminder-option-icon-box expiry">
-                      <Shield size={18} />
+                    <div className="reminder-message-item-top">
+                      <div className="reminder-message-icon-box expiry">
+                        <Shield size={18} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                          <span className="reminder-message-title-text">
+                            Your policy expires soon, renew quick
+                          </span>
+                          <span
+                            className="reminder-message-status-pill"
+                            style={{
+                              backgroundColor: isExpired ? '#FEE2E2' : daysLeft <= 7 ? '#FEE2E2' : daysLeft <= 30 ? '#FEF3C7' : '#DCFCE7',
+                              color: isExpired ? '#DC2626' : daysLeft <= 7 ? '#DC2626' : daysLeft <= 30 ? '#D97706' : '#16A34A'
+                            }}
+                          >
+                            {isExpired ? `Expired (${Math.abs(daysLeft)}d)` : `${daysLeft}d left`}
+                          </span>
+                        </div>
+                        <div className="reminder-message-preview-text">
+                          Expires on {formatIndianDate(customer.policyEndDate)} ({customer.insuranceCompany} • {customer.insuranceType}).
+                        </div>
+                      </div>
                     </div>
-                    <div className="reminder-option-content">
-                      <div className="reminder-option-header">
-                        <span className="reminder-option-title">
-                          Your policy will expire soon, renew soon
-                        </span>
-                        <span
-                          className={`reminder-option-pill ${
-                            isExpired ? 'pill-danger' : daysLeft <= 30 ? 'pill-warning' : 'pill-neutral'
-                          }`}
-                        >
-                          {urgency.label}
-                        </span>
-                      </div>
-                      <div className="reminder-option-desc">
-                        Expires {formatIndianDate(customer.policyEndDate)} • {customer.insuranceCompany}
-                      </div>
-                      <div className="reminder-option-action-row">
-                        <span className="reminder-option-trigger-text">
-                          <BellRing size={12} />
-                          <span>Trigger App Notification & WhatsApp</span>
-                        </span>
-                      </div>
+
+                    <div className="reminder-message-action-btn-row">
+                      <span style={{ fontSize: '11px', color: '#94A3B8' }}>
+                        Dispatches WhatsApp & Pop-up
+                      </span>
+                      <span className="reminder-send-pill">
+                        <WhatsAppIcon size={13} color="currentColor" />
+                        <span>Send This Notification</span>
+                      </span>
                     </div>
                   </div>
 
-                  {/* Option 2: Pay the pending amount */}
+                  {/* Message 2: Pay the pending amount */}
                   <div
+                    className="reminder-message-item-card"
                     role="button"
                     tabIndex={0}
-                    className={`reminder-dropdown-option-item ${remaining > 0 ? 'is-active-alert' : ''}`}
                     onClick={() => {
                       dispatchCustomerReminder(customer, 'payment', 'Pay the pending amount');
                       setShowTabReminderMenu(false);
                     }}
-                    title="Click to trigger app pop-up notification & send WhatsApp reminder"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        dispatchCustomerReminder(customer, 'payment', 'Pay the pending amount');
+                        setShowTabReminderMenu(false);
+                      }
+                    }}
                   >
-                    <div className="reminder-option-icon-box payment">
-                      <Wallet size={18} />
+                    <div className="reminder-message-item-top">
+                      <div className="reminder-message-icon-box payment">
+                        <Wallet size={18} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                          <span className="reminder-message-title-text">
+                            Pay the pending amount
+                          </span>
+                          <span
+                            className="reminder-message-status-pill"
+                            style={{
+                              backgroundColor: remaining > 0 ? '#FEE2E2' : '#DCFCE7',
+                              color: remaining > 0 ? '#DC2626' : '#16A34A'
+                            }}
+                          >
+                            {remaining > 0 ? `${formatCurrency(remaining)} Due` : '₹0 Settled'}
+                          </span>
+                        </div>
+                        <div className="reminder-message-preview-text">
+                          {remaining > 0
+                            ? `Paid ${formatCurrency(paid)} of ${formatCurrency(total)}. Pending balance due: ${formatCurrency(remaining)}.`
+                            : `Full payment of ${formatCurrency(total)} has been cleared.`}
+                        </div>
+                      </div>
                     </div>
-                    <div className="reminder-option-content">
-                      <div className="reminder-option-header">
-                        <span className="reminder-option-title">
-                          Pay the pending amount
-                        </span>
-                        <span
-                          className={`reminder-option-pill ${
-                            remaining > 0 ? 'pill-danger' : 'pill-success'
-                          }`}
-                        >
-                          {remaining > 0 ? formatCurrency(remaining) : 'Settled'}
-                        </span>
-                      </div>
-                      <div className="reminder-option-desc">
-                        {remaining > 0
-                          ? `Pending Due: ${formatCurrency(remaining)} (Paid ${formatCurrency(paid)} of ${formatCurrency(total)})`
-                          : 'Premium fully settled (₹0 balance due)'}
-                      </div>
-                      <div className="reminder-option-action-row">
-                        <span className="reminder-option-trigger-text">
-                          <BellRing size={12} />
-                          <span>Trigger App Notification & WhatsApp</span>
-                        </span>
-                      </div>
+
+                    <div className="reminder-message-action-btn-row">
+                      <span style={{ fontSize: '11px', color: '#94A3B8' }}>
+                        Dispatches WhatsApp & Pop-up
+                      </span>
+                      <span className="reminder-send-pill">
+                        <WhatsAppIcon size={13} color="currentColor" />
+                        <span>Send This Notification</span>
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="reminder-dropdown-footer-hint">
-                  <span>💡 Select an option above to trigger the app pop-up notification and dispatch reminder.</span>
+                  Click either message to send that pop-up notification to {customer.name}
                 </div>
               </div>
             )}

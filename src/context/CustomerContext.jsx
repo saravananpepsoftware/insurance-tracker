@@ -298,7 +298,7 @@ export function CustomerProvider({ children }) {
   }, []);
 
   // Dispatch reminder (opens WhatsApp, updates customer record, triggers popup notification)
-  const dispatchCustomerReminder = useCallback((customer, type = 'payment', customTitle = null) => {
+  const dispatchCustomerReminder = useCallback((customer, type = 'payment', customTitle = '') => {
     if (!customer) return;
 
     const remaining = Number(customer.remainingAmount) || 0;
@@ -309,24 +309,22 @@ export function CustomerProvider({ children }) {
     const company = customer.insuranceCompany || 'your insurer';
     const policyType = customer.insuranceType || 'Insurance Policy';
 
-    const defaultTitle = type === 'payment'
-      ? 'Pay the pending amount'
-      : 'Your policy will expire soon, renew soon';
-    const notificationTitle = customTitle || defaultTitle;
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const end = customer.policyEndDate ? new Date(customer.policyEndDate) : today;
-    end.setHours(0, 0, 0, 0);
-    const daysLeft = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-    const isExpired = daysLeft < 0;
-    const timePhrase = isExpired ? `has EXPIRED (${Math.abs(daysLeft)} days ago)` : `will expire soon in ${daysLeft} days`;
+    const defaultTitle = type === 'payment' ? 'Pay the pending amount' : 'Your policy expires soon, renew quick';
+    const finalTitle = customTitle || defaultTitle;
 
     let message = '';
     if (type === 'payment') {
-      message = `Dear ${customer.name},\n\n*Pay the pending amount reminder*\n\nThis is a priority payment reminder from InsureTrack regarding your ${policyType} policy with ${company}.\n\n• Policy Total: ₹${total.toLocaleString('en-IN')}\n• Amount Paid: ₹${paid.toLocaleString('en-IN')}\n• Pending Balance: ₹${remaining.toLocaleString('en-IN')}\n\nPlease pay the pending amount at your earliest convenience to maintain continuous policy servicing.\n\nThank you,\nInsureTrack Admin Team`;
+      message = `*PAY THE PENDING AMOUNT*\n\nDear ${customer.name},\n\nThis is a priority payment reminder from InsureTrack regarding your ${policyType} policy with ${company}.\n\n• Policy Total: ₹${total.toLocaleString('en-IN')}\n• Amount Paid: ₹${paid.toLocaleString('en-IN')}\n• Pending Balance: ₹${remaining.toLocaleString('en-IN')}\n\nPlease complete the pending balance settlement at your earliest convenience to maintain uninterrupted insurance coverage.\n\nThank you,\nInsureTrack Admin Team`;
     } else {
-      message = `Dear ${customer.name},\n\n*Your policy will expire soon, renew soon!*\n\nThis is an urgent renewal notification from InsureTrack regarding your ${policyType} policy with ${company}.\n\nYour policy ${timePhrase}.${remaining > 0 ? `\n• Pending Balance: ₹${remaining.toLocaleString('en-IN')}` : ''}\n\nPlease renew soon to ensure continuous protection, avoid vehicle inspection penalties, and preserve your NCB.\n\nThank you,\nInsureTrack Admin Team`;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const end = customer.policyEndDate ? new Date(customer.policyEndDate) : today;
+      end.setHours(0, 0, 0, 0);
+      const daysLeft = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      const isExpired = daysLeft < 0;
+      const timePhrase = isExpired ? `has EXPIRED (${Math.abs(daysLeft)} days ago)` : `is due for renewal in ${daysLeft} days`;
+
+      message = `*YOUR POLICY EXPIRES SOON, RENEW QUICK*\n\nDear ${customer.name},\n\nThis is a priority renewal notification from InsureTrack regarding your ${policyType} policy with ${company}.\n\nYour policy ${timePhrase}.${remaining > 0 ? `\n• Pending Balance: ₹${remaining.toLocaleString('en-IN')}` : ''}\n\nPlease renew promptly to avoid insurance coverage lapse, inspection requirements, and NCB forfeiture.\n\nThank you,\nInsureTrack Admin Team`;
     }
 
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`;
@@ -337,21 +335,25 @@ export function CustomerProvider({ children }) {
       channel: 'whatsapp',
       timingDays: 30,
       message,
-      note: type === 'payment'
-        ? `Pending payment reminder (₹${remaining.toLocaleString('en-IN')}) dispatched via WhatsApp`
-        : `Policy renewal notice dispatched via WhatsApp`
+      note: `${finalTitle} dispatched via WhatsApp & in-app notification`
     });
 
-    // Trigger in-app popup notification
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const end = customer.policyEndDate ? new Date(customer.policyEndDate) : today;
+    end.setHours(0, 0, 0, 0);
+    const daysRemaining = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+    // Trigger in-app popup notification with the exact clicked message title!
     triggerAppNotification({
-      title: notificationTitle,
+      title: finalTitle,
       recipient: customer.name,
       phone: customer.phone,
       type,
       amount: remaining,
       totalAmount: total,
       paidAmount: paid,
-      daysLeft,
+      daysLeft: daysRemaining,
       policyEndDate: customer.policyEndDate,
       company: customer.insuranceCompany,
       insuranceType: customer.insuranceType,

@@ -158,14 +158,14 @@ export function Navbar({ onOpenAddCustomer }) {
                   className={`nav-notif-tab ${activeNotifTab === 'pending' ? 'active' : ''}`}
                   onClick={() => setActiveNotifTab('pending')}
                 >
-                  Pay Pending Amount ({pendingNotifications.length})
+                  Pending Due ({pendingNotifications.length})
                 </button>
                 <button
                   type="button"
                   className={`nav-notif-tab ${activeNotifTab === 'expiry' ? 'active' : ''}`}
                   onClick={() => setActiveNotifTab('expiry')}
                 >
-                  Policy Expiring Soon ({expiringNotifications.length})
+                  Expiring ({expiringNotifications.length})
                 </button>
               </div>
 
@@ -220,10 +220,10 @@ export function Navbar({ onOpenAddCustomer }) {
                               className="btn-whatsapp-compact"
                               style={{ width: 'auto', padding: '4px 10px', fontSize: '11.5px', borderRadius: '6px' }}
                               onClick={() => {
-                                dispatchCustomerReminder(c, 'payment');
+                                dispatchCustomerReminder(c, 'payment', 'Pay the pending amount');
                                 setShowNotifications(false);
                               }}
-                              title="Send WhatsApp payment reminder & show app pop-up"
+                              title="Send 'Pay the pending amount' reminder & show app pop-up"
                             >
                               <WhatsAppIcon size={12} color="#FFFFFF" />
                               <span>Remind</span>
@@ -299,10 +299,10 @@ export function Navbar({ onOpenAddCustomer }) {
                                 className="btn-whatsapp-compact"
                                 style={{ width: 'auto', padding: '4px 10px', fontSize: '11.5px', borderRadius: '6px' }}
                                 onClick={() => {
-                                  dispatchCustomerReminder(c, 'expiry');
+                                  dispatchCustomerReminder(c, 'expiry', 'Your policy expires soon, renew quick');
                                   setShowNotifications(false);
                                 }}
-                                title="Send WhatsApp renewal reminder & show app pop-up"
+                                title="Send 'Your policy expires soon, renew quick' reminder & show app pop-up"
                               >
                                 <WhatsAppIcon size={12} color="#FFFFFF" />
                                 <span>Remind</span>
