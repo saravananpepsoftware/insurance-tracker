@@ -1,5 +1,6 @@
 import React from 'react';
 import { getUrgencyInfo } from '../../utils/dateUtils';
+import { Car, ShieldCheck } from 'lucide-react';
 
 export function PaymentStatusBadge({ status }) {
   if (status === 'Paid') {
@@ -30,7 +31,8 @@ export function InsuranceTypeBadge({ type }) {
   const isMotor = type === 'Motor Insurance';
   return (
     <span className={`badge ${isMotor ? 'badge-type-motor' : 'badge-type-accidental'}`}>
-      {type}
+      {isMotor ? <Car size={13} /> : <ShieldCheck size={13} />}
+      <span>{type}</span>
     </span>
   );
 }

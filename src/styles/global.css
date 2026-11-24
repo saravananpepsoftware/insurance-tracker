@@ -238,15 +238,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .badge-type-motor {
-  background-color: #F0F7FF;
-  color: #0284C7;
-  border: 1px solid #BAE6FD;
+  background-color: #FFF7ED;
+  color: #C2410C;
+  border: 1px solid #FFEDD5;
 }
 
 .badge-type-accidental {
-  background-color: #FAF5FF;
-  color: #7E22CE;
-  border: 1px solid #E9D5FF;
+  background-color: #F8FAFC;
+  color: #475569;
+  border: 1px solid #E2E8F0;
 }
 
 /* App Card - Compact, snug & fitting content cleanly */

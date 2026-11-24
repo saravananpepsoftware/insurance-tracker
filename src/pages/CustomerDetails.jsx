@@ -266,7 +266,6 @@ export function CustomerDetails({ onOpenEditCustomer }) {
             <div className="customer-hero-name-row">
               <h1 className="customer-hero-name">{customer.name}</h1>
               <PaymentStatusBadge status={customer.paymentStatus} />
-              <InsuranceTypeBadge type={customer.insuranceType} />
             </div>
 
             <div className="customer-hero-meta-row">
