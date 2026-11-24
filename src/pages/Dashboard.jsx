@@ -60,7 +60,7 @@ export function Dashboard() {
         <StatCard
           label="PENDING PAYMENTS"
           value={formatCurrency(metrics.pendingPayments || 0)}
-          badge={`${metrics.paymentStatusCounts?.pending || 0} full pending`}
+          badge={`${(metrics.paymentStatusCounts?.pending || 0) + (metrics.paymentStatusCounts?.partial || 0)} with balance`}
           subtext="Unpaid premiums balance"
           icon={Coins}
           colorTheme="green"

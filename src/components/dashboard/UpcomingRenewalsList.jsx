@@ -21,12 +21,18 @@ export function UpcomingRenewalsList({ customers = [] }) {
   const navigate = useNavigate();
 
   // Tab filter: 'expiring' | 'pending'
-  const [activeTab, setActiveTab] = useState('expiring');
+  const [activeTab, setActiveTab] = useState('pending');
 
-  // Days filter: '30' | '15' | '7' | 'expired' | 'all'
-  const [daysFilter, setDaysFilter] = useState('30');
+  // Days filter:
+  // For 'expiring' policies: default is '30' days
+  const [expireDaysFilter, setExpireDaysFilter] = useState('30');
+  // For 'pending' amounts: default is 'all' so ALL pending amounts are shown immediately!
+  const [pendingDaysFilter, setPendingDaysFilter] = useState('all');
 
-  // Overall badge counts
+  const daysFilter = activeTab === 'expiring' ? expireDaysFilter : pendingDaysFilter;
+  const setDaysFilter = activeTab === 'expiring' ? setExpireDaysFilter : setPendingDaysFilter;
+
+  // Overall counts and totals
   const expiring30Count = useMemo(() => {
     return customers.filter((c) => {
       const days = calculateDaysRemaining(c.policyEndDate);
@@ -36,6 +42,10 @@ export function UpcomingRenewalsList({ customers = [] }) {
 
   const pendingCount = useMemo(() => {
     return customers.filter((c) => (Number(c.remainingAmount) || 0) > 0).length;
+  }, [customers]);
+
+  const pendingTotalSum = useMemo(() => {
+    return customers.reduce((sum, c) => sum + (Number(c.remainingAmount) || 0), 0);
   }, [customers]);
 
   // Filtered customer list
@@ -89,6 +99,7 @@ export function UpcomingRenewalsList({ customers = [] }) {
       } else if (daysFilter === 'expired') {
         list = list.filter((c) => calculateDaysRemaining(c.policyEndDate) < 0);
       }
+      // If 'all': includes all customers with pending amounts!
 
       // Sort by highest pending amount first, then by earliest expiration
       list.sort((a, b) => {
@@ -106,7 +117,20 @@ export function UpcomingRenewalsList({ customers = [] }) {
       {/* Card Header with Two Filter Tabs & View All Button */}
       <div className="card-header" style={{ flexWrap: 'wrap', gap: '12px' }}>
         <div className="dashboard-table-tabs">
-          {/* Tab 1: Expire Customers */}
+          {/* Tab 1: Pending Amounts */}
+          <button
+            type="button"
+            className={`dashboard-filter-tab ${activeTab === 'pending' ? 'active' : ''}`}
+            onClick={() => setActiveTab('pending')}
+          >
+            <Coins size={16} />
+            <span>Pending Amounts</span>
+            <span className="tab-count-pill">
+              {pendingCount} Pending {pendingTotalSum > 0 ? `(₹${pendingTotalSum.toLocaleString('en-IN')})` : ''}
+            </span>
+          </button>
+
+          {/* Tab 2: Expire Customers */}
           <button
             type="button"
             className={`dashboard-filter-tab ${activeTab === 'expiring' ? 'active' : ''}`}
@@ -116,19 +140,6 @@ export function UpcomingRenewalsList({ customers = [] }) {
             <span>Expire Customers</span>
             <span className="tab-count-pill">
               {expiring30Count} Due
-            </span>
-          </button>
-
-          {/* Tab 2: Pending Amounts */}
-          <button
-            type="button"
-            className={`dashboard-filter-tab ${activeTab === 'pending' ? 'active' : ''}`}
-            onClick={() => setActiveTab('pending')}
-          >
-            <Coins size={16} />
-            <span>Pending Amounts</span>
-            <span className="tab-count-pill">
-              {pendingCount} Pending
             </span>
           </button>
         </div>
@@ -149,16 +160,16 @@ export function UpcomingRenewalsList({ customers = [] }) {
         <div className="days-filter-container">
           <span className="days-filter-label">
             <Filter size={13} />
-            <span>Expire Days:</span>
+            <span>{activeTab === 'expiring' ? 'Expire Window:' : 'Filter By Expiry:'}</span>
           </span>
 
           <div className="days-filter-pills">
             {[
+              { id: 'all', label: 'All' },
               { id: '30', label: '30 Days' },
               { id: '15', label: '15 Days' },
               { id: '7', label: '7 Days' },
               { id: 'expired', label: 'Expired' },
-              { id: 'all', label: 'All' },
             ].map((pill) => (
               <button
                 key={pill.id}
@@ -174,6 +185,9 @@ export function UpcomingRenewalsList({ customers = [] }) {
 
         <div className="days-filter-summary">
           Showing <strong>{filteredList.length}</strong> {activeTab === 'expiring' ? 'expiring customers' : 'pending amount customers'}
+          {activeTab === 'pending' && filteredList.length > 0 && (
+            <span> (Outstanding: <strong>{formatCurrency(filteredList.reduce((sum, c) => sum + (Number(c.remainingAmount) || 0), 0))}</strong>)</span>
+          )}
         </div>
       </div>
 
@@ -183,11 +197,11 @@ export function UpcomingRenewalsList({ customers = [] }) {
           <div style={{ padding: '36px 20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
             <p style={{ fontWeight: 700, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '6px' }}>
               {activeTab === 'expiring'
-                ? `No expiring customers found for ${daysFilter === 'all' ? 'All' : daysFilter === 'expired' ? 'Expired' : `${daysFilter} days`}!`
-                : `No pending amount customers found for ${daysFilter === 'all' ? 'All' : daysFilter === 'expired' ? 'Expired' : `${daysFilter} days`}!`}
+                ? `No policies expiring in the selected window (${daysFilter === 'all' ? 'All' : daysFilter === 'expired' ? 'Expired' : `${daysFilter} days`})!`
+                : `No pending amount customers found for filter "${daysFilter === 'all' ? 'All' : daysFilter === 'expired' ? 'Expired' : `${daysFilter} days`}"!`}
             </p>
             <p style={{ fontSize: '13px', color: '#64748B', marginBottom: '14px' }}>
-              Try selecting a different expire days filter above or switch tabs.
+              Try selecting "All" or a different filter range above.
             </p>
             <button
               type="button"
@@ -283,7 +297,9 @@ export function UpcomingRenewalsList({ customers = [] }) {
                                   ? 'urgency-critical'
                                   : days <= 15
                                   ? 'urgency-warning'
-                                  : 'urgency-notice'
+                                  : days <= 30
+                                  ? 'urgency-notice'
+                                  : 'urgency-active'
                               }`}
                             >
                               <span className="urgency-dot" />
@@ -353,7 +369,9 @@ export function UpcomingRenewalsList({ customers = [] }) {
                               ? 'urgency-critical'
                               : days <= 15
                               ? 'urgency-warning'
-                              : 'urgency-notice'
+                              : days <= 30
+                              ? 'urgency-notice'
+                              : 'urgency-active'
                           }`}
                           style={{ fontSize: '11px', padding: '3px 8px' }}
                         >

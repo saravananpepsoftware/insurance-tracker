@@ -84,6 +84,7 @@ export function calculateDashboardMetrics(customers = []) {
     totalCustomers: customers.length,
     totalBusiness,
     totalPending,
+    pendingPayments: totalPending,
     totalCollected,
     upcomingRenewalsCount,
     expiredPoliciesCount,

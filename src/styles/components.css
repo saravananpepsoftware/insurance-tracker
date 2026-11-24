@@ -460,6 +460,15 @@
   background-color: #B91C1C;
 }
 
+.urgency-active {
+  background-color: #F0FDF4;
+  color: #16A34A;
+  border: 1px solid #BBF7D0;
+}
+.urgency-active .urgency-dot {
+  background-color: #16A34A;
+}
+
 /* Dashboard Table Filter Tabs & Controls */
 .dashboard-table-tabs {
   display: flex;
