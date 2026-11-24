@@ -1,14 +1,20 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import {
-  initializeDataIfEmpty,
   getStoredCustomers,
   setStoredCustomers,
-  resetToDemoData,
   clearAllAppData,
   getStoredCompanies,
   saveStoredCompany
 } from '../utils/storage';
-import { savePdfDocument, deletePdfDocument } from '../utils/indexedDb';
+import {
+  subscribeToCustomers,
+  addCustomerToFirebase,
+  updateCustomerInFirebase,
+  addPaymentToFirebase,
+  deleteCustomerFromFirebase,
+  recordReminderInFirebase,
+  clearAllCustomersFromFirebase
+} from '../firebase/customerService';
 import { calculateRemaining, getPaymentStatus, calculateDashboardMetrics } from '../utils/calculations';
 import { useToast } from './ToastContext';
 
@@ -18,26 +24,52 @@ export function CustomerProvider({ children }) {
   const [customers, setCustomers] = useState([]);
   const [companies, setCompanies] = useState(() => getStoredCompanies());
   const [loading, setLoading] = useState(true);
+  const [firebaseConnected, setFirebaseConnected] = useState(false);
+  const [firebaseError, setFirebaseError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const { addToast } = useToast();
 
-  // Load data on mount
+  // Listen to live Firebase Firestore updates in real time
   useEffect(() => {
-    async function load() {
-      try {
-        const data = await initializeDataIfEmpty();
-        setCustomers(data);
-      } catch (err) {
-        console.error('Failed to initialize customer data:', err);
-        addToast('Failed to load local customer data', 'error');
-      } finally {
+    setLoading(true);
+    let isInitialLoad = true;
+
+    const unsubscribe = subscribeToCustomers(
+      (liveCustomers) => {
+        setCustomers(liveCustomers);
+        setStoredCustomers(liveCustomers);
+        setFirebaseConnected(true);
+        setFirebaseError(null);
         setLoading(false);
+
+        if (isInitialLoad) {
+          isInitialLoad = false;
+        }
+      },
+      (err) => {
+        console.error('Firebase real-time error:', err);
+        setFirebaseError(err);
+        setLoading(false);
+
+        // Fallback to local storage if offline or permissions pending
+        const local = getStoredCustomers();
+        setCustomers(local);
+
+        if (err?.code === 'permission-denied') {
+          addToast(
+            'Firebase Firestore: Missing permissions. In Firebase Console > Firestore > Rules, set "allow read, write: if true;" to sync live.',
+            'warning'
+          );
+        } else {
+          addToast('Firebase connecting error, running in local fallback mode.', 'warning');
+        }
       }
-    }
-    load();
+    );
+
+    return () => unsubscribe();
   }, [addToast]);
 
-  // Save to localStorage whenever customers change (after initial load)
+  // Persist customers locally
   const persistCustomers = useCallback((newCustomers) => {
     setCustomers(newCustomers);
     setStoredCustomers(newCustomers);
@@ -45,123 +77,95 @@ export function CustomerProvider({ children }) {
 
   // Add new customer
   const addCustomer = useCallback(async (formData, pdfFile) => {
-    const total = Math.max(0, Number(formData.totalAmount) || 0);
-    const partial = Math.max(0, Number(formData.partialAmount) || 0);
-    const remaining = calculateRemaining(total, partial);
-    const paymentStatus = getPaymentStatus(total, partial);
+    try {
+      const newCustomer = await addCustomerToFirebase(formData, pdfFile);
+      setCustomers((prev) => [newCustomer, ...prev.filter((c) => c.id !== newCustomer.id)]);
+      addToast(`Customer "${newCustomer.name}" saved to Firebase!`, 'success');
+      return newCustomer;
+    } catch (err) {
+      console.warn('Saving locally due to Firebase error:', err);
+      const total = Math.max(0, Number(formData.totalAmount) || 0);
+      const partial = Math.max(0, Number(formData.partialAmount) || 0);
+      const remaining = calculateRemaining(total, partial);
+      const paymentStatus = getPaymentStatus(total, partial);
+      const newId = 'cust-' + Date.now();
 
-    const newId = 'cust-' + Date.now();
-    let pdfFileName = '';
-    let pdfFileSize = 0;
-    let hasPdf = false;
+      const localCustomer = {
+        id: newId,
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        insuranceCompany: formData.insuranceCompany.trim(),
+        insuranceType: formData.insuranceType,
+        totalAmount: total,
+        partialAmount: partial,
+        remainingAmount: remaining,
+        paymentStatus,
+        policyStartDate: formData.policyStartDate,
+        policyEndDate: formData.policyEndDate,
+        pdfFileName: pdfFile ? pdfFile.name : '',
+        pdfFileSize: pdfFile ? pdfFile.size : 0,
+        hasPdf: !!pdfFile,
+        createdAt: new Date().toISOString()
+      };
 
-    if (pdfFile) {
-      try {
-        await savePdfDocument(newId, pdfFile, pdfFile.name, pdfFile.size);
-        pdfFileName = pdfFile.name;
-        pdfFileSize = pdfFile.size;
-        hasPdf = true;
-      } catch (e) {
-        console.error('Failed to save PDF in IndexedDB:', e);
-        addToast('Policy PDF could not be saved to IndexedDB', 'warning');
-      }
+      const updated = [localCustomer, ...customers];
+      persistCustomers(updated);
+      addToast(`Customer "${localCustomer.name}" saved locally (${err?.code || 'offline'})`, 'info');
+      return localCustomer;
     }
-
-    const newCustomer = {
-      id: newId,
-      name: formData.name.trim(),
-      phone: formData.phone.trim(),
-      insuranceCompany: formData.insuranceCompany.trim(),
-      insuranceType: formData.insuranceType,
-      totalAmount: total,
-      partialAmount: partial,
-      remainingAmount: remaining,
-      paymentStatus,
-      policyStartDate: formData.policyStartDate,
-      policyEndDate: formData.policyEndDate,
-      pdfFileName,
-      pdfFileSize,
-      hasPdf,
-      createdAt: new Date().toISOString()
-    };
-
-    const updated = [newCustomer, ...customers];
-    persistCustomers(updated);
-    addToast(`Customer "${newCustomer.name}" added successfully!`, 'success');
-    return newCustomer;
   }, [customers, persistCustomers, addToast]);
 
   // Update existing customer
   const updateCustomer = useCallback(async (id, formData, newPdfFile, removePdf = false) => {
-    const existing = customers.find(c => c.id === id);
+    const existing = customers.find((c) => c.id === id);
     if (!existing) {
       addToast('Customer not found', 'error');
       return null;
     }
 
-    const total = Math.max(0, Number(formData.totalAmount) || 0);
-    const partial = Math.max(0, Number(formData.partialAmount) || 0);
-    const remaining = calculateRemaining(total, partial);
-    const paymentStatus = getPaymentStatus(total, partial);
+    try {
+      const updatedCustomer = await updateCustomerInFirebase(id, existing, formData, newPdfFile, removePdf);
+      setCustomers((prev) => prev.map((c) => (c.id === id ? updatedCustomer : c)));
+      addToast(`Customer "${updatedCustomer.name}" updated in Firebase!`, 'success');
+      return updatedCustomer;
+    } catch (err) {
+      console.warn('Updating locally due to Firebase error:', err);
+      const total = Math.max(0, Number(formData.totalAmount) || 0);
+      const partial = Math.max(0, Number(formData.partialAmount) || 0);
+      const remaining = calculateRemaining(total, partial);
+      const paymentStatus = getPaymentStatus(total, partial);
 
-    let pdfFileName = existing.pdfFileName;
-    let pdfFileSize = existing.pdfFileSize;
-    let hasPdf = existing.hasPdf;
+      const localCustomer = {
+        ...existing,
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        insuranceCompany: formData.insuranceCompany.trim(),
+        insuranceType: formData.insuranceType,
+        totalAmount: total,
+        partialAmount: partial,
+        remainingAmount: remaining,
+        paymentStatus,
+        policyStartDate: formData.policyStartDate,
+        policyEndDate: formData.policyEndDate,
+        updatedAt: new Date().toISOString()
+      };
 
-    if (removePdf) {
-      try {
-        await deletePdfDocument(id);
-      } catch (e) {
-        console.error(e);
-      }
-      pdfFileName = '';
-      pdfFileSize = 0;
-      hasPdf = false;
-    } else if (newPdfFile) {
-      try {
-        await savePdfDocument(id, newPdfFile, newPdfFile.name, newPdfFile.size);
-        pdfFileName = newPdfFile.name;
-        pdfFileSize = newPdfFile.size;
-        hasPdf = true;
-      } catch (e) {
-        console.error('Failed to update PDF in IndexedDB:', e);
-        addToast('Failed to update PDF document', 'warning');
-      }
+      const updated = customers.map((c) => (c.id === id ? localCustomer : c));
+      persistCustomers(updated);
+      addToast(`Customer updated locally (${err?.code || 'offline'})`, 'info');
+      return localCustomer;
     }
-
-    const updatedCustomer = {
-      ...existing,
-      name: formData.name.trim(),
-      phone: formData.phone.trim(),
-      insuranceCompany: formData.insuranceCompany.trim(),
-      insuranceType: formData.insuranceType,
-      totalAmount: total,
-      partialAmount: partial,
-      remainingAmount: remaining,
-      paymentStatus,
-      policyStartDate: formData.policyStartDate,
-      policyEndDate: formData.policyEndDate,
-      pdfFileName,
-      pdfFileSize,
-      hasPdf,
-      updatedAt: new Date().toISOString()
-    };
-
-    const updated = customers.map(c => c.id === id ? updatedCustomer : c);
-    persistCustomers(updated);
-    addToast(`Customer "${updatedCustomer.name}" updated successfully!`, 'success');
-    return updatedCustomer;
   }, [customers, persistCustomers, addToast]);
 
   // Add payment to customer
-  const addPayment = useCallback((id, paymentAmount) => {
+  const addPayment = useCallback(async (id, paymentAmount) => {
     const numPayment = Number(paymentAmount);
     if (isNaN(numPayment) || numPayment <= 0) {
       addToast('Please enter a valid positive payment amount', 'error');
       return false;
     }
 
-    const customer = customers.find(c => c.id === id);
+    const customer = customers.find((c) => c.id === id);
     if (!customer) {
       addToast('Customer not found', 'error');
       return false;
@@ -176,59 +180,69 @@ export function CustomerProvider({ children }) {
       return false;
     }
 
-    const newPaid = currentPaid + numPayment;
-    const newRemaining = calculateRemaining(total, newPaid);
-    const newStatus = getPaymentStatus(total, newPaid);
+    try {
+      const updatedCustomer = await addPaymentToFirebase(id, customer, numPayment);
+      setCustomers((prev) => prev.map((c) => (c.id === id ? updatedCustomer : c)));
+      addToast(`Payment of ₹${numPayment.toLocaleString('en-IN')} recorded in Firebase for ${customer.name}!`, 'success');
+      return true;
+    } catch (err) {
+      console.warn('Payment saved locally due to Firebase error:', err);
+      const newPaid = currentPaid + numPayment;
+      const newRemaining = calculateRemaining(total, newPaid);
+      const newStatus = getPaymentStatus(total, newPaid);
 
-    const updatedCustomer = {
-      ...customer,
-      partialAmount: newPaid,
-      remainingAmount: newRemaining,
-      paymentStatus: newStatus,
-      lastPaymentDate: new Date().toISOString()
-    };
+      const localCustomer = {
+        ...customer,
+        partialAmount: newPaid,
+        remainingAmount: newRemaining,
+        paymentStatus: newStatus,
+        lastPaymentDate: new Date().toISOString()
+      };
 
-    const updated = customers.map(c => c.id === id ? updatedCustomer : c);
-    persistCustomers(updated);
-    addToast(`Payment of ₹${numPayment.toLocaleString('en-IN')} added for ${customer.name}!`, 'success');
-    return true;
+      const updated = customers.map((c) => (c.id === id ? localCustomer : c));
+      persistCustomers(updated);
+      addToast(`Payment saved locally (${err?.code || 'offline'})`, 'info');
+      return true;
+    }
   }, [customers, persistCustomers, addToast]);
 
   // Delete customer
   const deleteCustomer = useCallback(async (id) => {
-    const customer = customers.find(c => c.id === id);
+    const customer = customers.find((c) => c.id === id);
     const name = customer ? customer.name : 'Customer';
 
     try {
-      await deletePdfDocument(id);
-    } catch (e) {
-      console.warn('PDF deletion error:', e);
+      await deleteCustomerFromFirebase(id, customer);
+      setCustomers((prev) => prev.filter((c) => c.id !== id));
+      addToast(`"${name}" deleted from Firebase`, 'info');
+    } catch (err) {
+      console.warn('Deleting locally due to Firebase error:', err);
+      const updated = customers.filter((c) => c.id !== id);
+      persistCustomers(updated);
+      addToast(`"${name}" removed locally (${err?.code || 'offline'})`, 'info');
     }
-
-    const updated = customers.filter(c => c.id !== id);
-    persistCustomers(updated);
-    addToast(`"${name}" has been deleted`, 'info');
   }, [customers, persistCustomers, addToast]);
 
-  // Reset demo
+  // Reset / Clear all data
   const resetDemo = useCallback(async () => {
     setLoading(true);
     try {
-      const demo = await resetToDemoData();
-      setCustomers(demo);
-      addToast('Reset to demo sample data successfully!', 'success');
+      await clearAllCustomersFromFirebase(customers);
+      await clearAllAppData();
+      setCustomers([]);
+      addToast('All customer records cleared.', 'info');
     } catch (e) {
       console.error(e);
-      addToast('Failed to reset sample data', 'error');
+      addToast('Failed to clear records', 'error');
     } finally {
       setLoading(false);
     }
-  }, [addToast]);
+  }, [customers, addToast]);
 
-  // Clear all data
   const clearAll = useCallback(async () => {
     setLoading(true);
     try {
+      await clearAllCustomersFromFirebase(customers);
       await clearAllAppData();
       setCustomers([]);
       addToast('All customer records and documents cleared.', 'info');
@@ -238,11 +252,11 @@ export function CustomerProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  }, [addToast]);
+  }, [customers, addToast]);
 
   // Get customer by ID
   const getCustomerById = useCallback((id) => {
-    return customers.find(c => c.id === id) || null;
+    return customers.find((c) => c.id === id) || null;
   }, [customers]);
 
   // Add custom company
@@ -253,37 +267,44 @@ export function CustomerProvider({ children }) {
   }, []);
 
   // Record renewal reminder sent
-  const recordRenewalReminder = useCallback((id, reminderData) => {
-    const customer = customers.find(c => c.id === id);
+  const recordRenewalReminder = useCallback(async (id, reminderData) => {
+    const customer = customers.find((c) => c.id === id);
     if (!customer) return false;
 
-    const reminderEntry = {
-      id: 'rem-' + Date.now(),
-      sentAt: new Date().toISOString(),
-      channel: reminderData.channel || 'fcm_push',
-      type: reminderData.type || 'expiry',
-      title: reminderData.title || '',
-      timingDays: reminderData.timingDays || 30,
-      customMessage: reminderData.message || '',
-      note: reminderData.note || 'Reminder dispatched'
-    };
+    try {
+      await recordReminderInFirebase(id, customer, reminderData);
+      addToast(`"${reminderData.title || 'Reminder'}" recorded in Firebase!`, 'success');
+      return true;
+    } catch (err) {
+      console.warn('Reminder saved locally due to Firebase error:', err);
+      const reminderEntry = {
+        id: 'rem-' + Date.now(),
+        sentAt: new Date().toISOString(),
+        channel: reminderData.channel || 'whatsapp',
+        type: reminderData.type || 'expiry',
+        title: reminderData.title || '',
+        timingDays: reminderData.timingDays || 30,
+        customMessage: reminderData.message || '',
+        note: reminderData.note || 'Reminder dispatched'
+      };
 
-    const existingReminders = Array.isArray(customer.renewalReminders) ? customer.renewalReminders : [];
+      const existingReminders = Array.isArray(customer.renewalReminders) ? customer.renewalReminders : [];
 
-    const updatedCustomer = {
-      ...customer,
-      reminderSent: true,
-      lastReminderDate: reminderEntry.sentAt,
-      lastReminderChannel: reminderEntry.channel,
-      expiryReminderSent: reminderData.type === 'expiry' ? true : customer.expiryReminderSent,
-      paymentReminderSent: reminderData.type === 'payment' ? true : customer.paymentReminderSent,
-      renewalReminders: [reminderEntry, ...existingReminders]
-    };
+      const updatedCustomer = {
+        ...customer,
+        reminderSent: true,
+        lastReminderDate: reminderEntry.sentAt,
+        lastReminderChannel: reminderEntry.channel,
+        expiryReminderSent: reminderData.type === 'renewal' || reminderData.type === 'expiry' ? true : customer.expiryReminderSent,
+        paymentReminderSent: reminderData.type === 'payment' ? true : customer.paymentReminderSent,
+        renewalReminders: [reminderEntry, ...existingReminders]
+      };
 
-    const updated = customers.map(c => c.id === id ? updatedCustomer : c);
-    persistCustomers(updated);
-    addToast(`"${reminderData.title || 'Reminder'}" sent successfully!`, 'success');
-    return true;
+      const updated = customers.map((c) => (c.id === id ? updatedCustomer : c));
+      persistCustomers(updated);
+      addToast(`"${reminderData.title || 'Reminder'}" saved locally`, 'success');
+      return true;
+    }
   }, [customers, persistCustomers, addToast]);
 
   // App-level Pop-up Notification for Reminders
@@ -301,7 +322,7 @@ export function CustomerProvider({ children }) {
     setPopupNotification(null);
   }, []);
 
-  // Dispatch FCM App Pop-up Notification (Firebase Cloud Messaging)
+  // Dispatch FCM App Pop-up Notification
   const dispatchCustomerReminder = useCallback((customer, type = 'payment', customTitle = '') => {
     if (!customer) return;
 
@@ -309,7 +330,7 @@ export function CustomerProvider({ children }) {
     const total = Number(customer.totalAmount) || 0;
     const paid = Number(customer.partialAmount) || 0;
     const cleanPhone = (customer.phone || '').replace(/[^0-9]/g, '');
-    const formattedPhone = cleanPhone.length === 10 ? `+91 ${cleanPhone.slice(0,5)} ${cleanPhone.slice(5)}` : customer.phone;
+    const formattedPhone = cleanPhone.length === 10 ? `+91 ${cleanPhone.slice(0, 5)} ${cleanPhone.slice(5)}` : customer.phone;
     const company = customer.insuranceCompany || 'your insurer';
     const policyType = customer.insuranceType || 'Insurance Policy';
 
@@ -324,7 +345,6 @@ export function CustomerProvider({ children }) {
     const isExpired = daysRemaining < 0;
     const timePhrase = isExpired ? `expired ${Math.abs(daysRemaining)} days ago` : `expires in ${daysRemaining} days`;
 
-    // FCM Notification Payload Body
     let fcmBody = '';
     if (type === 'payment') {
       fcmBody = `Dear ${customer.name}, please pay the pending amount of ₹${remaining.toLocaleString('en-IN')} for your ${policyType} (${company}). Total: ₹${total.toLocaleString('en-IN')}, Paid: ₹${paid.toLocaleString('en-IN')}.`;
@@ -332,10 +352,8 @@ export function CustomerProvider({ children }) {
       fcmBody = `Dear ${customer.name}, your ${policyType} policy with ${company} ${timePhrase}. Please renew quick to ensure continuous protection.`;
     }
 
-    // Generated FCM Device Registration Token for this customer app instance
     const fcmDeviceToken = `fcm_${customer.id}_tok_${Math.random().toString(36).substring(2, 9)}`;
 
-    // Record in history as FCM App Notification and update customer sent state
     recordRenewalReminder(customer.id, {
       channel: 'fcm_push',
       type: type,
@@ -345,9 +363,6 @@ export function CustomerProvider({ children }) {
       fcmToken: fcmDeviceToken,
       note: `${finalTitle} sent via FCM App Notification`
     });
-
-    // Note: Do NOT trigger popup notification card modal here per user request:
-    // "after sending message dont show like this card just show tick in near that selected message"
   }, [recordRenewalReminder]);
 
   // Dashboard metrics
@@ -362,6 +377,8 @@ export function CustomerProvider({ children }) {
         companies,
         addCompany,
         loading,
+        firebaseConnected,
+        firebaseError,
         searchTerm,
         setSearchTerm,
         addCustomer,
@@ -391,4 +408,3 @@ export function useCustomers() {
   }
   return context;
 }
-

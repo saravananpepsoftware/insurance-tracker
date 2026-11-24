@@ -18,13 +18,32 @@ export function PdfViewerModal({ isOpen, customer, onClose }) {
       setDocData(null);
 
       getPdfDocument(customer.id)
-        .then((doc) => {
+        .then(async (doc) => {
           if (!active) return;
-          if (!doc || !doc.blob) {
-            setError('No PDF file found for this customer.');
-          } else {
+          if (doc && doc.blob) {
             createdUrl = doc.url;
             setDocData(doc);
+          } else if (customer.pdfUrl) {
+            try {
+              const res = await fetch(customer.pdfUrl);
+              const blob = await res.blob();
+              createdUrl = URL.createObjectURL(blob);
+              setDocData({
+                blob,
+                url: createdUrl,
+                fileName: customer.pdfFileName || `${customer.name}_Policy.pdf`,
+                fileSize: customer.pdfFileSize || blob.size
+              });
+            } catch (fetchErr) {
+              console.warn('Could not fetch blob from pdfUrl, using direct URL:', fetchErr);
+              setDocData({
+                url: customer.pdfUrl,
+                fileName: customer.pdfFileName || `${customer.name}_Policy.pdf`,
+                fileSize: customer.pdfFileSize || 0
+              });
+            }
+          } else {
+            setError('No PDF file found for this customer.');
           }
         })
         .catch((err) => {

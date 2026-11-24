@@ -239,12 +239,18 @@ export function CustomerDetails({ onOpenEditCustomer }) {
         a.click();
         document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } else if (customer?.pdfUrl) {
+        window.open(customer.pdfUrl, '_blank');
       } else {
         alert('No policy PDF document is currently attached to this record.');
       }
     } catch (e) {
       console.error(e);
-      alert('Failed to retrieve PDF file for download.');
+      if (customer?.pdfUrl) {
+        window.open(customer.pdfUrl, '_blank');
+      } else {
+        alert('Failed to retrieve PDF file for download.');
+      }
     }
   };
 

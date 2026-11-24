@@ -13,7 +13,8 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-recharts': ['recharts'],
-          'vendor-icons': ['lucide-react']
+          'vendor-icons': ['lucide-react'],
+          'vendor-firebase': ['firebase/app', 'firebase/firestore', 'firebase/storage', 'firebase/analytics']
         }
       }
     }

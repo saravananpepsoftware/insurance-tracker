@@ -30,22 +30,24 @@ const ACCIDENTAL_COLOR = '#FFD8BF';
 export function AnalyticsCharts({ metrics }) {
   const { insuranceTypeStats, paymentStatusCounts } = metrics;
 
-  const motorTotal = insuranceTypeStats?.motor?.total || 271500;
-  const accidentalTotal = insuranceTypeStats?.accidental?.total || 96500;
-  const grandTotal = motorTotal + accidentalTotal || 368000;
+  const motorTotal = insuranceTypeStats?.motor?.total || 0;
+  const accidentalTotal = insuranceTypeStats?.accidental?.total || 0;
+  const grandTotal = motorTotal + accidentalTotal;
 
-  const motorPct = grandTotal > 0 ? ((motorTotal / grandTotal) * 100).toFixed(1) : '73.8';
-  const accidentalPct = grandTotal > 0 ? ((accidentalTotal / grandTotal) * 100).toFixed(1) : '26.2';
+  const motorPct = grandTotal > 0 ? ((motorTotal / grandTotal) * 100).toFixed(1) : '0.0';
+  const accidentalPct = grandTotal > 0 ? ((accidentalTotal / grandTotal) * 100).toFixed(1) : '0.0';
 
-  const typePieData = [
+  const typePieData = grandTotal > 0 ? [
     { name: 'Motor Insurance', value: motorTotal, color: MOTOR_COLOR },
     { name: 'Accidental Insurance', value: accidentalTotal, color: ACCIDENTAL_COLOR }
+  ] : [
+    { name: 'No Policies', value: 1, color: '#E2E8F0' }
   ];
 
   const statusData = [
-    { name: 'Paid', count: paymentStatusCounts?.paid || 3, fill: '#22C55E' },
-    { name: 'Partial', count: paymentStatusCounts?.partial || 5, fill: '#FF6B00' },
-    { name: 'Pending', count: paymentStatusCounts?.pending || 2, fill: '#F59E0B' }
+    { name: 'Paid', count: paymentStatusCounts?.paid || 0, fill: '#22C55E' },
+    { name: 'Partial', count: paymentStatusCounts?.partial || 0, fill: '#FF6B00' },
+    { name: 'Pending', count: paymentStatusCounts?.pending || 0, fill: '#F59E0B' }
   ];
 
   return (
@@ -209,7 +211,7 @@ export function AnalyticsCharts({ metrics }) {
                 <CheckCircle2 size={16} color="#22C55E" />
                 <span>Paid</span>
               </div>
-              <span style={{ fontSize: '15px', fontWeight: 800 }}>{paymentStatusCounts?.paid || 3}</span>
+              <span style={{ fontSize: '15px', fontWeight: 800 }}>{paymentStatusCounts?.paid || 0}</span>
             </div>
 
             <div className="barchart-status-pill status-partial">
@@ -217,7 +219,7 @@ export function AnalyticsCharts({ metrics }) {
                 <Clock size={16} color="var(--primary-orange)" />
                 <span>Partial</span>
               </div>
-              <span style={{ fontSize: '15px', fontWeight: 800 }}>{paymentStatusCounts?.partial || 5}</span>
+              <span style={{ fontSize: '15px', fontWeight: 800 }}>{paymentStatusCounts?.partial || 0}</span>
             </div>
 
             <div className="barchart-status-pill status-pending">
@@ -225,7 +227,7 @@ export function AnalyticsCharts({ metrics }) {
                 <Hourglass size={16} color="#F59E0B" />
                 <span>Pending</span>
               </div>
-              <span style={{ fontSize: '15px', fontWeight: 800 }}>{paymentStatusCounts?.pending || 2}</span>
+              <span style={{ fontSize: '15px', fontWeight: 800 }}>{paymentStatusCounts?.pending || 0}</span>
             </div>
           </div>
         </div>

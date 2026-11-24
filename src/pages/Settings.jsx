@@ -15,16 +15,16 @@ import {
   Shield,
   Coins,
   CheckCircle,
-  Database
+  Database,
+  Cloud
 } from 'lucide-react';
 
 export function Settings() {
-  const { customers, resetDemo, clearAll } = useCustomers();
+  const { customers, firebaseConnected, firebaseError, clearAll } = useCustomers();
   const { addToast } = useToast();
 
   const [pdfStats, setPdfStats] = useState({ count: 0, totalBytes: 0 });
   const [showClearConfirm, setShowClearConfirm] = useState(false);
-  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   useEffect(() => {
     getPdfStorageStats().then(setPdfStats);
@@ -181,29 +181,62 @@ export function Settings() {
           </div>
         </div>
 
-        {/* Database Reset & Wipe */}
+        {/* Firebase Cloud Database Status */}
+        <div className="app-card" style={{ borderLeft: '4px solid var(--primary-orange)' }}>
+          <div className="card-header">
+            <div className="card-title">
+              <Cloud size={18} color="var(--primary-orange)" />
+              <span>Firebase Realtime Cloud Database</span>
+            </div>
+            <span
+              className="badge"
+              style={{
+                backgroundColor: firebaseConnected ? '#DCFCE7' : '#FEF3C7',
+                color: firebaseConnected ? '#15803D' : '#B45309',
+                fontWeight: 700
+              }}
+            >
+              {firebaseConnected ? '● Connected' : '● Connecting / Fallback Mode'}
+            </span>
+          </div>
+
+          <div className="card-body">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '14px' }}>
+              <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                <span style={{ fontSize: '11px', color: '#64748B', display: 'block', fontWeight: 600 }}>PROJECT ID</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>ashok-auto-insurnace</span>
+              </div>
+              <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                <span style={{ fontSize: '11px', color: '#64748B', display: 'block', fontWeight: 600 }}>DATABASE</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>Cloud Firestore (Real-time)</span>
+              </div>
+              <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+                <span style={{ fontSize: '11px', color: '#64748B', display: 'block', fontWeight: 600 }}>STORAGE BUCKET</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>ashok-auto-insurnace.firebasestorage.app</span>
+              </div>
+            </div>
+
+            <p style={{ fontSize: '12.5px', color: '#64748B', margin: 0 }}>
+              All customer profiles, payment transactions, and policy PDF documents are stored and synced in real-time with Firebase.
+            </p>
+          </div>
+        </div>
+
+        {/* Database Clear */}
         <div className="app-card" style={{ borderColor: 'var(--border-light)' }}>
           <div className="card-header">
             <div className="card-title" style={{ color: 'var(--status-danger)' }}>
               <Trash2 size={18} />
-              <span>Reset & Clear Local Data</span>
+              <span>Clear Database Records</span>
             </div>
           </div>
 
           <div className="card-body">
             <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
-              Reset back to realistic sample demo data, or purge all customer records and indexed documents.
+              Purge all customer records, payments, and policy documents from Firebase and storage.
             </p>
 
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              <button
-                className="btn btn-outline-orange"
-                onClick={() => setShowResetConfirm(true)}
-              >
-                <RefreshCw size={15} />
-                <span>Reset to Demo Sample Data</span>
-              </button>
-
               <button
                 className="btn btn-danger"
                 onClick={() => setShowClearConfirm(true)}
@@ -216,21 +249,11 @@ export function Settings() {
         </div>
       </div>
 
-      {/* Reset Confirmation */}
-      <ConfirmDialog
-        isOpen={showResetConfirm}
-        title="Reset to Sample Demo Data"
-        message="This will replace all current customer records and re-seed the system with 10 realistic Indian demo insurance customers with pre-generated PDF certificates. Continue?"
-        confirmLabel="Reset to Demo Data"
-        onConfirm={() => resetDemo()}
-        onCancel={() => setShowResetConfirm(false)}
-      />
-
       {/* Clear Confirmation */}
       <ConfirmDialog
         isOpen={showClearConfirm}
-        title="Clear All Local Storage & Documents"
-        message="Are you sure you want to completely erase all customer records, payments, and policy documents from both LocalStorage and IndexedDB? This action is irreversible."
+        title="Clear All Customer Records & Documents"
+        message="Are you sure you want to completely erase all customer records, payments, and policy documents? This action is irreversible."
         confirmLabel="Erase All Data"
         isDanger
         onConfirm={() => clearAll()}

@@ -41,8 +41,8 @@ export function Dashboard() {
       <div className="stat-grid">
         <StatCard
           label="TOTAL CUSTOMERS"
-          value={metrics.totalCustomers || 10}
-          badge={`${metrics.insuranceTypeStats?.motor?.count || 6} Motor, ${metrics.insuranceTypeStats?.accidental?.count || 4} Accident`}
+          value={metrics.totalCustomers ?? 0}
+          badge={`${metrics.insuranceTypeStats?.motor?.count || 0} Motor, ${metrics.insuranceTypeStats?.accidental?.count || 0} Accident`}
           subtext="Registered clients"
           icon={Users}
           colorTheme="orange"
@@ -50,8 +50,8 @@ export function Dashboard() {
 
         <StatCard
           label="TOTAL BUSINESS"
-          value={formatCurrency(metrics.totalBusiness || 368000)}
-          badge={`Collected: ${formatCurrency(metrics.totalCollected || 213500)}`}
+          value={formatCurrency(metrics.totalBusiness || 0)}
+          badge={`Collected: ${formatCurrency(metrics.totalCollected || 0)}`}
           subtext="Gross policy value"
           icon={Layers}
           colorTheme="gold"
@@ -60,7 +60,7 @@ export function Dashboard() {
         <StatCard
           label="PENDING PAYMENTS"
           value={formatCurrency(metrics.pendingPayments || 0)}
-          badge={`${metrics.paymentStatusCounts?.pending || 2} full pending`}
+          badge={`${metrics.paymentStatusCounts?.pending || 0} full pending`}
           subtext="Unpaid premiums balance"
           icon={Coins}
           colorTheme="green"
@@ -68,8 +68,8 @@ export function Dashboard() {
 
         <StatCard
           label="UPCOMING RENEWALS"
-          value={metrics.upcomingRenewalsCount || 6}
-          badge={`${metrics.expiredPoliciesCount || 2} already expired`}
+          value={metrics.upcomingRenewalsCount ?? 0}
+          badge={`${metrics.expiredPoliciesCount || 0} already expired`}
           subtext="Expiring in next 30 days"
           icon={CalendarDays}
           colorTheme="red"

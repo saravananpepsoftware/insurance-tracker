@@ -1,29 +1,13 @@
-import { createInitialSampleCustomers } from './sampleData';
-import { savePdfDocument, clearAllPdfDocuments } from './indexedDb';
-import { generateSamplePolicyPdf } from './samplePdfs';
-
 const STORAGE_KEY = 'INSURETRACK_CUSTOMERS_V2';
 const SETTINGS_KEY = 'INSURETRACK_SETTINGS_V2';
 
 /**
- * Initializes and populates default demo data and demo PDFs if first launch
+ * Initializes customer data from local storage (starts empty for live Firebase)
  */
 export async function initializeDataIfEmpty() {
   const existing = localStorage.getItem(STORAGE_KEY);
   if (!existing) {
-    const demoCustomers = createInitialSampleCustomers();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(demoCustomers));
-    
-    // Asynchronously seed demo PDFs into IndexedDB
-    try {
-      for (const customer of demoCustomers) {
-        const pdfBlob = generateSamplePolicyPdf(customer);
-        await savePdfDocument(customer.id, pdfBlob, customer.pdfFileName, pdfBlob.size);
-      }
-    } catch (e) {
-      console.warn('Could not pre-seed IndexedDB PDFs:', e);
-    }
-    return demoCustomers;
+    return [];
   }
 
   try {
@@ -61,19 +45,11 @@ export function setStoredCustomers(customers) {
 }
 
 /**
- * Resets storage back to initial demo data
+ * Clears local storage and IndexedDB documents
  */
 export async function resetToDemoData() {
-  await clearAllPdfDocuments();
-  const demoCustomers = createInitialSampleCustomers();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(demoCustomers));
-
-  // Seed sample PDFs
-  for (const customer of demoCustomers) {
-    const pdfBlob = generateSamplePolicyPdf(customer);
-    await savePdfDocument(customer.id, pdfBlob, customer.pdfFileName, pdfBlob.size);
-  }
-  return demoCustomers;
+  localStorage.removeItem(STORAGE_KEY);
+  return [];
 }
 
 /**
