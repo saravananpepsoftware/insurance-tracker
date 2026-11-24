@@ -83,20 +83,90 @@ export function CustomerDetails({ onOpenEditCustomer }) {
     }, 2000);
   };
 
+  // Top WhatsApp reminder popover state
+  const [showWhatsappDropdown, setShowWhatsappDropdown] = useState(false);
+  const whatsappReminderRef = useRef(null);
+  const [showBannerWhatsappDropdown, setShowBannerWhatsappDropdown] = useState(false);
+  const bannerWhatsappRef = useRef(null);
+  const [activeWhatsappTick, setActiveWhatsappTick] = useState(null); // 'renewal' | 'payment' | null
+  const whatsappTickTimeoutRef = useRef(null);
+
+  const handleSendWhatsApp = (type) => {
+    if (!customer) return;
+
+    if (whatsappTickTimeoutRef.current) {
+      clearTimeout(whatsappTickTimeoutRef.current);
+    }
+
+    const remainingAmt = Number(customer.remainingAmount) || 0;
+    const totalAmt = Number(customer.totalAmount) || 0;
+    const paidAmt = Number(customer.partialAmount) || 0;
+    const cleanPhone = (customer.phone || '').replace(/[^0-9]/g, '');
+    const formattedPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+    const company = customer.insuranceCompany || 'your insurer';
+    const policyType = customer.insuranceType || 'Insurance Policy';
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const end = customer.policyEndDate ? new Date(customer.policyEndDate) : today;
+    end.setHours(0, 0, 0, 0);
+    const daysRemaining = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const isExpiredState = daysRemaining < 0;
+    const timePhrase = isExpiredState ? `has EXPIRED (${Math.abs(daysRemaining)} days ago)` : `is due for renewal in ${daysRemaining} days`;
+
+    let message = '';
+    let reminderTitle = '';
+    if (type === 'renewal') {
+      reminderTitle = 'Policy Renewal Reminder';
+      message = `*POLICY RENEWAL REMINDER*\n\nDear ${customer.name},\n\nThis is a priority policy renewal reminder from InsureTrack regarding your ${policyType} policy with ${company}.\n\nYour policy ${timePhrase}.${remainingAmt > 0 ? `\n• Remaining Amount Due: ₹${remainingAmt.toLocaleString('en-IN')}` : ''}\n\nPlease renew quick to avoid policy lapse and loss of coverage benefits.\n\nThank you,\nInsureTrack Team`;
+    } else {
+      reminderTitle = 'Remaining Amount Payment Reminder';
+      message = `*PENDING AMOUNT PAYMENT REMINDER*\n\nDear ${customer.name},\n\nThis is a reminder regarding the remaining payment on your ${policyType} policy with ${company}.\n\n• Policy Total: ₹${totalAmt.toLocaleString('en-IN')}\n• Amount Paid: ₹${paidAmt.toLocaleString('en-IN')}\n• Remaining Balance Due: ₹${remainingAmt.toLocaleString('en-IN')}\n\nPlease complete the pending balance payment at your earliest convenience.\n\nThank you,\nInsureTrack Team`;
+    }
+
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+
+    recordRenewalReminder(customer.id, {
+      channel: 'whatsapp',
+      type: type,
+      timingDays: 30,
+      title: reminderTitle,
+      message,
+      note: `${reminderTitle} dispatched to customer via WhatsApp`
+    });
+
+    setActiveWhatsappTick(type);
+    whatsappTickTimeoutRef.current = setTimeout(() => {
+      setActiveWhatsappTick(null);
+      setShowWhatsappDropdown(false);
+      setShowBannerWhatsappDropdown(false);
+    }, 2000);
+  };
+
   // Clean up timeout on unmount
   useEffect(() => {
     return () => {
       if (tickTimeoutRef.current) {
         clearTimeout(tickTimeoutRef.current);
       }
+      if (whatsappTickTimeoutRef.current) {
+        clearTimeout(whatsappTickTimeoutRef.current);
+      }
     };
   }, []);
 
-  // Close tab reminder menu on outside click
+  // Close tab reminder and whatsapp reminder menus on outside click
   useEffect(() => {
     function handleClickOutside(event) {
       if (tabReminderRef.current && !tabReminderRef.current.contains(event.target)) {
         setShowTabReminderMenu(false);
+      }
+      if (whatsappReminderRef.current && !whatsappReminderRef.current.contains(event.target)) {
+        setShowWhatsappDropdown(false);
+      }
+      if (bannerWhatsappRef.current && !bannerWhatsappRef.current.contains(event.target)) {
+        setShowBannerWhatsappDropdown(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
@@ -203,25 +273,92 @@ export function CustomerDetails({ onOpenEditCustomer }) {
         </button>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          {/* 30-Day Renewal Reminder Action Button */}
-          <button
-            className="btn btn-secondary btn-sm"
-            onClick={() => setShowReminderModal(true)}
-            style={{
-              padding: '7px 16px',
-              borderRadius: '10px',
-              borderColor: customer.reminderSent ? '#22C55E' : '#25D366',
-              color: customer.reminderSent ? '#16A34A' : '#15803D',
-              backgroundColor: customer.reminderSent ? '#F0FDF4' : '#F0FDF4',
-              fontWeight: 700,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <WhatsAppIcon size={16} color={customer.reminderSent ? '#16A34A' : '#25D366'} />
-            <span>{customer.reminderSent ? 'Reminder Sent' : 'Send Reminder in WhatsApp'}</span>
-          </button>
+          {/* WhatsApp Reminder Button with Compact Popover */}
+          <div style={{ position: 'relative' }} ref={whatsappReminderRef}>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={() => setShowWhatsappDropdown(!showWhatsappDropdown)}
+              style={{
+                padding: '7px 16px',
+                borderRadius: '10px',
+                borderColor: customer.reminderSent ? '#22C55E' : '#25D366',
+                color: customer.reminderSent ? '#16A34A' : '#15803D',
+                backgroundColor: '#F0FDF4',
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                cursor: 'pointer'
+              }}
+              title="Click to select WhatsApp reminder"
+            >
+              <WhatsAppIcon size={16} color={customer.reminderSent ? '#16A34A' : '#25D366'} />
+              <span>{customer.reminderSent ? 'Send Reminder in WhatsApp' : 'Send Reminder in WhatsApp'}</span>
+              <ChevronDown
+                size={14}
+                style={{
+                  transition: 'transform 0.15s ease',
+                  transform: showWhatsappDropdown ? 'rotate(180deg)' : 'none'
+                }}
+              />
+            </button>
+
+            {/* Compact Popover Anchored Right Near WhatsApp Button */}
+            {showWhatsappDropdown && (
+              <div className="whatsapp-reminder-popover">
+                {/* 1. Policy Renews */}
+                <button
+                  type="button"
+                  className={`whatsapp-popover-item ${activeWhatsappTick === 'renewal' ? 'is-sent' : ''}`}
+                  onClick={() => handleSendWhatsApp('renewal')}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', textAlign: 'left' }}>
+                    <span className="whatsapp-popover-title">
+                      Policy Renews
+                    </span>
+                    <span className="whatsapp-popover-sub">
+                      {daysLeft < 0 ? `Expired (${Math.abs(daysLeft)}d ago)` : `Expires in ${daysLeft} days`}
+                    </span>
+                  </div>
+
+                  {activeWhatsappTick === 'renewal' ? (
+                    <span className="reminder-tick-badge" title="Sent">
+                      <Check size={13} strokeWidth={2.8} />
+                    </span>
+                  ) : (
+                    <WhatsAppIcon size={15} color="#25D366" />
+                  )}
+                </button>
+
+                <div className="whatsapp-popover-divider" />
+
+                {/* 2. Remaining Amount */}
+                <button
+                  type="button"
+                  className={`whatsapp-popover-item ${activeWhatsappTick === 'payment' ? 'is-sent' : ''}`}
+                  onClick={() => handleSendWhatsApp('payment')}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', textAlign: 'left' }}>
+                    <span className="whatsapp-popover-title">
+                      Remaining Amount
+                    </span>
+                    <span className="whatsapp-popover-sub" style={{ color: remaining > 0 ? '#DC2626' : '#16A34A', fontWeight: 600 }}>
+                      {remaining > 0 ? `Pending: ${formatCurrency(remaining)}` : 'Cleared (₹0)'}
+                    </span>
+                  </div>
+
+                  {activeWhatsappTick === 'payment' ? (
+                    <span className="reminder-tick-badge" title="Sent">
+                      <Check size={13} strokeWidth={2.8} />
+                    </span>
+                  ) : (
+                    <WhatsAppIcon size={15} color="#25D366" />
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
 
           {remaining > 0 && (
             <button
@@ -444,16 +581,77 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                 </div>
               </div>
 
-              <div className="renewal-reminder-actions">
+              <div className="renewal-reminder-actions" style={{ position: 'relative' }} ref={bannerWhatsappRef}>
                 <button
                   type="button"
                   className="btn-whatsapp"
-                  onClick={() => setShowReminderModal(true)}
-                  style={{ padding: '8px 16px', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '13px' }}
+                  onClick={() => setShowBannerWhatsappDropdown(!showBannerWhatsappDropdown)}
+                  style={{ padding: '8px 16px', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '7px', fontSize: '13px', cursor: 'pointer' }}
                 >
                   <WhatsAppIcon size={16} color="#FFFFFF" />
                   <span>Send Reminder in WhatsApp</span>
+                  <ChevronDown
+                    size={14}
+                    style={{
+                      transition: 'transform 0.15s ease',
+                      transform: showBannerWhatsappDropdown ? 'rotate(180deg)' : 'none'
+                    }}
+                  />
                 </button>
+
+                {showBannerWhatsappDropdown && (
+                  <div className="whatsapp-reminder-popover" style={{ top: 'calc(100% + 6px)', right: 0 }}>
+                    {/* 1. Policy Renews */}
+                    <button
+                      type="button"
+                      className={`whatsapp-popover-item ${activeWhatsappTick === 'renewal' ? 'is-sent' : ''}`}
+                      onClick={() => handleSendWhatsApp('renewal')}
+                    >
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', textAlign: 'left' }}>
+                        <span className="whatsapp-popover-title">
+                          Policy Renews
+                        </span>
+                        <span className="whatsapp-popover-sub">
+                          {daysLeft < 0 ? `Expired (${Math.abs(daysLeft)}d ago)` : `Expires in ${daysLeft} days`}
+                        </span>
+                      </div>
+
+                      {activeWhatsappTick === 'renewal' ? (
+                        <span className="reminder-tick-badge" title="Sent">
+                          <Check size={13} strokeWidth={2.8} />
+                        </span>
+                      ) : (
+                        <WhatsAppIcon size={15} color="#25D366" />
+                      )}
+                    </button>
+
+                    <div className="whatsapp-popover-divider" />
+
+                    {/* 2. Remaining Amount */}
+                    <button
+                      type="button"
+                      className={`whatsapp-popover-item ${activeWhatsappTick === 'payment' ? 'is-sent' : ''}`}
+                      onClick={() => handleSendWhatsApp('payment')}
+                    >
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', textAlign: 'left' }}>
+                        <span className="whatsapp-popover-title">
+                          Remaining Amount
+                        </span>
+                        <span className="whatsapp-popover-sub" style={{ color: remaining > 0 ? '#DC2626' : '#16A34A', fontWeight: 600 }}>
+                          {remaining > 0 ? `Pending: ${formatCurrency(remaining)}` : 'Cleared (₹0)'}
+                        </span>
+                      </div>
+
+                      {activeWhatsappTick === 'payment' ? (
+                        <span className="reminder-tick-badge" title="Sent">
+                          <Check size={13} strokeWidth={2.8} />
+                        </span>
+                      ) : (
+                        <WhatsAppIcon size={15} color="#25D366" />
+                      )}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -608,8 +806,9 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                         </span>
                       ) : (
                         <button
+                          type="button"
                           className="btn btn-secondary btn-xs"
-                          onClick={() => setShowReminderModal(true)}
+                          onClick={() => handleSendWhatsApp('renewal')}
                           style={{
                             fontSize: '11.5px',
                             padding: '3px 10px',
@@ -619,7 +818,8 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                             fontWeight: 700,
                             display: 'inline-flex',
                             alignItems: 'center',
-                            gap: '5px'
+                            gap: '5px',
+                            cursor: 'pointer'
                           }}
                         >
                           <WhatsAppIcon size={13} color="#25D366" />
