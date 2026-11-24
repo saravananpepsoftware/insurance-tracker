@@ -217,16 +217,16 @@ export function Navbar({ onOpenAddCustomer }) {
                             </span>
                             <button
                               type="button"
-                              className="btn-whatsapp-compact"
-                              style={{ width: 'auto', padding: '4px 10px', fontSize: '11.5px', borderRadius: '6px' }}
+                              className="btn-fcm-compact"
+                              style={{ width: 'auto', padding: '4px 10px', fontSize: '11px', borderRadius: '6px' }}
                               onClick={() => {
                                 dispatchCustomerReminder(c, 'payment', 'Pay the pending amount');
                                 setShowNotifications(false);
                               }}
-                              title="Send 'Pay the pending amount' reminder & show app pop-up"
+                              title="Send 'Pay the pending amount' FCM pop-up notification"
                             >
-                              <WhatsAppIcon size={12} color="#FFFFFF" />
-                              <span>Remind</span>
+                              <Send size={11} />
+                              <span>Send FCM</span>
                             </button>
                           </div>
                         </div>
@@ -296,16 +296,16 @@ export function Navbar({ onOpenAddCustomer }) {
                               </span>
                               <button
                                 type="button"
-                                className="btn-whatsapp-compact"
-                                style={{ width: 'auto', padding: '4px 10px', fontSize: '11.5px', borderRadius: '6px' }}
+                                className="btn-fcm-compact"
+                                style={{ width: 'auto', padding: '4px 10px', fontSize: '11px', borderRadius: '6px' }}
                                 onClick={() => {
                                   dispatchCustomerReminder(c, 'expiry', 'Your policy expires soon, renew quick');
                                   setShowNotifications(false);
                                 }}
-                                title="Send 'Your policy expires soon, renew quick' reminder & show app pop-up"
+                                title="Send 'Your policy expires soon, renew quick' FCM pop-up notification"
                               >
-                                <WhatsAppIcon size={12} color="#FFFFFF" />
-                                <span>Remind</span>
+                                <Send size={11} />
+                                <span>Send FCM</span>
                               </button>
                             </div>
                           </div>

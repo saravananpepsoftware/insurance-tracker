@@ -35,6 +35,8 @@ import {
   CheckCircle2,
   BellRing,
   Send,
+  Radio,
+  Smartphone,
   ChevronDown
 } from 'lucide-react';
 
@@ -332,11 +334,14 @@ export function CustomerDetails({ onOpenEditCustomer }) {
               <div className="customer-nav-reminder-dropdown">
                 <div className="customer-nav-reminder-dropdown-header">
                   <div>
-                    <span style={{ fontWeight: 800, fontSize: '13.5px', color: '#0F172A' }}>
-                      Customer Reminders
-                    </span>
-                    <div style={{ fontSize: '11.5px', color: '#64748B', marginTop: '1px' }}>
-                      {customer.name} ({customer.phone})
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ fontWeight: 800, fontSize: '13.5px', color: '#0F172A' }}>
+                        Customer Reminders
+                      </span>
+                      <span className="badge-fcm-tag">FCM Push</span>
+                    </div>
+                    <div style={{ fontSize: '11.5px', color: '#64748B', marginTop: '2px' }}>
+                      Pop-up notification for {customer.name} ({customer.phone})
                     </div>
                   </div>
                   <span
@@ -398,12 +403,13 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                     </div>
 
                     <div className="reminder-message-action-btn-row">
-                      <span style={{ fontSize: '11px', color: '#94A3B8' }}>
-                        Dispatches WhatsApp & Pop-up
+                      <span style={{ fontSize: '11px', color: '#64748B', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <Radio size={12} color="var(--primary-orange)" />
+                        <span>FCM App Pop-up Notification</span>
                       </span>
                       <span className="reminder-send-pill">
-                        <WhatsAppIcon size={13} color="currentColor" />
-                        <span>Send This Notification</span>
+                        <Send size={12} />
+                        <span>Send FCM Notification</span>
                       </span>
                     </div>
                   </div>
@@ -453,19 +459,20 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                     </div>
 
                     <div className="reminder-message-action-btn-row">
-                      <span style={{ fontSize: '11px', color: '#94A3B8' }}>
-                        Dispatches WhatsApp & Pop-up
+                      <span style={{ fontSize: '11px', color: '#64748B', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <Radio size={12} color="var(--primary-orange)" />
+                        <span>FCM App Pop-up Notification</span>
                       </span>
                       <span className="reminder-send-pill">
-                        <WhatsAppIcon size={13} color="currentColor" />
-                        <span>Send This Notification</span>
+                        <Send size={12} />
+                        <span>Send FCM Notification</span>
                       </span>
                     </div>
                   </div>
                 </div>
 
                 <div className="reminder-dropdown-footer-hint">
-                  Click either message to send that pop-up notification to {customer.name}
+                  Click either message to send that FCM pop-up notification directly to {customer.name}'s app
                 </div>
               </div>
             )}

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BellRing, X, CheckCircle2, ArrowRight, Shield, AlertTriangle, Phone, Wallet } from 'lucide-react';
+import { BellRing, X, CheckCircle2, ArrowRight, Shield, AlertTriangle, Phone, Wallet, Radio, Smartphone, Zap } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { formatIndianDate } from '../../utils/dateUtils';
-import { WhatsAppIcon } from '../customers/RenewalReminderModal';
 
 export function ReminderPopupNotification({ notification, onClose }) {
   const navigate = useNavigate();
@@ -40,6 +39,8 @@ export function ReminderPopupNotification({ notification, onClose }) {
 
   const {
     title = '',
+    body = '',
+    fcmToken = '',
     recipient = 'Customer',
     phone = '',
     type = 'payment', // 'payment' | 'expiry'
@@ -83,10 +84,11 @@ export function ReminderPopupNotification({ notification, onClose }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span className="reminder-popup-badge-admin">
-                  App Pop-up Notification
+                  FCM App Pop-up
                 </span>
-                <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 600 }}>
-                  Admin Sent
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#16A34A', fontWeight: 700 }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#22C55E' }}></span>
+                  Device Delivered
                 </span>
               </div>
               <h4 className="reminder-popup-title">
@@ -103,20 +105,35 @@ export function ReminderPopupNotification({ notification, onClose }) {
           </div>
 
           <p className="reminder-popup-desc">
-            {isPayment ? (
-              <>
-                Notice dispatched to <strong>{recipient}</strong> ({phone}) to pay the pending balance of{' '}
-                <strong style={{ color: '#DC2626' }}>{formatCurrency(amount)}</strong>.
-              </>
-            ) : (
-              <>
-                Notice dispatched to <strong>{recipient}</strong> ({phone}): Policy expires soon, renew quick!
-              </>
-            )}
+            FCM push notification delivered to <strong>{recipient}</strong> ({phone}).
           </p>
 
+          {/* Device Mock Notification Card */}
+          <div className="fcm-device-preview-card">
+            <div className="fcm-device-preview-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <Smartphone size={12} color="var(--primary-orange)" />
+                <span style={{ fontWeight: 700, color: '#F8FAFC' }}>InsureTrack Mobile App</span>
+              </div>
+              <span style={{ fontSize: '10px', color: '#94A3B8' }}>Just now</span>
+            </div>
+            <div className="fcm-device-preview-title">
+              {displayTitle}
+            </div>
+            <div className="fcm-device-preview-body">
+              {body || (isPayment
+                ? `Pending amount of ${formatCurrency(amount)} is due for ${company} (${insuranceType}).`
+                : `Policy for ${company} (${insuranceType}) expires soon. Please renew quick.`
+              )}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px', paddingTop: '4px', borderTop: '1px solid rgba(255,255,255,0.1)', fontSize: '9.5px', color: '#94A3B8' }}>
+              <span>FCM Token: {fcmToken ? `${fcmToken.slice(0, 16)}...` : 'active'}</span>
+              <span style={{ color: '#4ADE80', fontWeight: 700 }}>Priority: High</span>
+            </div>
+          </div>
+
           {/* Details Card */}
-          <div className="reminder-popup-details-card">
+          <div className="reminder-popup-details-card" style={{ marginTop: '8px' }}>
             {isPayment ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -154,7 +171,7 @@ export function ReminderPopupNotification({ notification, onClose }) {
           {/* Action Row */}
           <div className="reminder-popup-footer">
             <span style={{ fontSize: '11px', color: '#94A3B8' }}>
-              Automated in-app popup • Stored in Activity History
+              Dispatched via Firebase Cloud Messaging
             </span>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

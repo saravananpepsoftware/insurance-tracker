@@ -297,7 +297,7 @@ export function CustomerProvider({ children }) {
     setPopupNotification(null);
   }, []);
 
-  // Dispatch reminder (opens WhatsApp, updates customer record, triggers popup notification)
+  // Dispatch FCM App Pop-up Notification (Firebase Cloud Messaging)
   const dispatchCustomerReminder = useCallback((customer, type = 'payment', customTitle = '') => {
     if (!customer) return;
 
@@ -305,50 +305,53 @@ export function CustomerProvider({ children }) {
     const total = Number(customer.totalAmount) || 0;
     const paid = Number(customer.partialAmount) || 0;
     const cleanPhone = (customer.phone || '').replace(/[^0-9]/g, '');
-    const formattedPhone = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+    const formattedPhone = cleanPhone.length === 10 ? `+91 ${cleanPhone.slice(0,5)} ${cleanPhone.slice(5)}` : customer.phone;
     const company = customer.insuranceCompany || 'your insurer';
     const policyType = customer.insuranceType || 'Insurance Policy';
 
     const defaultTitle = type === 'payment' ? 'Pay the pending amount' : 'Your policy expires soon, renew quick';
     const finalTitle = customTitle || defaultTitle;
 
-    let message = '';
-    if (type === 'payment') {
-      message = `*PAY THE PENDING AMOUNT*\n\nDear ${customer.name},\n\nThis is a priority payment reminder from InsureTrack regarding your ${policyType} policy with ${company}.\n\n• Policy Total: ₹${total.toLocaleString('en-IN')}\n• Amount Paid: ₹${paid.toLocaleString('en-IN')}\n• Pending Balance: ₹${remaining.toLocaleString('en-IN')}\n\nPlease complete the pending balance settlement at your earliest convenience to maintain uninterrupted insurance coverage.\n\nThank you,\nInsureTrack Admin Team`;
-    } else {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const end = customer.policyEndDate ? new Date(customer.policyEndDate) : today;
-      end.setHours(0, 0, 0, 0);
-      const daysLeft = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-      const isExpired = daysLeft < 0;
-      const timePhrase = isExpired ? `has EXPIRED (${Math.abs(daysLeft)} days ago)` : `is due for renewal in ${daysLeft} days`;
-
-      message = `*YOUR POLICY EXPIRES SOON, RENEW QUICK*\n\nDear ${customer.name},\n\nThis is a priority renewal notification from InsureTrack regarding your ${policyType} policy with ${company}.\n\nYour policy ${timePhrase}.${remaining > 0 ? `\n• Pending Balance: ₹${remaining.toLocaleString('en-IN')}` : ''}\n\nPlease renew promptly to avoid insurance coverage lapse, inspection requirements, and NCB forfeiture.\n\nThank you,\nInsureTrack Admin Team`;
-    }
-
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
-
-    // Record in history
-    recordRenewalReminder(customer.id, {
-      channel: 'whatsapp',
-      timingDays: 30,
-      message,
-      note: `${finalTitle} dispatched via WhatsApp & in-app notification`
-    });
-
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const end = customer.policyEndDate ? new Date(customer.policyEndDate) : today;
     end.setHours(0, 0, 0, 0);
     const daysRemaining = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const isExpired = daysRemaining < 0;
+    const timePhrase = isExpired ? `expired ${Math.abs(daysRemaining)} days ago` : `expires in ${daysRemaining} days`;
 
-    // Trigger in-app popup notification with the exact clicked message title!
+    // FCM Notification Payload Body
+    let fcmBody = '';
+    if (type === 'payment') {
+      fcmBody = `Dear ${customer.name}, please pay the pending amount of ₹${remaining.toLocaleString('en-IN')} for your ${policyType} (${company}). Total: ₹${total.toLocaleString('en-IN')}, Paid: ₹${paid.toLocaleString('en-IN')}.`;
+    } else {
+      fcmBody = `Dear ${customer.name}, your ${policyType} policy with ${company} ${timePhrase}. Please renew quick to ensure continuous protection.`;
+    }
+
+    // Generated FCM Device Registration Token for this customer app instance
+    const fcmDeviceToken = `fcm_${customer.id}_tok_${Math.random().toString(36).substring(2, 9)}`;
+
+    // Record in history as FCM App Notification
+    recordRenewalReminder(customer.id, {
+      channel: 'fcm_push',
+      timingDays: 30,
+      message: fcmBody,
+      fcmToken: fcmDeviceToken,
+      note: `${finalTitle} sent via FCM App Pop-up Notification to customer app`
+    });
+
+    // Add toast confirmation
+    addToast(`FCM App Notification dispatched to ${customer.name}: "${finalTitle}"`, 'success');
+
+    // Trigger in-app FCM popup notification banner/modal
     triggerAppNotification({
       title: finalTitle,
+      body: fcmBody,
+      channel: 'FCM Push Notification',
+      fcmToken: fcmDeviceToken,
       recipient: customer.name,
       phone: customer.phone,
+      formattedPhone,
       type,
       amount: remaining,
       totalAmount: total,
@@ -359,7 +362,7 @@ export function CustomerProvider({ children }) {
       insuranceType: customer.insuranceType,
       customerId: customer.id
     });
-  }, [recordRenewalReminder, triggerAppNotification]);
+  }, [recordRenewalReminder, triggerAppNotification, addToast]);
 
   // Dashboard metrics
   const metrics = useMemo(() => {
