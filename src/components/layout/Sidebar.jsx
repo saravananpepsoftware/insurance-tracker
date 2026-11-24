@@ -10,7 +10,6 @@ import {
   CreditCard,
   RefreshCw,
   BarChart3,
-  Settings,
   ChevronRight,
   ChevronDown,
   LogOut
@@ -139,21 +138,6 @@ export function Sidebar() {
                 <span>Reports</span>
               </div>
               {isActive && <ChevronRight size={13} className="nav-active-caret" />}
-            </>
-          )}
-        </NavLink>
-
-        <NavLink
-          to="/settings"
-          className={({ isActive }) => `nav-link-pill ${isActive ? 'active' : ''}`}
-        >
-          {({ isActive }) => (
-            <>
-              <div className="nav-pill-left">
-                <Settings size={18} />
-                <span>Settings</span>
-              </div>
-              <ChevronDown size={15} className="nav-settings-chevron" />
             </>
           )}
         </NavLink>
