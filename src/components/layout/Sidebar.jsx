@@ -34,7 +34,7 @@ export function Sidebar() {
         </div>
         <div className="logo-text-group">
           <div className="logo-brand">
-            Insure<span>Track</span>
+            Ashok Auto <span>Insurance</span>
           </div>
           <div className="logo-tagline">INSURANCE MANAGEMENT</div>
         </div>

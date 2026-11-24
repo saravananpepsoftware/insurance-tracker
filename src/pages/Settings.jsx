@@ -37,7 +37,7 @@ export function Settings() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `insuretrack_backup_${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `ashok_auto_insurance_backup_${new Date().toISOString().slice(0, 10)}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -94,7 +94,7 @@ export function Settings() {
           <div className="card-body" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '10px', borderBottom: '1px solid var(--border-subtle)' }}>
               <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>Application Name:</span>
-              <span style={{ fontWeight: 600 }}>InsureTrack</span>
+              <span style={{ fontWeight: 600 }}>Ashok Auto Insurance</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '10px', borderBottom: '1px solid var(--border-subtle)' }}>
               <span style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>Architecture:</span>

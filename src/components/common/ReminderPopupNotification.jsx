@@ -113,7 +113,7 @@ export function ReminderPopupNotification({ notification, onClose }) {
             <div className="fcm-device-preview-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <Smartphone size={12} color="var(--primary-orange)" />
-                <span style={{ fontWeight: 700, color: '#F8FAFC' }}>InsureTrack Mobile App</span>
+                <span style={{ fontWeight: 700, color: '#F8FAFC' }}>Ashok Auto Insurance</span>
               </div>
               <span style={{ fontSize: '10px', color: '#94A3B8' }}>Just now</span>
             </div>

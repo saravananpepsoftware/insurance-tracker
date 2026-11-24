@@ -58,15 +58,15 @@ export function generateCustomerPdf(customer) {
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(11);
-  doc.text('I', margin + 3.2, currentY + 6.5);
+  doc.text('A', margin + 3.2, currentY + 6.5);
 
   doc.setTextColor(15, 23, 42); // #0F172A
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(18);
-  doc.text('Insure', margin + 12, currentY + 7);
+  doc.setFontSize(16);
+  doc.text('Ashok Auto', margin + 12, currentY + 7);
 
   doc.setTextColor(255, 107, 0);
-  doc.text('Track', margin + 32, currentY + 7);
+  doc.text('Insurance', margin + 45, currentY + 7);
 
   doc.setTextColor(100, 116, 139); // #64748B
   doc.setFont('helvetica', 'bold');
@@ -509,7 +509,7 @@ export function generateCustomerPdf(customer) {
   doc.setFontSize(7);
   doc.setTextColor(100, 116, 139);
   doc.text(
-    'Support Email: ashokinsurance@gmail.com  |  Portal: InsureTrack Administration System',
+    'Support Email: ashokinsurance@gmail.com  |  Portal: Ashok Auto Insurance Administration System',
     margin,
     footerY + 9.5
   );

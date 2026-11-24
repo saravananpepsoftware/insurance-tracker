@@ -1,4 +1,4 @@
-# InsureTrack — Insurance Management & Policy Renewal Tracker
+# Ashok Auto Insurance — Insurance Management & Policy Renewal Tracker
 
 A modern, professional, frontend-only Insurance Management, Payment Tracking, and Policy Renewal Web Application built with React, Vite, and Lucide Icons.
 

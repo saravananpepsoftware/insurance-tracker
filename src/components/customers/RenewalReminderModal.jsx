@@ -51,7 +51,7 @@ export function RenewalReminderModal({ isOpen, onClose, customer, onRecordRemind
     const remainingClause = remaining > 0 ? ` Outstanding balance: ${formatCurrency(remaining)}.` : '';
 
     if (isExpired) {
-      return `Dear ${customer.name},\n\nYour ${type} policy with ${company} has EXPIRED on ${expiryFormatted} (${Math.abs(daysLeft)} days ago).${remainingClause}\n\nPlease renew immediately to prevent coverage lapse, inspection penalties, and loss of No Claim Bonus (NCB).\n\nContact InsureTrack Support to renew now.`;
+      return `Dear ${customer.name},\n\nYour ${type} policy with ${company} has EXPIRED on ${expiryFormatted} (${Math.abs(daysLeft)} days ago).${remainingClause}\n\nPlease renew immediately to prevent coverage lapse, inspection penalties, and loss of No Claim Bonus (NCB).\n\nContact Ashok Auto Insurance Support to renew now.`;
     }
 
     let timePhrase = 'in 30 days';
@@ -59,7 +59,7 @@ export function RenewalReminderModal({ isOpen, onClose, customer, onRecordRemind
     else if (selectedTiming === '7_days') timePhrase = 'in 7 days';
     else if (daysLeft <= 30) timePhrase = `in ${daysLeft} days`;
 
-    return `Dear ${customer.name},\n\nThis is a priority renewal reminder for your ${type} policy with ${company}.\n\nYour policy is due for renewal ${timePhrase} on ${expiryFormatted}.${remainingClause}\n\nRenew today to maintain uninterrupted insurance coverage. Reply to this message or contact InsureTrack to complete your quick renewal.`;
+    return `Dear ${customer.name},\n\nThis is a priority renewal reminder for your ${type} policy with ${company}.\n\nYour policy is due for renewal ${timePhrase} on ${expiryFormatted}.${remainingClause}\n\nRenew today to maintain uninterrupted insurance coverage. Reply to this message or contact Ashok Auto Insurance to complete your quick renewal.`;
   };
 
   const [message, setMessage] = useState('');

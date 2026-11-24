@@ -123,10 +123,10 @@ export function CustomerDetails({ onOpenEditCustomer }) {
     let reminderTitle = '';
     if (type === 'renewal') {
       reminderTitle = 'Policy Renewal Reminder';
-      message = `*POLICY RENEWAL REMINDER*\n\nDear ${customer.name},\n\nThis is a priority policy renewal reminder from InsureTrack regarding your ${policyType} policy with ${company}.\n\nYour policy ${timePhrase}.${remainingAmt > 0 ? `\n• Remaining Amount Due: ₹${remainingAmt.toLocaleString('en-IN')}` : ''}\n\nPlease renew quick to avoid policy lapse and loss of coverage benefits.\n\nThank you,\nInsureTrack Team`;
+      message = `*POLICY RENEWAL REMINDER*\n\nDear ${customer.name},\n\nThis is a priority policy renewal reminder from Ashok Auto Insurance regarding your ${policyType} policy with ${company}.\n\nYour policy ${timePhrase}.${remainingAmt > 0 ? `\n• Remaining Amount Due: ₹${remainingAmt.toLocaleString('en-IN')}` : ''}\n\nPlease renew quick to avoid policy lapse and loss of coverage benefits.\n\nThank you,\nAshok Auto Insurance Team`;
     } else {
       reminderTitle = 'Remaining Amount Payment Reminder';
-      message = `*PENDING AMOUNT PAYMENT REMINDER*\n\nDear ${customer.name},\n\nThis is a reminder regarding the remaining payment on your ${policyType} policy with ${company}.\n\n• Policy Total: ₹${totalAmt.toLocaleString('en-IN')}\n• Amount Paid: ₹${paidAmt.toLocaleString('en-IN')}\n• Remaining Balance Due: ₹${remainingAmt.toLocaleString('en-IN')}\n\nPlease complete the pending balance payment at your earliest convenience.\n\nThank you,\nInsureTrack Team`;
+      message = `*PENDING AMOUNT PAYMENT REMINDER*\n\nDear ${customer.name},\n\nThis is a reminder regarding the remaining payment on your ${policyType} policy with ${company}.\n\n• Policy Total: ₹${totalAmt.toLocaleString('en-IN')}\n• Amount Paid: ₹${paidAmt.toLocaleString('en-IN')}\n• Remaining Balance Due: ₹${remainingAmt.toLocaleString('en-IN')}\n\nPlease complete the pending balance payment at your earliest convenience.\n\nThank you,\nAshok Auto Insurance Team`;
     }
 
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`;
@@ -883,7 +883,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12.5px', color: '#64748B', fontWeight: 600 }}>
                 <ShieldCheck size={16} color="#16A34A" />
-                <span>Stored securely in InsureTrack</span>
+                <span>Stored securely in Ashok Auto Insurance</span>
               </div>
             </div>
 
@@ -1112,7 +1112,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                   <ShieldCheck size={16} />
                 </div>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '14.5px', color: '#0F172A' }}>Customer Registered in InsureTrack</div>
+                  <div style={{ fontWeight: 700, fontSize: '14.5px', color: '#0F172A' }}>Customer Registered in Ashok Auto Insurance</div>
                   <div style={{ fontSize: '12.5px', color: '#64748B', marginTop: '2px' }}>
                     Policy issued by {customer.insuranceCompany} ({customer.insuranceType})
                   </div>

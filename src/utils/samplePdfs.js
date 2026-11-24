@@ -20,7 +20,7 @@ export function generateSamplePolicyPdf(customer) {
     'BT',
     '/F1 20 Tf',
     '50 780 Td',
-    '(INSURETRACK INSURANCE MANAGEMENT) Tj',
+    '(ASHOK AUTO INSURANCE MANAGEMENT) Tj',
     '/F1 12 Tf',
     '0 -24 Td',
     `(${title}) Tj`,
@@ -48,7 +48,7 @@ export function generateSamplePolicyPdf(customer) {
     '0 -16 Td',
     `(Effective Period:      ${period}) Tj`,
     '0 -16 Td',
-    '(Status:                Active & Verified on InsureTrack Registry) Tj',
+    '(Status:                Active & Verified on Ashok Auto Insurance Registry) Tj',
     '0 -30 Td',
     '/F1 14 Tf',
     '(3. FINANCIAL & PREMIUM STATEMENT) Tj',
@@ -68,7 +68,7 @@ export function generateSamplePolicyPdf(customer) {
     '(For claims, verification, or renewals, contact your designated insurance administrator.) Tj',
     '0 -40 Td',
     '/F1 10 Tf',
-    '(Authorized Administrator Signature:  [ DIGITALLY ATTESTED - INSURETRACK ADMIN ] ) Tj',
+    '(Authorized Administrator Signature:  [ DIGITALLY ATTESTED - ASHOK AUTO INSURANCE ADMIN ] ) Tj',
     'ET'
   ].join('\n');
 

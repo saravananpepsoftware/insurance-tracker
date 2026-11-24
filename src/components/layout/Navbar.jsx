@@ -69,8 +69,8 @@ export function Navbar({ onOpenAddCustomer }) {
         <div className="logo-icon-box" style={{ width: '32px', height: '32px' }}>
           <ShieldCheck size={18} strokeWidth={2.4} />
         </div>
-        <div style={{ fontWeight: 800, fontSize: '18px', color: '#111827', letterSpacing: '-0.02em' }}>
-          Insure<span style={{ color: 'var(--primary-orange)' }}>Track</span>
+        <div style={{ fontWeight: 800, fontSize: '16px', color: '#111827', letterSpacing: '-0.02em' }}>
+          Ashok Auto <span style={{ color: 'var(--primary-orange)' }}>Insurance</span>
         </div>
       </div>
 

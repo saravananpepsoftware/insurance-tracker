@@ -208,7 +208,7 @@ export function Login() {
                 <ShieldCheck size={26} strokeWidth={2.4} />
               </div>
               <div className="login-brand-title">
-                Insure<span>Track</span>
+                Ashok Auto <span>Insurance</span>
               </div>
               <div className="login-brand-subtitle">
                 INSURANCE MANAGEMENT PORTAL
