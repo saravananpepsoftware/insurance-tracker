@@ -239,6 +239,17 @@ export function CustomerDetails({ onOpenEditCustomer }) {
         a.click();
         document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } else if (customer?.pdfDataUri) {
+        const res = await fetch(customer.pdfDataUri);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = customer.pdfFileName || `${customer.name.replace(/\s+/g, '_')}_Policy.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
       } else if (customer?.pdfUrl) {
         window.open(customer.pdfUrl, '_blank');
       } else {
@@ -246,7 +257,9 @@ export function CustomerDetails({ onOpenEditCustomer }) {
       }
     } catch (e) {
       console.error(e);
-      if (customer?.pdfUrl) {
+      if (customer?.pdfDataUri) {
+        window.open(customer.pdfDataUri, '_blank');
+      } else if (customer?.pdfUrl) {
         window.open(customer.pdfUrl, '_blank');
       } else {
         alert('Failed to retrieve PDF file for download.');

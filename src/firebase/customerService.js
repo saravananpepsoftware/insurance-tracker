@@ -19,6 +19,18 @@ import { calculateRemaining, getPaymentStatus } from '../utils/calculations';
 const COLLECTION_NAME = 'customers';
 
 /**
+ * Converts a File or Blob into a Base64 data URI string
+ */
+export function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
  * Real-time subscription to Firebase Firestore customers collection
  * @param {Function} onData Callback receiving array of customer objects
  * @param {Function} onError Callback for error handling
@@ -69,22 +81,33 @@ export async function addCustomerToFirebase(formData, pdfFile) {
   let pdfFileSize = 0;
   let hasPdf = false;
   let pdfUrl = '';
+  let pdfDataUri = '';
 
   if (pdfFile) {
     pdfFileName = pdfFile.name;
     pdfFileSize = pdfFile.size;
     hasPdf = true;
 
-    // 1. Try uploading to Firebase Storage
-    try {
-      const storageRef = ref(storage, `policies/${newId}/${pdfFile.name}`);
-      await uploadBytes(storageRef, pdfFile);
-      pdfUrl = await getDownloadURL(storageRef);
-    } catch (storageErr) {
-      console.warn('Firebase Storage upload failed (rules or config), falling back to local IndexedDB cache:', storageErr);
+    // 1. For files <= 750KB: convert to base64 Data URI and store directly in Firestore!
+    // This completely bypasses any Firebase Storage CORS issues across all devices & localhost.
+    if (pdfFile.size <= 750 * 1024) {
+      try {
+        pdfDataUri = await fileToBase64(pdfFile);
+      } catch (b64Err) {
+        console.warn('Base64 conversion failed:', b64Err);
+      }
+    } else {
+      // 2. For larger files (> 750KB): attempt Firebase Storage
+      try {
+        const storageRef = ref(storage, `policies/${newId}/${pdfFile.name}`);
+        await uploadBytes(storageRef, pdfFile);
+        pdfUrl = await getDownloadURL(storageRef);
+      } catch (storageErr) {
+        console.warn('Firebase Storage upload failed (CORS or rules), caching locally:', storageErr);
+      }
     }
 
-    // 2. Also cache in IndexedDB for instant preview & offline access
+    // 3. Cache in IndexedDB for instant preview & offline access
     try {
       await savePdfDocument(newId, pdfFile, pdfFile.name, pdfFile.size);
     } catch (idbErr) {
@@ -108,6 +131,7 @@ export async function addCustomerToFirebase(formData, pdfFile) {
     pdfFileSize,
     hasPdf,
     pdfUrl,
+    pdfDataUri,
     createdAt: new Date().toISOString()
   };
 
@@ -129,12 +153,14 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
   let pdfFileSize = existing.pdfFileSize || 0;
   let hasPdf = existing.hasPdf || false;
   let pdfUrl = existing.pdfUrl || '';
+  let pdfDataUri = existing.pdfDataUri || '';
 
   if (removePdf) {
     pdfFileName = '';
     pdfFileSize = 0;
     hasPdf = false;
     pdfUrl = '';
+    pdfDataUri = '';
 
     // Delete from IndexedDB
     try {
@@ -144,7 +170,7 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
     }
 
     // Try deleting from Firebase Storage if URL existed
-    if (existing.pdfFileName) {
+    if (existing.pdfFileName && existing.pdfUrl) {
       try {
         const storageRef = ref(storage, `policies/${id}/${existing.pdfFileName}`);
         await deleteObject(storageRef);
@@ -157,13 +183,23 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
     pdfFileSize = newPdfFile.size;
     hasPdf = true;
 
-    // Upload to Firebase Storage
-    try {
-      const storageRef = ref(storage, `policies/${id}/${newPdfFile.name}`);
-      await uploadBytes(storageRef, newPdfFile);
-      pdfUrl = await getDownloadURL(storageRef);
-    } catch (storageErr) {
-      console.warn('Firebase Storage upload error:', storageErr);
+    // Convert to base64 if <= 750KB
+    if (newPdfFile.size <= 750 * 1024) {
+      try {
+        pdfDataUri = await fileToBase64(newPdfFile);
+        pdfUrl = '';
+      } catch (b64Err) {
+        console.warn('Base64 conversion failed:', b64Err);
+      }
+    } else {
+      try {
+        const storageRef = ref(storage, `policies/${id}/${newPdfFile.name}`);
+        await uploadBytes(storageRef, newPdfFile);
+        pdfUrl = await getDownloadURL(storageRef);
+        pdfDataUri = '';
+      } catch (storageErr) {
+        console.warn('Firebase Storage upload error:', storageErr);
+      }
     }
 
     // Cache in IndexedDB
@@ -190,6 +226,7 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
     pdfFileSize,
     hasPdf,
     pdfUrl,
+    pdfDataUri,
     updatedAt: new Date().toISOString()
   };
 
@@ -228,8 +265,8 @@ export async function deleteCustomerFromFirebase(id, customer) {
   const docRef = doc(db, COLLECTION_NAME, id);
   await deleteDoc(docRef);
 
-  // 2. Delete from Firebase Storage if had file
-  if (customer?.pdfFileName) {
+  // 2. Delete from Firebase Storage if had file URL
+  if (customer?.pdfFileName && customer?.pdfUrl) {
     try {
       const storageRef = ref(storage, `policies/${id}/${customer.pdfFileName}`);
       await deleteObject(storageRef);
