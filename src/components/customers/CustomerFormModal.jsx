@@ -233,7 +233,7 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+        <form onSubmit={handleSubmit} noValidate style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
           <div className="modal-body">
             {/* Section 1: Customer Information */}
             <div className="form-section">
@@ -407,7 +407,7 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
                     className="form-input"
                     placeholder="0"
                     min="0"
-                    step="100"
+                    step="any"
                     value={formData.totalAmount}
                     onChange={handleInputChange}
                   />
@@ -422,7 +422,7 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
                     className="form-input"
                     placeholder="0"
                     min="0"
-                    step="100"
+                    step="any"
                     value={formData.partialAmount}
                     onChange={handleInputChange}
                   />

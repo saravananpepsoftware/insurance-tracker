@@ -109,7 +109,7 @@ export function PaymentModal({ isOpen, customer, onClose }) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="modal-body">
             {/* Customer Summary Box */}
             <div style={{
@@ -172,9 +172,9 @@ export function PaymentModal({ isOpen, customer, onClose }) {
                 type="number"
                 className="form-input"
                 placeholder="Enter amount in ₹"
-                min="1"
+                min="0"
                 max={currentRemaining}
-                step="50"
+                step="any"
                 value={newAmount}
                 onChange={handleAmountChange}
                 autoFocus
