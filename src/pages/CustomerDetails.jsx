@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useCustomers } from '../context/CustomerContext';
 import { formatCurrency, formatFileSize } from '../utils/formatCurrency';
 import { formatIndianDate, calculateDaysRemaining, getUrgencyInfo } from '../utils/dateUtils';
+import { calculateRemaining, getPaymentStatus } from '../utils/calculations';
 import { PaymentStatusBadge, InsuranceTypeBadge, RenewalUrgencyBadge } from '../components/common/StatusBadge';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
 import { PaymentModal } from '../components/payments/PaymentModal';
@@ -220,7 +221,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
 
   const total = Number(customer.totalAmount) || 0;
   const paid = Number(customer.partialAmount ?? customer.paidAmount) || 0;
-  const remaining = calculateRemaining(total, paid);
+  const remaining = customer.remainingAmount !== undefined ? Number(customer.remainingAmount) : calculateRemaining(total, paid);
   const paidPercent = total > 0 ? Math.min(100, Math.round((paid / total) * 100)) : 0;
   const daysLeft = calculateDaysRemaining(customer.policyEndDate);
   const urgency = getUrgencyInfo(customer.policyEndDate);
