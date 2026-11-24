@@ -158,14 +158,14 @@ export function Navbar({ onOpenAddCustomer }) {
                   className={`nav-notif-tab ${activeNotifTab === 'pending' ? 'active' : ''}`}
                   onClick={() => setActiveNotifTab('pending')}
                 >
-                  Pending Due ({pendingNotifications.length})
+                  Pay Pending Amount ({pendingNotifications.length})
                 </button>
                 <button
                   type="button"
                   className={`nav-notif-tab ${activeNotifTab === 'expiry' ? 'active' : ''}`}
                   onClick={() => setActiveNotifTab('expiry')}
                 >
-                  Expiring ({expiringNotifications.length})
+                  Policy Expiring Soon ({expiringNotifications.length})
                 </button>
               </div>
 

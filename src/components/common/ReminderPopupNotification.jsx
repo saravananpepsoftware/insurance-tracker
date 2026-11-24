@@ -39,10 +39,13 @@ export function ReminderPopupNotification({ notification, onClose }) {
   if (!notification) return null;
 
   const {
+    title = '',
     recipient = 'Customer',
     phone = '',
     type = 'payment', // 'payment' | 'expiry'
     amount = 0,
+    totalAmount = 0,
+    paidAmount = 0,
     daysLeft = 0,
     policyEndDate = '',
     company = 'Insurance Carrier',
@@ -52,6 +55,7 @@ export function ReminderPopupNotification({ notification, onClose }) {
 
   const isPayment = type === 'payment';
   const isExpired = daysLeft < 0;
+  const displayTitle = title || (isPayment ? 'Pay the pending amount' : 'Your policy will expire soon, renew soon');
 
   return (
     <div
@@ -71,20 +75,25 @@ export function ReminderPopupNotification({ notification, onClose }) {
 
       <div className="reminder-popup-body">
         {/* Left Icon Box with pulsing glow */}
-        <div className="reminder-popup-icon-box">
+        <div className={`reminder-popup-icon-box ${isPayment ? 'icon-payment' : 'icon-expiry'}`}>
           <BellRing size={22} className="bell-ringing-anim" />
         </div>
 
         {/* Content */}
         <div className="reminder-popup-content">
           <div className="reminder-popup-header-row">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span className="reminder-popup-title">
-                App Notification: Reminder Sent!
-              </span>
-              <span className="reminder-popup-badge-admin">
-                Admin Dispatched
-              </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="reminder-popup-badge-admin">
+                  App Pop-up Notification
+                </span>
+                <span style={{ fontSize: '11px', color: '#94A3B8', fontWeight: 600 }}>
+                  Admin Sent
+                </span>
+              </div>
+              <h4 className="reminder-popup-title">
+                {displayTitle}
+              </h4>
             </div>
             <button
               className="reminder-popup-close-btn"
@@ -96,8 +105,16 @@ export function ReminderPopupNotification({ notification, onClose }) {
           </div>
 
           <p className="reminder-popup-desc">
-            WhatsApp reminder notice was dispatched to{' '}
-            <strong>{recipient}</strong> ({phone}).
+            {isPayment ? (
+              <>
+                Notice dispatched to <strong>{recipient}</strong> ({phone}) to pay the pending balance of{' '}
+                <strong style={{ color: '#DC2626' }}>{formatCurrency(amount)}</strong>.
+              </>
+            ) : (
+              <>
+                Notice dispatched to <strong>{recipient}</strong> ({phone}) reminding that policy will expire soon, renew soon.
+              </>
+            )}
           </p>
 
           {/* Details Card */}
@@ -110,7 +127,7 @@ export function ReminderPopupNotification({ notification, onClose }) {
                     Pending Balance Due:
                   </span>
                 </div>
-                <strong style={{ fontSize: '13.5px', color: '#DC2626' }}>
+                <strong style={{ fontSize: '14px', color: '#DC2626', fontWeight: 800 }}>
                   {formatCurrency(amount)}
                 </strong>
               </div>
@@ -119,18 +136,18 @@ export function ReminderPopupNotification({ notification, onClose }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Shield size={15} color="var(--primary-orange)" />
                   <span style={{ fontSize: '12.5px', color: '#475569' }}>
-                    Policy Expiration:
+                    Policy Validity Status:
                   </span>
                 </div>
-                <strong style={{ fontSize: '13px', color: isExpired ? '#DC2626' : '#D97706' }}>
-                  {isExpired ? `Expired (${Math.abs(daysLeft)}d ago)` : `Due in ${daysLeft} days`}
+                <strong style={{ fontSize: '13px', color: isExpired ? '#DC2626' : '#D97706', fontWeight: 800 }}>
+                  {isExpired ? `Expired (${Math.abs(daysLeft)}d ago)` : `Due in ${daysLeft} days (${formatIndianDate(policyEndDate)})`}
                 </strong>
               </div>
             )}
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: '4px', fontSize: '11.5px', color: '#64748B' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: '6px', fontSize: '11.5px', color: '#64748B' }}>
               <span>{company} • {insuranceType}</span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', color: '#16A34A', fontWeight: 600 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', color: '#16A34A', fontWeight: 700 }}>
                 <CheckCircle2 size={12} /> Logged in Records
               </span>
             </div>
@@ -139,7 +156,7 @@ export function ReminderPopupNotification({ notification, onClose }) {
           {/* Action Row */}
           <div className="reminder-popup-footer">
             <span style={{ fontSize: '11px', color: '#94A3B8' }}>
-              Automated in-app popup • Stored in Activity History
+              WhatsApp notice sent • Auto-closing in seconds
             </span>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -172,3 +189,4 @@ export function ReminderPopupNotification({ notification, onClose }) {
 }
 
 export default ReminderPopupNotification;
+

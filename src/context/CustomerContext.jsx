@@ -298,7 +298,7 @@ export function CustomerProvider({ children }) {
   }, []);
 
   // Dispatch reminder (opens WhatsApp, updates customer record, triggers popup notification)
-  const dispatchCustomerReminder = useCallback((customer, type = 'payment') => {
+  const dispatchCustomerReminder = useCallback((customer, type = 'payment', customTitle = null) => {
     if (!customer) return;
 
     const remaining = Number(customer.remainingAmount) || 0;
@@ -309,19 +309,24 @@ export function CustomerProvider({ children }) {
     const company = customer.insuranceCompany || 'your insurer';
     const policyType = customer.insuranceType || 'Insurance Policy';
 
+    const defaultTitle = type === 'payment'
+      ? 'Pay the pending amount'
+      : 'Your policy will expire soon, renew soon';
+    const notificationTitle = customTitle || defaultTitle;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const end = customer.policyEndDate ? new Date(customer.policyEndDate) : today;
+    end.setHours(0, 0, 0, 0);
+    const daysLeft = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    const isExpired = daysLeft < 0;
+    const timePhrase = isExpired ? `has EXPIRED (${Math.abs(daysLeft)} days ago)` : `will expire soon in ${daysLeft} days`;
+
     let message = '';
     if (type === 'payment') {
-      message = `Dear ${customer.name},\n\nThis is a priority payment reminder from InsureTrack regarding your ${policyType} policy with ${company}.\n\n• Policy Total: ₹${total.toLocaleString('en-IN')}\n• Amount Paid: ₹${paid.toLocaleString('en-IN')}\n• Pending Balance: ₹${remaining.toLocaleString('en-IN')}\n\nPlease complete the pending balance settlement at your earliest convenience to maintain continuous policy servicing.\n\nThank you,\nInsureTrack Admin Team`;
+      message = `Dear ${customer.name},\n\n*Pay the pending amount reminder*\n\nThis is a priority payment reminder from InsureTrack regarding your ${policyType} policy with ${company}.\n\n• Policy Total: ₹${total.toLocaleString('en-IN')}\n• Amount Paid: ₹${paid.toLocaleString('en-IN')}\n• Pending Balance: ₹${remaining.toLocaleString('en-IN')}\n\nPlease pay the pending amount at your earliest convenience to maintain continuous policy servicing.\n\nThank you,\nInsureTrack Admin Team`;
     } else {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const end = customer.policyEndDate ? new Date(customer.policyEndDate) : today;
-      end.setHours(0, 0, 0, 0);
-      const daysLeft = Math.ceil((end.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-      const isExpired = daysLeft < 0;
-      const timePhrase = isExpired ? `has EXPIRED (${Math.abs(daysLeft)} days ago)` : `is due for renewal in ${daysLeft} days`;
-
-      message = `Dear ${customer.name},\n\nThis is a priority policy renewal reminder from InsureTrack regarding your ${policyType} policy with ${company}.\n\nYour policy ${timePhrase}.${remaining > 0 ? `\n• Pending Balance: ₹${remaining.toLocaleString('en-IN')}` : ''}\n\nPlease renew promptly to avoid insurance coverage lapse, penalty inspections, and NCB forfeiture.\n\nThank you,\nInsureTrack Admin Team`;
+      message = `Dear ${customer.name},\n\n*Your policy will expire soon, renew soon!*\n\nThis is an urgent renewal notification from InsureTrack regarding your ${policyType} policy with ${company}.\n\nYour policy ${timePhrase}.${remaining > 0 ? `\n• Pending Balance: ₹${remaining.toLocaleString('en-IN')}` : ''}\n\nPlease renew soon to ensure continuous protection, avoid vehicle inspection penalties, and preserve your NCB.\n\nThank you,\nInsureTrack Admin Team`;
     }
 
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`;
@@ -339,11 +344,14 @@ export function CustomerProvider({ children }) {
 
     // Trigger in-app popup notification
     triggerAppNotification({
+      title: notificationTitle,
       recipient: customer.name,
       phone: customer.phone,
       type,
       amount: remaining,
-      daysLeft: customer.policyEndDate ? Math.ceil((new Date(customer.policyEndDate).getTime() - new Date().setHours(0,0,0,0)) / (1000 * 60 * 60 * 24)) : 0,
+      totalAmount: total,
+      paidAmount: paid,
+      daysLeft,
       policyEndDate: customer.policyEndDate,
       company: customer.insuranceCompany,
       insuranceType: customer.insuranceType,

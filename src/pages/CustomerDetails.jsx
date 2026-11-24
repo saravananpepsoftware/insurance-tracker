@@ -333,10 +333,10 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                 <div className="customer-nav-reminder-dropdown-header">
                   <div>
                     <span style={{ fontWeight: 800, fontSize: '13.5px', color: '#0F172A' }}>
-                      Customer Reminders
+                      Send App Notification
                     </span>
                     <div style={{ fontSize: '11.5px', color: '#64748B', marginTop: '1px' }}>
-                      {customer.name} ({customer.phone})
+                      Choose reminder for {customer.name} ({customer.phone})
                     </div>
                   </div>
                   <span
@@ -353,87 +353,90 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                   </span>
                 </div>
 
-                {/* 1. Pending Amount Reminder Card */}
-                <div className="reminder-dropdown-card">
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <Wallet size={15} color="#EA580C" />
-                      <span style={{ fontWeight: 700, fontSize: '12.5px', color: '#1E293B' }}>
-                        Pending Amount
-                      </span>
-                    </div>
-                    <span style={{ fontWeight: 800, fontSize: '13px', color: remaining > 0 ? '#DC2626' : '#16A34A' }}>
-                      {remaining > 0 ? formatCurrency(remaining) : 'Settled'}
-                    </span>
-                  </div>
-
-                  {remaining > 0 ? (
-                    <>
-                      <div style={{ fontSize: '11.5px', color: '#64748B' }}>
-                        Paid {formatCurrency(paid)} of {formatCurrency(total)} total premium.
-                      </div>
-                      <button
-                        type="button"
-                        className="btn-whatsapp-compact"
-                        onClick={() => {
-                          dispatchCustomerReminder(customer, 'payment');
-                          setShowTabReminderMenu(false);
-                        }}
-                      >
-                        <WhatsAppIcon size={14} color="#FFFFFF" />
-                        <span>Remind Pending Payment</span>
-                      </button>
-                    </>
-                  ) : (
-                    <div style={{ fontSize: '11.5px', color: '#16A34A', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <CheckCircle2 size={13} />
-                      <span>All payments cleared (₹0 balance)</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* 2. Policy Expiry Reminder Card */}
-                <div className="reminder-dropdown-card">
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <Shield size={15} color="var(--primary-orange)" />
-                      <span style={{ fontWeight: 700, fontSize: '12.5px', color: '#1E293B' }}>
-                        Policy Expiration
-                      </span>
-                    </div>
-                    <span
-                      style={{
-                        fontWeight: 700,
-                        fontSize: '11px',
-                        color: urgency.color,
-                        backgroundColor: isExpired ? '#FEF2F2' : '#FFF7ED',
-                        padding: '1px 7px',
-                        borderRadius: '9999px'
-                      }}
-                    >
-                      {urgency.label}
-                    </span>
-                  </div>
-
-                  <div style={{ fontSize: '11.5px', color: '#64748B' }}>
-                    Expires on {formatIndianDate(customer.policyEndDate)} ({customer.insuranceCompany})
-                  </div>
-
-                  <button
-                    type="button"
-                    className="btn-whatsapp-compact"
+                <div className="reminder-dropdown-options-list">
+                  {/* Option 1: Your policy will expire soon, renew soon */}
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    className={`reminder-dropdown-option-item ${daysLeft <= 30 ? 'is-active-alert' : ''}`}
                     onClick={() => {
-                      dispatchCustomerReminder(customer, 'expiry');
+                      dispatchCustomerReminder(customer, 'expiry', 'Your policy will expire soon, renew soon');
                       setShowTabReminderMenu(false);
                     }}
+                    title="Click to trigger app pop-up notification & send WhatsApp reminder"
                   >
-                    <WhatsAppIcon size={14} color="#FFFFFF" />
-                    <span>Remind Policy Expiry</span>
-                  </button>
+                    <div className="reminder-option-icon-box expiry">
+                      <Shield size={18} />
+                    </div>
+                    <div className="reminder-option-content">
+                      <div className="reminder-option-header">
+                        <span className="reminder-option-title">
+                          Your policy will expire soon, renew soon
+                        </span>
+                        <span
+                          className={`reminder-option-pill ${
+                            isExpired ? 'pill-danger' : daysLeft <= 30 ? 'pill-warning' : 'pill-neutral'
+                          }`}
+                        >
+                          {urgency.label}
+                        </span>
+                      </div>
+                      <div className="reminder-option-desc">
+                        Expires {formatIndianDate(customer.policyEndDate)} • {customer.insuranceCompany}
+                      </div>
+                      <div className="reminder-option-action-row">
+                        <span className="reminder-option-trigger-text">
+                          <BellRing size={12} />
+                          <span>Trigger App Notification & WhatsApp</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Option 2: Pay the pending amount */}
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    className={`reminder-dropdown-option-item ${remaining > 0 ? 'is-active-alert' : ''}`}
+                    onClick={() => {
+                      dispatchCustomerReminder(customer, 'payment', 'Pay the pending amount');
+                      setShowTabReminderMenu(false);
+                    }}
+                    title="Click to trigger app pop-up notification & send WhatsApp reminder"
+                  >
+                    <div className="reminder-option-icon-box payment">
+                      <Wallet size={18} />
+                    </div>
+                    <div className="reminder-option-content">
+                      <div className="reminder-option-header">
+                        <span className="reminder-option-title">
+                          Pay the pending amount
+                        </span>
+                        <span
+                          className={`reminder-option-pill ${
+                            remaining > 0 ? 'pill-danger' : 'pill-success'
+                          }`}
+                        >
+                          {remaining > 0 ? formatCurrency(remaining) : 'Settled'}
+                        </span>
+                      </div>
+                      <div className="reminder-option-desc">
+                        {remaining > 0
+                          ? `Pending Due: ${formatCurrency(remaining)} (Paid ${formatCurrency(paid)} of ${formatCurrency(total)})`
+                          : 'Premium fully settled (₹0 balance due)'}
+                      </div>
+                      <div className="reminder-option-action-row">
+                        <span className="reminder-option-trigger-text">
+                          <BellRing size={12} />
+                          <span>Trigger App Notification & WhatsApp</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div style={{ fontSize: '10.5px', color: '#94A3B8', textAlign: 'center', marginTop: '4px' }}>
-                  Clicking remind launches WhatsApp & triggers in-app notification
+                <div className="reminder-dropdown-footer-hint">
+                  <span>💡 Select an option above to trigger the app pop-up notification and dispatch reminder.</span>
                 </div>
               </div>
             )}
