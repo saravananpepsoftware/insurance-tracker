@@ -62,6 +62,36 @@ export function CustomerDetails({ onOpenEditCustomer }) {
   const [showTabReminderMenu, setShowTabReminderMenu] = useState(false);
   const tabReminderRef = useRef(null);
 
+  // Temporary 2-second tick indicator state when a reminder message is clicked
+  const [activeTick, setActiveTick] = useState(null); // 'expiry' | 'payment' | null
+  const tickTimeoutRef = useRef(null);
+
+  const handleSendReminderMessage = (type, title) => {
+    // Clear any existing tick timeout
+    if (tickTimeoutRef.current) {
+      clearTimeout(tickTimeoutRef.current);
+    }
+
+    // Dispatch FCM reminder
+    dispatchCustomerReminder(customer, type, title);
+
+    // Show tick for 2 seconds only, then hide
+    setActiveTick(type);
+    tickTimeoutRef.current = setTimeout(() => {
+      setActiveTick(null);
+      setShowTabReminderMenu(false);
+    }, 2000);
+  };
+
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (tickTimeoutRef.current) {
+        clearTimeout(tickTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Close tab reminder menu on outside click
   useEffect(() => {
     function handleClickOutside(event) {
@@ -126,16 +156,6 @@ export function CustomerDetails({ onOpenEditCustomer }) {
   const urgency = getUrgencyInfo(customer.policyEndDate);
   const isExpired = daysLeft < 0;
   const alertCount = (remaining > 0 ? 1 : 0) + (daysLeft <= 30 ? 1 : 0);
-
-  const isExpirySent = Boolean(
-    customer.expiryReminderSent ||
-    customer.renewalReminders?.some(r => r.type === 'expiry' || r.title?.includes('policy expires soon') || r.note?.includes('policy expires soon'))
-  );
-
-  const isPaymentSent = Boolean(
-    customer.paymentReminderSent ||
-    customer.renewalReminders?.some(r => r.type === 'payment' || r.title?.includes('pending amount') || r.note?.includes('pending amount'))
-  );
 
   const handleDownloadPdf = async () => {
     try {
@@ -345,14 +365,11 @@ export function CustomerDetails({ onOpenEditCustomer }) {
               <div className="customer-nav-reminder-dropdown">
                 <button
                   type="button"
-                  className={`reminder-dropdown-title-item ${isExpirySent ? 'is-sent' : ''}`}
-                  onClick={() => {
-                    dispatchCustomerReminder(customer, 'expiry', 'Your policy expires soon, renew quick');
-                  }}
-                  title={isExpirySent ? 'Policy expiry reminder sent' : 'Click to send reminder'}
+                  className={`reminder-dropdown-title-item ${activeTick === 'expiry' ? 'is-sent' : ''}`}
+                  onClick={() => handleSendReminderMessage('expiry', 'Your policy expires soon, renew quick')}
                 >
                   <span>Your policy expires soon, renew quick</span>
-                  {isExpirySent && (
+                  {activeTick === 'expiry' && (
                     <span className="reminder-tick-badge" title="Sent">
                       <Check size={13} strokeWidth={2.8} />
                     </span>
@@ -363,14 +380,11 @@ export function CustomerDetails({ onOpenEditCustomer }) {
 
                 <button
                   type="button"
-                  className={`reminder-dropdown-title-item ${isPaymentSent ? 'is-sent' : ''}`}
-                  onClick={() => {
-                    dispatchCustomerReminder(customer, 'payment', 'Pay the pending amount');
-                  }}
-                  title={isPaymentSent ? 'Pending amount reminder sent' : 'Click to send reminder'}
+                  className={`reminder-dropdown-title-item ${activeTick === 'payment' ? 'is-sent' : ''}`}
+                  onClick={() => handleSendReminderMessage('payment', 'Pay the pending amount')}
                 >
                   <span>Pay the pending amount</span>
-                  {isPaymentSent && (
+                  {activeTick === 'payment' && (
                     <span className="reminder-tick-badge" title="Sent">
                       <Check size={13} strokeWidth={2.8} />
                     </span>
