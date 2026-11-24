@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastProvider } from './context/ToastContext';
 import { CustomerProvider } from './context/CustomerContext';
 import { ToastContainer } from './components/common/ToastContainer';
+import { ReminderPopupNotification } from './components/common/ReminderPopupNotification';
+import { useCustomers } from './context/CustomerContext';
 import { Sidebar } from './components/layout/Sidebar';
 import { Navbar } from './components/layout/Navbar';
 import { MobileNavigation } from './components/layout/MobileNavigation';
@@ -25,6 +27,7 @@ import './styles/components.css';
 import './styles/responsive.css';
 
 function AppContent() {
+  const { popupNotification, closeAppNotification } = useCustomers();
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [customerToEdit, setCustomerToEdit] = useState(null);
 
@@ -96,6 +99,12 @@ function AppContent() {
 
       {/* Global Toast Notifications Container */}
       <ToastContainer />
+
+      {/* Global In-App Pop-up Notification for Admin Reminders */}
+      <ReminderPopupNotification
+        notification={popupNotification}
+        onClose={closeAppNotification}
+      />
     </div>
   );
 }

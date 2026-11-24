@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCustomers } from '../context/CustomerContext';
 import { formatCurrency, formatFileSize } from '../utils/formatCurrency';
@@ -34,13 +34,14 @@ import {
   AlertCircle,
   CheckCircle2,
   BellRing,
-  Send
+  Send,
+  ChevronDown
 } from 'lucide-react';
 
 export function CustomerDetails({ onOpenEditCustomer }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getCustomerById, deleteCustomer, recordRenewalReminder } = useCustomers();
+  const { getCustomerById, deleteCustomer, recordRenewalReminder, dispatchCustomerReminder } = useCustomers();
 
   const customer = getCustomerById(id);
 
@@ -53,6 +54,21 @@ export function CustomerDetails({ onOpenEditCustomer }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showPdfModal, setShowPdfModal] = useState(false);
   const [pdfMeta, setPdfMeta] = useState(null);
+
+  // Reminder popover state on navigation bar
+  const [showTabReminderMenu, setShowTabReminderMenu] = useState(false);
+  const tabReminderRef = useRef(null);
+
+  // Close tab reminder menu on outside click
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (tabReminderRef.current && !tabReminderRef.current.contains(event.target)) {
+        setShowTabReminderMenu(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Check indexedDB PDF meta
   useEffect(() => {
@@ -106,6 +122,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
   const daysLeft = calculateDaysRemaining(customer.policyEndDate);
   const urgency = getUrgencyInfo(customer.policyEndDate);
   const isExpired = daysLeft < 0;
+  const alertCount = (remaining > 0 ? 1 : 0) + (daysLeft <= 30 ? 1 : 0);
 
   const handleDownloadPdf = async () => {
     try {
@@ -255,39 +272,173 @@ export function CustomerDetails({ onOpenEditCustomer }) {
         </div>
       </div>
 
-      {/* Floating Horizontal Navigation Tabs Bar */}
+      {/* Floating Horizontal Navigation Tabs Bar with Reminder Bell */}
       <div className="customer-nav-tabs-bar">
-        <button
-          className={`customer-nav-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          <LayoutGrid size={16} />
-          <span>Overview</span>
-        </button>
+        <div className="customer-nav-tabs-left">
+          <button
+            className={`customer-nav-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
+            onClick={() => setActiveTab('overview')}
+          >
+            <LayoutGrid size={16} />
+            <span>Overview</span>
+          </button>
 
-        <button
-          className={`customer-nav-tab-btn ${activeTab === 'payments' ? 'active' : ''}`}
-          onClick={() => setActiveTab('payments')}
-        >
-          <CreditCard size={16} />
-          <span>Payments</span>
-        </button>
+          <button
+            className={`customer-nav-tab-btn ${activeTab === 'payments' ? 'active' : ''}`}
+            onClick={() => setActiveTab('payments')}
+          >
+            <CreditCard size={16} />
+            <span>Payments</span>
+          </button>
 
-        <button
-          className={`customer-nav-tab-btn ${activeTab === 'documents' ? 'active' : ''}`}
-          onClick={() => setActiveTab('documents')}
-        >
-          <FileText size={16} />
-          <span>Documents</span>
-        </button>
+          <button
+            className={`customer-nav-tab-btn ${activeTab === 'documents' ? 'active' : ''}`}
+            onClick={() => setActiveTab('documents')}
+          >
+            <FileText size={16} />
+            <span>Documents</span>
+          </button>
 
-        <button
-          className={`customer-nav-tab-btn ${activeTab === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveTab('history')}
-        >
-          <Clock size={16} />
-          <span>Activity History</span>
-        </button>
+          <button
+            className={`customer-nav-tab-btn ${activeTab === 'history' ? 'active' : ''}`}
+            onClick={() => setActiveTab('history')}
+          >
+            <Clock size={16} />
+            <span>Activity History</span>
+          </button>
+        </div>
+
+        {/* Right: Bell Icon Reminder Dropdown on this Navbar */}
+        <div className="customer-nav-tabs-right">
+          <div className="customer-nav-reminder-wrapper" ref={tabReminderRef}>
+            <button
+              type="button"
+              className={`customer-nav-bell-btn ${alertCount > 0 ? 'has-alerts' : ''} ${showTabReminderMenu ? 'active' : ''}`}
+              onClick={() => setShowTabReminderMenu(!showTabReminderMenu)}
+              title="Reminders for Pending Amount & Policy Expiry"
+            >
+              <div className="bell-icon-inner">
+                <BellRing size={16} />
+                {alertCount > 0 && (
+                  <span className="bell-badge-pill">{alertCount}</span>
+                )}
+              </div>
+              <span>Reminders</span>
+              <ChevronDown size={14} className={`bell-chevron ${showTabReminderMenu ? 'open' : ''}`} />
+            </button>
+
+            {/* Dropdown Popover */}
+            {showTabReminderMenu && (
+              <div className="customer-nav-reminder-dropdown">
+                <div className="customer-nav-reminder-dropdown-header">
+                  <div>
+                    <span style={{ fontWeight: 800, fontSize: '13.5px', color: '#0F172A' }}>
+                      Customer Reminders
+                    </span>
+                    <div style={{ fontSize: '11.5px', color: '#64748B', marginTop: '1px' }}>
+                      {customer.name} ({customer.phone})
+                    </div>
+                  </div>
+                  <span
+                    className="badge"
+                    style={{
+                      backgroundColor: alertCount > 0 ? '#FFEDD5' : '#F0FDF4',
+                      color: alertCount > 0 ? '#C2410C' : '#16A34A',
+                      fontWeight: 700,
+                      fontSize: '11px',
+                      padding: '2px 8px'
+                    }}
+                  >
+                    {alertCount} {alertCount === 1 ? 'Notice' : 'Notices'}
+                  </span>
+                </div>
+
+                {/* 1. Pending Amount Reminder Card */}
+                <div className="reminder-dropdown-card">
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Wallet size={15} color="#EA580C" />
+                      <span style={{ fontWeight: 700, fontSize: '12.5px', color: '#1E293B' }}>
+                        Pending Amount
+                      </span>
+                    </div>
+                    <span style={{ fontWeight: 800, fontSize: '13px', color: remaining > 0 ? '#DC2626' : '#16A34A' }}>
+                      {remaining > 0 ? formatCurrency(remaining) : 'Settled'}
+                    </span>
+                  </div>
+
+                  {remaining > 0 ? (
+                    <>
+                      <div style={{ fontSize: '11.5px', color: '#64748B' }}>
+                        Paid {formatCurrency(paid)} of {formatCurrency(total)} total premium.
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-whatsapp-compact"
+                        onClick={() => {
+                          dispatchCustomerReminder(customer, 'payment');
+                          setShowTabReminderMenu(false);
+                        }}
+                      >
+                        <WhatsAppIcon size={14} color="#FFFFFF" />
+                        <span>Remind Pending Payment</span>
+                      </button>
+                    </>
+                  ) : (
+                    <div style={{ fontSize: '11.5px', color: '#16A34A', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <CheckCircle2 size={13} />
+                      <span>All payments cleared (₹0 balance)</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Policy Expiry Reminder Card */}
+                <div className="reminder-dropdown-card">
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Shield size={15} color="var(--primary-orange)" />
+                      <span style={{ fontWeight: 700, fontSize: '12.5px', color: '#1E293B' }}>
+                        Policy Expiration
+                      </span>
+                    </div>
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        fontSize: '11px',
+                        color: urgency.color,
+                        backgroundColor: isExpired ? '#FEF2F2' : '#FFF7ED',
+                        padding: '1px 7px',
+                        borderRadius: '9999px'
+                      }}
+                    >
+                      {urgency.label}
+                    </span>
+                  </div>
+
+                  <div style={{ fontSize: '11.5px', color: '#64748B' }}>
+                    Expires on {formatIndianDate(customer.policyEndDate)} ({customer.insuranceCompany})
+                  </div>
+
+                  <button
+                    type="button"
+                    className="btn-whatsapp-compact"
+                    onClick={() => {
+                      dispatchCustomerReminder(customer, 'expiry');
+                      setShowTabReminderMenu(false);
+                    }}
+                  >
+                    <WhatsAppIcon size={14} color="#FFFFFF" />
+                    <span>Remind Policy Expiry</span>
+                  </button>
+                </div>
+
+                <div style={{ fontSize: '10.5px', color: '#94A3B8', textAlign: 'center', marginTop: '4px' }}>
+                  Clicking remind launches WhatsApp & triggers in-app notification
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* TAB 1: OVERVIEW (Exact Reference Mockup Layout) */}
