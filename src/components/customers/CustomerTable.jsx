@@ -139,9 +139,7 @@ export function CustomerTable({
                         <span className="table-expiry-pill pill-danger">{daysLeft} days left</span>
                       ) : daysLeft <= 30 ? (
                         <span className="table-expiry-pill pill-warning">{daysLeft} days left</span>
-                      ) : (
-                        <span className="table-expiry-pill pill-success">Active</span>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 </td>
