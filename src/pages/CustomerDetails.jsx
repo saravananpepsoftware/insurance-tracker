@@ -477,7 +477,8 @@ export function CustomerDetails({ onOpenEditCustomer }) {
           </button>
         </div>
 
-        {/* Right: Bell Icon Reminder Dropdown on this Navbar */}
+        {/* Right: Bell Icon Reminder Dropdown on this Navbar (Commented out as requested) */}
+        {/*
         <div className="customer-nav-tabs-right">
           <div className="customer-nav-reminder-wrapper" ref={tabReminderRef}>
             <button
@@ -496,7 +497,6 @@ export function CustomerDetails({ onOpenEditCustomer }) {
               <ChevronDown size={14} className={`bell-chevron ${showTabReminderMenu ? 'open' : ''}`} />
             </button>
 
-            {/* Dropdown Popover */}
             {showTabReminderMenu && (
               <div className="customer-nav-reminder-dropdown">
                 <button
@@ -530,6 +530,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
             )}
           </div>
         </div>
+        */}
       </div>
 
       {/* TAB 1: OVERVIEW (Exact Reference Mockup Layout) */}
