@@ -17,10 +17,12 @@ import {
 } from '../firebase/customerService';
 import { calculateRemaining, getPaymentStatus, calculateDashboardMetrics } from '../utils/calculations';
 import { useToast } from './ToastContext';
+import { useAuth } from './AuthContext';
 
 const CustomerContext = createContext(null);
 
 export function CustomerProvider({ children }) {
+  const { isAuthenticated } = useAuth();
   const [customers, setCustomers] = useState([]);
   const [companies, setCompanies] = useState(() => getStoredCompanies());
   const [loading, setLoading] = useState(true);
@@ -29,8 +31,14 @@ export function CustomerProvider({ children }) {
   const [searchTerm, setSearchTerm] = useState('');
   const { addToast } = useToast();
 
-  // Listen to live Firebase Firestore updates in real time
+  // Listen to live Firebase Firestore updates in real time (only when authenticated)
   useEffect(() => {
+    if (!isAuthenticated) {
+      setCustomers([]);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     let isInitialLoad = true;
 
@@ -67,7 +75,7 @@ export function CustomerProvider({ children }) {
     );
 
     return () => unsubscribe();
-  }, [addToast]);
+  }, [isAuthenticated, addToast]);
 
   // Persist customers locally
   const persistCustomers = useCallback((newCustomers) => {

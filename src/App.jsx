@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastProvider } from './context/ToastContext';
-import { CustomerProvider } from './context/CustomerContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { CustomerProvider, useCustomers } from './context/CustomerContext';
 import { ToastContainer } from './components/common/ToastContainer';
 import { ReminderPopupNotification } from './components/common/ReminderPopupNotification';
-import { useCustomers } from './context/CustomerContext';
 import { Sidebar } from './components/layout/Sidebar';
 import { Navbar } from './components/layout/Navbar';
 import { MobileNavigation } from './components/layout/MobileNavigation';
 import { CustomerFormModal } from './components/customers/CustomerFormModal';
 
 // Pages
+import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { Customers } from './pages/Customers';
 import { CustomerDetails } from './pages/CustomerDetails';
@@ -26,7 +27,7 @@ import './styles/layout.css';
 import './styles/components.css';
 import './styles/responsive.css';
 
-function AppContent() {
+function AuthenticatedApp() {
   const { popupNotification, closeAppNotification } = useCustomers();
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [customerToEdit, setCustomerToEdit] = useState(null);
@@ -82,6 +83,7 @@ function AppContent() {
             <Route path="/renewals" element={<Renewals />} />
             <Route path="/reports" element={<Reports onOpenAddCustomer={handleOpenAddCustomer} />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/login" element={<Navigate to="/" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
@@ -109,15 +111,36 @@ function AppContent() {
   );
 }
 
+function AppContent() {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return (
+      <div className="unauthenticated-app">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+        <ToastContainer />
+      </div>
+    );
+  }
+
+  return (
+    <CustomerProvider>
+      <AuthenticatedApp />
+    </CustomerProvider>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
       <ToastProvider>
-        <CustomerProvider>
+        <AuthProvider>
           <AppContent />
-        </CustomerProvider>
+        </AuthProvider>
       </ToastProvider>
     </BrowserRouter>
   );
 }
-

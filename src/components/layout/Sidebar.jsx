@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useCustomers } from '../../context/CustomerContext';
+import { useAuth } from '../../context/AuthContext';
 import { SidebarCarIllustration } from './SidebarCarIllustration';
 import {
   Shield,
@@ -11,12 +12,19 @@ import {
   BarChart3,
   Settings,
   ChevronRight,
-  ChevronDown
+  ChevronDown,
+  LogOut
 } from 'lucide-react';
 
 export function Sidebar() {
   const { customers, metrics } = useCustomers();
+  const { logout } = useAuth();
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   return (
     <aside className="sidebar">
@@ -149,6 +157,27 @@ export function Sidebar() {
             </>
           )}
         </NavLink>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="nav-link-pill"
+          style={{
+            background: 'none',
+            border: 'none',
+            width: '100%',
+            cursor: 'pointer',
+            textAlign: 'left',
+            color: '#64748B',
+            marginTop: '4px'
+          }}
+          title="Sign out of Admin Session"
+        >
+          <div className="nav-pill-left">
+            <LogOut size={18} color="#EF4444" />
+            <span style={{ color: '#EF4444', fontWeight: 600 }}>Log Out</span>
+          </div>
+        </button>
       </nav>
 
       {/* Sidebar Footer with 3D Illustration, Fluid Waves & Floating Pending Payments Card */}
