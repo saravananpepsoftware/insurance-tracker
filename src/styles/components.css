@@ -451,6 +451,140 @@
   background-color: #D97706;
 }
 
+.urgency-expired {
+  background-color: #FEE2E2;
+  color: #B91C1C;
+  border: 1px solid #FCA5A5;
+}
+.urgency-expired .urgency-dot {
+  background-color: #B91C1C;
+}
+
+/* Dashboard Table Filter Tabs & Controls */
+.dashboard-table-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dashboard-filter-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: 9999px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: 1px solid #E2E8F0;
+  background-color: #F8FAFC;
+  color: #475569;
+}
+
+.dashboard-filter-tab:hover {
+  background-color: #FFF7ED;
+  color: var(--primary-orange);
+  border-color: #FED7AA;
+}
+
+.dashboard-filter-tab.active {
+  background: linear-gradient(135deg, #FF6B00 0%, #FA5A00 100%);
+  color: #FFFFFF;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.28);
+}
+
+.dashboard-filter-tab .tab-count-pill {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 11.5px;
+  font-weight: 800;
+  transition: all var(--transition-fast);
+}
+
+.dashboard-filter-tab.active .tab-count-pill {
+  background-color: rgba(255, 255, 255, 0.28);
+  color: #FFFFFF;
+}
+
+.dashboard-filter-tab:not(.active) .tab-count-pill {
+  background-color: #E2E8F0;
+  color: #475569;
+}
+
+.dashboard-table-subbar {
+  padding: 10px 18px;
+  background-color: #FFFDFB;
+  border-bottom: 1px solid #F1F5F9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.days-filter-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.days-filter-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748B;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.days-filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.days-filter-pill {
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  background-color: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  color: #475569;
+}
+
+.days-filter-pill:hover {
+  border-color: #FED7AA;
+  color: var(--primary-orange);
+  background-color: #FFF7ED;
+}
+
+.days-filter-pill.active {
+  background-color: #FFF7ED;
+  border-color: var(--primary-orange);
+  color: var(--primary-orange);
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(255, 107, 0, 0.15);
+}
+
+.days-filter-summary {
+  font-size: 12.5px;
+  color: #64748B;
+}
+
+.days-filter-summary strong {
+  color: var(--text-primary);
+}
+
 /* Mobile Renewal Card List (Native App style) */
 .mobile-only {
   display: none;

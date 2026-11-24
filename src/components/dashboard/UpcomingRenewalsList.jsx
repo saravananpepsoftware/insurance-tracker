@@ -1,64 +1,205 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { calculateDaysRemaining, formatIndianDate, getUrgencyInfo } from '../../utils/dateUtils';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { getCarrierBadge } from '../../utils/carrierUtils';
+import { PaymentStatusBadge } from '../common/StatusBadge';
 import {
-  RefreshCw,
   ArrowRight,
   Phone,
   User,
   Car,
   Shield,
   Calendar,
-  ChevronRight
+  ChevronRight,
+  CalendarClock,
+  Coins,
+  Filter
 } from 'lucide-react';
 
-export function UpcomingRenewalsList({ customers }) {
+export function UpcomingRenewalsList({ customers = [] }) {
   const navigate = useNavigate();
 
-  // Filter policies expiring in next 30 days and not expired
-  const upcoming = customers
-    .filter((c) => {
+  // Tab filter: 'expiring' | 'pending'
+  const [activeTab, setActiveTab] = useState('expiring');
+
+  // Days filter: '30' | '15' | '7' | 'expired' | 'all'
+  const [daysFilter, setDaysFilter] = useState('30');
+
+  // Overall badge counts
+  const expiring30Count = useMemo(() => {
+    return customers.filter((c) => {
       const days = calculateDaysRemaining(c.policyEndDate);
       return days >= 0 && days <= 30;
-    })
-    .sort((a, b) => calculateDaysRemaining(a.policyEndDate) - calculateDaysRemaining(b.policyEndDate));
+    }).length;
+  }, [customers]);
+
+  const pendingCount = useMemo(() => {
+    return customers.filter((c) => (Number(c.remainingAmount) || 0) > 0).length;
+  }, [customers]);
+
+  // Filtered customer list
+  const filteredList = useMemo(() => {
+    let list = [...customers];
+
+    if (activeTab === 'expiring') {
+      // 1. Expire Customers Filter
+      if (daysFilter === '30') {
+        list = list.filter((c) => {
+          const days = calculateDaysRemaining(c.policyEndDate);
+          return days >= 0 && days <= 30;
+        });
+      } else if (daysFilter === '15') {
+        list = list.filter((c) => {
+          const days = calculateDaysRemaining(c.policyEndDate);
+          return days >= 0 && days <= 15;
+        });
+      } else if (daysFilter === '7') {
+        list = list.filter((c) => {
+          const days = calculateDaysRemaining(c.policyEndDate);
+          return days >= 0 && days <= 7;
+        });
+      } else if (daysFilter === 'expired') {
+        list = list.filter((c) => calculateDaysRemaining(c.policyEndDate) < 0);
+      } else if (daysFilter === 'all') {
+        list = list.filter((c) => !!c.policyEndDate);
+      }
+
+      // Sort by earliest expiration first
+      list.sort((a, b) => calculateDaysRemaining(a.policyEndDate) - calculateDaysRemaining(b.policyEndDate));
+    } else {
+      // 2. Pending Amounts Filter (customers with pending balance)
+      list = list.filter((c) => (Number(c.remainingAmount) || 0) > 0);
+
+      if (daysFilter === '30') {
+        list = list.filter((c) => {
+          const days = calculateDaysRemaining(c.policyEndDate);
+          return days >= 0 && days <= 30;
+        });
+      } else if (daysFilter === '15') {
+        list = list.filter((c) => {
+          const days = calculateDaysRemaining(c.policyEndDate);
+          return days >= 0 && days <= 15;
+        });
+      } else if (daysFilter === '7') {
+        list = list.filter((c) => {
+          const days = calculateDaysRemaining(c.policyEndDate);
+          return days >= 0 && days <= 7;
+        });
+      } else if (daysFilter === 'expired') {
+        list = list.filter((c) => calculateDaysRemaining(c.policyEndDate) < 0);
+      }
+
+      // Sort by highest pending amount first, then by earliest expiration
+      list.sort((a, b) => {
+        const remDiff = (Number(b.remainingAmount) || 0) - (Number(a.remainingAmount) || 0);
+        if (remDiff !== 0) return remDiff;
+        return calculateDaysRemaining(a.policyEndDate) - calculateDaysRemaining(b.policyEndDate);
+      });
+    }
+
+    return list;
+  }, [customers, activeTab, daysFilter]);
 
   return (
     <div className="app-card renewals-dashboard-card" style={{ marginBottom: '24px' }}>
-      <div className="card-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          <RefreshCw size={18} color="var(--primary-orange)" />
-          <span style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text-primary)' }}>
-            Upcoming Policy Renewals
-          </span>
-          <span
-            className="badge badge-orange"
-            style={{ backgroundColor: '#FFEADB', color: 'var(--primary-orange)', fontWeight: 700, fontSize: '12.5px', padding: '3px 10px' }}
+      {/* Card Header with Two Filter Tabs & View All Button */}
+      <div className="card-header" style={{ flexWrap: 'wrap', gap: '12px' }}>
+        <div className="dashboard-table-tabs">
+          {/* Tab 1: Expire Customers */}
+          <button
+            type="button"
+            className={`dashboard-filter-tab ${activeTab === 'expiring' ? 'active' : ''}`}
+            onClick={() => setActiveTab('expiring')}
           >
-            {upcoming.length} Due
-          </span>
+            <CalendarClock size={16} />
+            <span>Expire Customers</span>
+            <span className="tab-count-pill">
+              {expiring30Count} Due
+            </span>
+          </button>
+
+          {/* Tab 2: Pending Amounts */}
+          <button
+            type="button"
+            className={`dashboard-filter-tab ${activeTab === 'pending' ? 'active' : ''}`}
+            onClick={() => setActiveTab('pending')}
+          >
+            <Coins size={16} />
+            <span>Pending Amounts</span>
+            <span className="tab-count-pill">
+              {pendingCount} Pending
+            </span>
+          </button>
         </div>
 
         <button
+          type="button"
           className="btn btn-outline-orange btn-sm"
-          onClick={() => navigate('/renewals')}
+          onClick={() => navigate(activeTab === 'expiring' ? '/renewals' : '/payments')}
           style={{ padding: '6px 14px', fontSize: '13px' }}
         >
-          <span>View All</span>
+          <span>{activeTab === 'expiring' ? 'View All Renewals' : 'View All Payments'}</span>
           <ArrowRight size={14} />
         </button>
       </div>
 
+      {/* Days Filter Sub-Bar */}
+      <div className="dashboard-table-subbar">
+        <div className="days-filter-container">
+          <span className="days-filter-label">
+            <Filter size={13} />
+            <span>Expire Days:</span>
+          </span>
+
+          <div className="days-filter-pills">
+            {[
+              { id: '30', label: '30 Days' },
+              { id: '15', label: '15 Days' },
+              { id: '7', label: '7 Days' },
+              { id: 'expired', label: 'Expired' },
+              { id: 'all', label: 'All' },
+            ].map((pill) => (
+              <button
+                key={pill.id}
+                type="button"
+                className={`days-filter-pill ${daysFilter === pill.id ? 'active' : ''}`}
+                onClick={() => setDaysFilter(pill.id)}
+              >
+                {pill.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="days-filter-summary">
+          Showing <strong>{filteredList.length}</strong> {activeTab === 'expiring' ? 'expiring customers' : 'pending amount customers'}
+        </div>
+      </div>
+
+      {/* Table Content */}
       <div style={{ padding: 0 }}>
-        {upcoming.length === 0 ? (
-          <div style={{ padding: '32px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            <p style={{ fontWeight: 600, color: 'var(--text-primary)' }}>No policies expiring in the next 30 days!</p>
+        {filteredList.length === 0 ? (
+          <div style={{ padding: '36px 20px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            <p style={{ fontWeight: 700, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '6px' }}>
+              {activeTab === 'expiring'
+                ? `No expiring customers found for ${daysFilter === 'all' ? 'All' : daysFilter === 'expired' ? 'Expired' : `${daysFilter} days`}!`
+                : `No pending amount customers found for ${daysFilter === 'all' ? 'All' : daysFilter === 'expired' ? 'Expired' : `${daysFilter} days`}!`}
+            </p>
+            <p style={{ fontSize: '13px', color: '#64748B', marginBottom: '14px' }}>
+              Try selecting a different expire days filter above or switch tabs.
+            </p>
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={() => setDaysFilter('all')}
+            >
+              Show All Customers
+            </button>
           </div>
         ) : (
           <>
-            {/* Desktop Table View (Hidden on mobile) */}
+            {/* Desktop Table View */}
             <div className="table-container desktop-only" style={{ border: 'none', borderRadius: 0, boxShadow: 'none' }}>
               <table className="data-table">
                 <thead>
@@ -67,12 +208,12 @@ export function UpcomingRenewalsList({ customers }) {
                     <th>INSURANCE COMPANY</th>
                     <th>TYPE</th>
                     <th>EXPIRY DATE</th>
-                    <th>URGENCY / DAYS LEFT</th>
+                    <th>{activeTab === 'expiring' ? 'URGENCY / DAYS LEFT' : 'PAYMENT STATUS'}</th>
                     <th style={{ textAlign: 'right' }}>REMAINING AMOUNT</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {upcoming.slice(0, 6).map((c) => {
+                  {filteredList.slice(0, 8).map((c) => {
                     const days = calculateDaysRemaining(c.policyEndDate);
                     const urgency = getUrgencyInfo(c.policyEndDate);
                     const remaining = Number(c.remainingAmount) || 0;
@@ -133,18 +274,29 @@ export function UpcomingRenewalsList({ customers }) {
                         </td>
 
                         <td>
-                          <span
-                            className={`urgency-pill ${
-                              days <= 7
-                                ? 'urgency-critical'
-                                : days <= 15
-                                ? 'urgency-warning'
-                                : 'urgency-notice'
-                            }`}
-                          >
-                            <span className="urgency-dot" />
-                            <span>{urgency.label}</span>
-                          </span>
+                          {activeTab === 'expiring' ? (
+                            <span
+                              className={`urgency-pill ${
+                                days < 0
+                                  ? 'urgency-expired'
+                                  : days <= 7
+                                  ? 'urgency-critical'
+                                  : days <= 15
+                                  ? 'urgency-warning'
+                                  : 'urgency-notice'
+                              }`}
+                            >
+                              <span className="urgency-dot" />
+                              <span>{urgency.label}</span>
+                            </span>
+                          ) : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', alignItems: 'flex-start' }}>
+                              <PaymentStatusBadge status={c.paymentStatus} />
+                              <span style={{ fontSize: '11px', color: '#64748B', fontWeight: 500 }}>
+                                {days < 0 ? `Expired (${Math.abs(days)}d ago)` : `${days}d to expiry`}
+                              </span>
+                            </div>
+                          )}
                         </td>
 
                         <td style={{ textAlign: 'right' }}>
@@ -159,9 +311,9 @@ export function UpcomingRenewalsList({ customers }) {
               </table>
             </div>
 
-            {/* Native Mobile Renewal Cards (No horizontal swipe required!) */}
+            {/* Native Mobile Renewal Cards */}
             <div className="mobile-only mobile-renewal-card-list">
-              {upcoming.slice(0, 6).map((c) => {
+              {filteredList.slice(0, 8).map((c) => {
                 const days = calculateDaysRemaining(c.policyEndDate);
                 const urgency = getUrgencyInfo(c.policyEndDate);
                 const remaining = Number(c.remainingAmount) || 0;
@@ -173,7 +325,7 @@ export function UpcomingRenewalsList({ customers }) {
                     className="mobile-renewal-card"
                     onClick={() => navigate(`/customers/${c.id}`)}
                   >
-                    {/* Top row: Customer Avatar, Name, and Urgency Pill */}
+                    {/* Top row: Customer Avatar, Name, and Urgency / Status */}
                     <div className="mobile-renewal-header">
                       <div className="mobile-renewal-user">
                         <div className="table-customer-avatar">
@@ -192,19 +344,25 @@ export function UpcomingRenewalsList({ customers }) {
                         </div>
                       </div>
 
-                      <span
-                        className={`urgency-pill ${
-                          days <= 7
-                            ? 'urgency-critical'
-                            : days <= 15
-                            ? 'urgency-warning'
-                            : 'urgency-notice'
-                        }`}
-                        style={{ fontSize: '11px', padding: '3px 8px' }}
-                      >
-                        <span className="urgency-dot" />
-                        <span>{urgency.label}</span>
-                      </span>
+                      {activeTab === 'expiring' ? (
+                        <span
+                          className={`urgency-pill ${
+                            days < 0
+                              ? 'urgency-expired'
+                              : days <= 7
+                              ? 'urgency-critical'
+                              : days <= 15
+                              ? 'urgency-warning'
+                              : 'urgency-notice'
+                          }`}
+                          style={{ fontSize: '11px', padding: '3px 8px' }}
+                        >
+                          <span className="urgency-dot" />
+                          <span>{urgency.label}</span>
+                        </span>
+                      ) : (
+                        <PaymentStatusBadge status={c.paymentStatus} />
+                      )}
                     </div>
 
                     {/* Middle row: Badges for Carrier and Policy Type */}
@@ -237,6 +395,7 @@ export function UpcomingRenewalsList({ customers }) {
                       </div>
 
                       <button
+                        type="button"
                         className="btn btn-secondary btn-sm"
                         style={{ padding: '4px 10px', fontSize: '11.5px', borderRadius: '8px' }}
                         onClick={() => navigate(`/customers/${c.id}`)}
