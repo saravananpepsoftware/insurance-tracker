@@ -22,6 +22,7 @@ export function Login() {
   const { isAuthenticated, login, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
+  const [portalType, setPortalType] = useState('admin'); // 'admin' | 'staff'
   const [email, setEmail] = useState('ashokinsurance@gmail.com');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -34,12 +35,24 @@ export function Login() {
     return <Navigate to="/" replace />;
   }
 
+  const handleSwitchPortal = (type) => {
+    if (type === portalType) return;
+    setPortalType(type);
+    setError('');
+    setPassword('');
+    if (type === 'staff') {
+      setEmail('staff@gmail.com');
+    } else {
+      setEmail('ashokinsurance@gmail.com');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (!email.trim()) {
-      setError('Please enter your admin email ID.');
+      setError(`Please enter your ${portalType === 'staff' ? 'staff' : 'admin'} email ID.`);
       return;
     }
     if (!password.trim()) {
@@ -49,7 +62,7 @@ export function Login() {
 
     setIsSubmitting(true);
     try {
-      const res = await login(email, password);
+      const res = await login(email, password, portalType);
       if (res.success) {
         navigate('/', { replace: true });
       } else {
@@ -198,7 +211,7 @@ export function Login() {
         </div>
 
         {/* =========================================================
-            RIGHT COLUMN: Admin Sign In Form
+            RIGHT COLUMN: Sign In Form (Admin & Staff)
             ========================================================= */}
         <div className="login-form-column">
           <div className="login-form-inner">
@@ -215,11 +228,35 @@ export function Login() {
               </div>
             </div>
 
+            {/* Portal Switcher Tabs: Admin Portal vs Staff Portal */}
+            <div className="login-portal-selector">
+              <button
+                type="button"
+                className={`login-portal-pill-btn ${portalType === 'admin' ? 'active' : ''}`}
+                onClick={() => handleSwitchPortal('admin')}
+              >
+                <ShieldCheck size={14} strokeWidth={2.4} />
+                <span>Admin Portal</span>
+              </button>
+              <button
+                type="button"
+                className={`login-portal-pill-btn ${portalType === 'staff' ? 'active' : ''}`}
+                onClick={() => handleSwitchPortal('staff')}
+              >
+                <Users size={14} strokeWidth={2.4} />
+                <span>Staff Portal</span>
+              </button>
+            </div>
+
             {/* Title & Subtitle */}
             <div className="login-form-title-group">
-              <h1 className="login-portal-title">Admin Portal Sign In</h1>
+              <h1 className="login-portal-title">
+                {portalType === 'staff' ? 'Staff Portal Sign In' : 'Admin Portal Sign In'}
+              </h1>
               <p className="login-portal-subtitle">
-                Enter your credentials to manage policies, customers, and payments.
+                {portalType === 'staff'
+                  ? 'Enter your staff credentials to access customer and policy records.'
+                  : 'Enter your credentials to manage policies, customers, and payments.'}
               </p>
             </div>
 
@@ -234,20 +271,20 @@ export function Login() {
             {/* Form */}
             <form onSubmit={handleSubmit} noValidate>
               <div className="login-fields-container">
-                {/* Admin Email ID */}
+                {/* Email Field */}
                 <div className="login-input-group">
-                  <label className="login-field-label" htmlFor="adminEmail">
-                    Admin Email ID
+                  <label className="login-field-label" htmlFor="portalEmail">
+                    {portalType === 'staff' ? 'Staff Email ID' : 'Admin Email ID'}
                   </label>
                   <div className="login-input-shell">
                     <span className="login-input-leading-icon">
                       <Mail size={16} />
                     </span>
                     <input
-                      id="adminEmail"
+                      id="portalEmail"
                       type="email"
                       className="login-native-input"
-                      placeholder="ashokinsurance@gmail.com"
+                      placeholder={portalType === 'staff' ? 'staff@gmail.com' : 'ashokinsurance@gmail.com'}
                       value={email}
                       onChange={(e) => {
                         setEmail(e.target.value);
@@ -259,9 +296,9 @@ export function Login() {
                   </div>
                 </div>
 
-                {/* Password */}
+                {/* Password Field */}
                 <div className="login-input-group">
-                  <label className="login-field-label" htmlFor="adminPassword">
+                  <label className="login-field-label" htmlFor="portalPassword">
                     Password
                   </label>
                   <div className="login-input-shell">
@@ -269,7 +306,7 @@ export function Login() {
                       <Lock size={16} />
                     </span>
                     <input
-                      id="adminPassword"
+                      id="portalPassword"
                       type={showPassword ? 'text' : 'password'}
                       className="login-native-input"
                       placeholder="••••••••••••"
@@ -308,7 +345,15 @@ export function Login() {
                     type="button"
                     className="login-forgot-link"
                     onClick={() => {
-                      alert('Default Administrator Credentials:\nEmail: ashokinsurance@gmail.com\nPassword: Ashok@123');
+                      if (portalType === 'staff') {
+                        alert(
+                          'Staff Default Credentials:\n• Email ID: staff@gmail.com\n• Password: Staff@123\n\nStored in Firestore "staff" collection.'
+                        );
+                      } else {
+                        alert(
+                          'Administrator Default Credentials:\n• Email ID: ashokinsurance@gmail.com\n• Password: Ashok@123\n\nStored in Firestore "admins" collection.'
+                        );
+                      }
                     }}
                   >
                     Forgot password?
@@ -329,7 +374,9 @@ export function Login() {
                   ) : (
                     <>
                       <LogIn size={17} strokeWidth={2.4} />
-                      <span>Sign In to Dashboard</span>
+                      <span>
+                        {portalType === 'staff' ? 'Sign In as Staff' : 'Sign In to Dashboard'}
+                      </span>
                     </>
                   )}
                 </button>
@@ -350,7 +397,7 @@ export function Login() {
                 <span>Secured Portal</span>
               </div>
               <div className="login-secured-desc">
-                Encrypted & Protected with Firebase
+                Encrypted & Protected with Firebase ({portalType === 'staff' ? 'staff collection' : 'admins collection'})
               </div>
             </div>
           </div>

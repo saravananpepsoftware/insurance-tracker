@@ -109,20 +109,31 @@ export function Navbar({ onOpenAddCustomer }) {
           <span className="navbar-add-text-mobile">Add</span>
         </button>
 
-        {/* User Admin Profile Widget with Dropdown */}
+        {/* User Admin/Staff Profile Widget with Dropdown */}
         <div className="user-profile-widget-wrapper" ref={profileMenuRef} style={{ position: 'relative' }}>
           <div
             className="user-profile-widget"
             style={{ cursor: 'pointer', userSelect: 'none' }}
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            title="Click to view Admin account / Logout"
+            title={`Click to view ${user?.role === 'staff' ? 'Staff' : 'Admin'} account / Logout`}
           >
-            <div className="user-avatar">
-              {user?.name ? user.name.slice(0, 2).toUpperCase() : 'AD'}
+            <div
+              className="user-avatar"
+              style={
+                user?.role === 'staff'
+                  ? { background: 'linear-gradient(135deg, #0284C7 0%, #0369A1 100%)', color: '#FFFFFF' }
+                  : {}
+              }
+            >
+              {user?.role === 'staff' ? 'ST' : (user?.name ? user.name.slice(0, 2).toUpperCase() : 'AS')}
             </div>
             <div className="user-meta">
-              <span className="user-name">{user?.name || 'Admin Manager'}</span>
-              <span className="user-role">{user?.email || 'ashokinsurance@gmail.com'}</span>
+              <span className="user-name">
+                {user?.name || (user?.role === 'staff' ? 'Staff Member' : 'Admin Manager')}
+              </span>
+              <span className="user-role">
+                {user?.email || (user?.role === 'staff' ? 'staff@gmail.com' : 'ashokinsurance@gmail.com')}
+              </span>
             </div>
             <ChevronDown size={14} color="#94A3B8" style={{ marginLeft: '2px', transition: 'transform 0.2s', transform: showProfileMenu ? 'rotate(180deg)' : 'none' }} />
           </div>
@@ -147,15 +158,25 @@ export function Navbar({ onOpenAddCustomer }) {
               }}
             >
               <div style={{ paddingBottom: '10px', borderBottom: '1px solid #F1F5F9' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: '#16A34A', fontWeight: 700, textTransform: 'uppercase' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '11px',
+                    color: user?.role === 'staff' ? '#0284C7' : '#16A34A',
+                    fontWeight: 700,
+                    textTransform: 'uppercase'
+                  }}
+                >
                   <UserCheck size={13} />
-                  <span>Authenticated Admin</span>
+                  <span>{user?.role === 'staff' ? 'Authenticated Staff' : 'Authenticated Admin'}</span>
                 </div>
                 <div style={{ fontWeight: 800, fontSize: '13.5px', color: '#0F172A', marginTop: '4px' }}>
-                  {user?.name || 'Ashok Insurance Admin'}
+                  {user?.name || (user?.role === 'staff' ? 'Ashok Insurance Staff' : 'Ashok Insurance Admin')}
                 </div>
                 <div style={{ fontSize: '11.5px', color: 'var(--primary-orange)', fontWeight: 600, wordBreak: 'break-all', marginTop: '2px' }}>
-                  {user?.email || 'ashokinsurance@gmail.com'}
+                  {user?.email || (user?.role === 'staff' ? 'staff@gmail.com' : 'ashokinsurance@gmail.com')}
                 </div>
               </div>
 

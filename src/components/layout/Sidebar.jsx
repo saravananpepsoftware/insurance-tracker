@@ -155,7 +155,7 @@ export function Sidebar() {
             color: '#64748B',
             marginTop: '4px'
           }}
-          title="Sign out of Admin Session"
+          title="Sign out of Session"
         >
           <div className="nav-pill-left">
             <LogOut size={18} color="#EF4444" />

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { seedDefaultAdmin, loginAdmin } from '../firebase/authService';
+import { seedDefaultAdmin, seedDefaultStaff, loginUser } from '../firebase/authService';
 
 const AuthContext = createContext(null);
 const STORAGE_KEY = 'insuretrack_admin_user';
@@ -15,15 +15,18 @@ export function AuthProvider({ children }) {
   });
   const [loading, setLoading] = useState(false);
 
-  // Seed default admin in Firestore on app launch
+  // Seed default admin and staff in Firestore on app launch
   useEffect(() => {
-    seedDefaultAdmin().catch(console.error);
+    Promise.all([
+      seedDefaultAdmin().catch(console.error),
+      seedDefaultStaff().catch(console.error)
+    ]);
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, portalType = 'admin') => {
     setLoading(true);
     try {
-      const result = await loginAdmin(email, password);
+      const result = await loginUser(email, password, portalType);
       if (result.success && result.user) {
         setUser(result.user);
         try {
@@ -70,3 +73,4 @@ export function useAuth() {
   return context;
 }
 
+export default AuthContext;
