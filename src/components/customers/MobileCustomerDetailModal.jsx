@@ -187,32 +187,37 @@ export function MobileCustomerDetailModal({
             {customer.pdfUrl || customer.pdfFileName ? (
               <div className="mobile-pdf-preview-box">
                 <div className="mobile-pdf-info">
-                  <FileText size={22} color="var(--primary-orange)" />
-                  <div>
-                    <div className="mobile-pdf-name">{customer.pdfFileName || 'Policy_Document.pdf'}</div>
+                  <div className="mobile-pdf-icon-badge">
+                    <FileText size={18} color="var(--primary-orange)" />
+                  </div>
+                  <div className="mobile-pdf-text-wrap">
+                    <div className="mobile-pdf-name" title={customer.pdfFileName}>
+                      {customer.pdfFileName || 'Policy_Document.pdf'}
+                    </div>
                     <div className="mobile-pdf-meta">
                       {customer.pdfFileSize ? formatFileSize(customer.pdfFileSize) + ' • ' : ''}
-                      Stored in Cloud Storage
+                      Stored in Firebase Storage
                     </div>
                   </div>
                 </div>
-                <div className="mobile-pdf-actions">
+
+                <div className="mobile-pdf-actions-grid">
                   <button
                     type="button"
-                    className="btn btn-primary btn-sm"
+                    className="btn btn-primary btn-sm mobile-pdf-action-btn"
                     onClick={() => {
                       if (onViewPdf) onViewPdf(customer);
                     }}
                   >
-                    <Eye size={12} />
+                    <Eye size={13} />
                     <span>View PDF</span>
                   </button>
                   <button
                     type="button"
-                    className="btn btn-secondary btn-sm"
+                    className="btn btn-secondary btn-sm mobile-pdf-action-btn"
                     onClick={handleDownloadPdf}
                   >
-                    <Download size={12} />
+                    <Download size={13} />
                     <span>Download</span>
                   </button>
                 </div>

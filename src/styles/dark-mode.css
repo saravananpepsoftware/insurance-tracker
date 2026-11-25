@@ -1379,8 +1379,32 @@ body[data-theme="dark"],
 }
 
 [data-theme="dark"] .mobile-pdf-preview-box {
-  background-color: #212121 !important;
+  background-color: #262626 !important;
   border-color: #333333 !important;
+}
+
+[data-theme="dark"] .mobile-pdf-icon-badge {
+  background-color: rgba(255, 107, 0, 0.12) !important;
+  border-color: rgba(255, 107, 0, 0.25) !important;
+}
+
+[data-theme="dark"] .mobile-pdf-name {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .mobile-pdf-meta {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .mobile-pdf-action-btn.btn-secondary {
+  background-color: #262626 !important;
+  border: 1px solid #383838 !important;
+  color: #F1F5F9 !important;
+}
+
+[data-theme="dark"] .mobile-pdf-action-btn.btn-secondary:hover {
+  background-color: #303030 !important;
+  border-color: #4A4A4A !important;
 }
 
 [data-theme="dark"] .mobile-detail-footer {
