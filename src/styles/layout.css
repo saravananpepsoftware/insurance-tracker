@@ -397,11 +397,14 @@
   flex-shrink: 0;
 }
 
-.navbar-shield-logo {
-  width: 48px;
-  height: 53px;
+.navbar-brand-logo-img {
+  width: 58px;
+  height: 54px;
+  object-fit: contain;
   flex-shrink: 0;
-  filter: drop-shadow(0 3px 8px rgba(220, 50, 0, 0.28));
+  filter: drop-shadow(0 4px 10px rgba(234, 78, 0, 0.28));
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .navbar-brand-divider {

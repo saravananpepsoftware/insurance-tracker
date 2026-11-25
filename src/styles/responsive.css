@@ -91,9 +91,10 @@
     min-width: 0 !important;
   }
 
-  .navbar-shield-logo {
-    width: 36px !important;
+  .navbar-brand-logo-img {
+    width: 42px !important;
     height: 40px !important;
+    object-fit: contain !important;
     flex-shrink: 0 !important;
   }
 

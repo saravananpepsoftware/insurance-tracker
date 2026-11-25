@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import brandLogoImg from '../../assets/navbar-brand-logo.png';
 import {
   Plus,
   ChevronDown,
@@ -51,123 +52,12 @@ export function Navbar({ onOpenAddCustomer }) {
         <div className="navbar-capsule">
           {/* Left Brand Section */}
           <div className="navbar-brand-group">
-            {/* Orange Shield Logo with Front Car Silhouette & Dynamic Orbital Ribbon */}
-            <svg
-              className="navbar-shield-logo"
-              width="48"
-              height="53"
-              viewBox="0 0 135 150"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-label="Ashok Auto Logo"
-            >
-              <defs>
-                <linearGradient id="navShieldGrad" x1="25%" y1="0%" x2="75%" y2="100%">
-                  <stop offset="0%" stopColor="#FF9E00" />
-                  <stop offset="45%" stopColor="#FF6A00" />
-                  <stop offset="100%" stopColor="#DC3200" />
-                </linearGradient>
-                <linearGradient id="navSwooshGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#FF5500" />
-                  <stop offset="60%" stopColor="#FF7D00" />
-                  <stop offset="100%" stopColor="#FFA600" />
-                </linearGradient>
-              </defs>
-
-              {/* Main Shield Body */}
-              <path
-                d="M 67.5 9
-                   C 83 12 109 17 124 24
-                   C 125 46 125 68 118 88
-                   C 110 113 88 137 67.5 149
-                   C 47 137 25 113 17 88
-                   C 10 68 10 46 11 24
-                   C 26 17 52 12 67.5 9 Z"
-                fill="url(#navShieldGrad)"
-              />
-
-              {/* Car Silhouette (White) */}
-              {/* Roofline */}
-              <path
-                d="M 48 54 
-                   C 53 47 60 46 67.5 46 
-                   C 75 46 82 47 87 54 
-                   C 81 54 75 53 67.5 53 
-                   C 60 53 54 54 48 54 Z"
-                fill="#FFFFFF"
-              />
-
-              {/* Body, Hood & Side Mirrors */}
-              <path
-                d="M 42 62 
-                   C 38 61 36 63 38 65 
-                   C 40 65 42 64 43 63 
-                   L 44 68 
-                   C 44 70 47 72 50 72 
-                   L 85 72 
-                   C 88 72 91 70 91 68 
-                   L 92 63 
-                   C 93 64 95 65 97 65 
-                   C 99 63 97 61 93 62 
-                   C 88 61 79 59 67.5 59 
-                   C 56 59 47 61 42 62 Z"
-                fill="#FFFFFF"
-              />
-
-              {/* Front Lower Bumper */}
-              <path
-                d="M 45 73 
-                   L 46 78 
-                   C 47 81 50 83 55 83 
-                   L 80 83 
-                   C 85 83 88 81 89 78 
-                   L 90 73 
-                   Z"
-                fill="#FFFFFF"
-              />
-
-              {/* Slanted Headlights (cutout showing gradient) */}
-              <path d="M 41 67 Q 45 66 49 68 Q 45 70 41 67 Z" fill="url(#navShieldGrad)" />
-              <path d="M 94 67 Q 90 66 86 68 Q 90 70 94 67 Z" fill="url(#navShieldGrad)" />
-
-              {/* Lower Grille slot (cutout showing gradient) */}
-              <rect x="54" y="76" width="27" height="3.5" rx="1.5" fill="url(#navShieldGrad)" />
-
-              {/* Dynamic Orbital Ribbon Swoosh */}
-              {/* Cutout Underlay to separate from shield */}
-              <path
-                className="navbar-shield-swoosh-cutout"
-                d="M 6 96 
-                   C 6 112 18 126 38 126 
-                   C 60 126 88 108 124 74 
-                   C 128 70 131 66 133 63
-                   C 129 68 122 76 114 83
-                   C 86 108 59 121 38 121
-                   C 21 121 12 110 12 96
-                   C 12 94 13 92 14 90
-                   C 10 91 7 93 6 96
-                   Z"
-                fill="var(--navbar-shield-cutout, #FFFFFF)"
-                stroke="var(--navbar-shield-cutout, #FFFFFF)"
-                strokeWidth="4.5"
-                strokeLinejoin="round"
-              />
-
-              {/* Foreground Orange Swoosh */}
-              <path
-                d="M 6 96 
-                   C 6 112 18 126 38 126 
-                   C 60 126 88 108 124 74 
-                   C 128 70 131 66 133 63
-                   C 129 68 122 76 114 83
-                   C 86 108 59 121 38 121
-                   C 21 121 12 110 12 96
-                   C 12 94 13 92 14 90
-                   C 10 91 7 93 6 96
-                   Z"
-                fill="url(#navSwooshGrad)"
-              />
-            </svg>
+            {/* 3D Shield & Car Logo */}
+            <img
+              src={brandLogoImg}
+              alt="Ashok Auto Insurance Logo"
+              className="navbar-brand-logo-img"
+            />
 
             <div className="navbar-brand-divider" />
 
