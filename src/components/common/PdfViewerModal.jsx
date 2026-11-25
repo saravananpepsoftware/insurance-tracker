@@ -33,24 +33,6 @@ export function PdfViewerModal({ isOpen, customer, onClose }) {
             if (doc && doc.blob) {
               createdUrl = doc.url;
               setDocData(doc);
-            } else if (customer.pdfDataUri) {
-              try {
-                const res = await fetch(customer.pdfDataUri);
-                const blob = await res.blob();
-                createdUrl = URL.createObjectURL(blob);
-                setDocData({
-                  blob,
-                  url: createdUrl,
-                  fileName: customer.pdfFileName || `${customer.name}_Policy.pdf`,
-                  fileSize: customer.pdfFileSize || blob.size
-                });
-              } catch (b64Err) {
-                setDocData({
-                  url: customer.pdfDataUri,
-                  fileName: customer.pdfFileName || `${customer.name}_Policy.pdf`,
-                  fileSize: customer.pdfFileSize || 0
-                });
-              }
             } else {
               setError('No PDF file found for this customer.');
             }

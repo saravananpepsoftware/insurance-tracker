@@ -4,6 +4,7 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
+  deleteField,
   onSnapshot
 } from 'firebase/firestore';
 import {
@@ -278,9 +279,9 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
     updatedAt: new Date().toISOString()
   };
 
-  // Strip out any legacy pdfDataUri so Firestore remains completely free of PDF data
-  if ('pdfDataUri' in updatedCustomer) {
-    delete updatedCustomer.pdfDataUri;
+  // Delete any legacy pdfDataUri field from Firestore if present
+  if ('pdfDataUri' in updatedCustomer || 'pdfDataUri' in existing) {
+    updatedCustomer.pdfDataUri = deleteField();
   }
 
   const docRef = doc(db, COLLECTION_NAME, id);
