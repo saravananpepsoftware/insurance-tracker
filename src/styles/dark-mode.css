@@ -1328,6 +1328,27 @@ body[data-theme="dark"],
   color: #FF6B00 !important;
 }
 
+[data-theme="dark"] .m-table-cust-name {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .m-table-cust-phone {
+  color: #888888 !important;
+}
+
+[data-theme="dark"] .m-table-detail-btn {
+  background-color: #262626 !important;
+  border-color: #383838 !important;
+  color: #F1F5F9 !important;
+}
+
+[data-theme="dark"] .m-table-detail-btn:hover,
+[data-theme="dark"] .m-table-detail-btn:active {
+  background-color: #303030 !important;
+  border-color: var(--primary-orange) !important;
+  color: var(--primary-orange) !important;
+}
+
 [data-theme="dark"] .mobile-sheet-handle {
   background-color: #444444 !important;
 }

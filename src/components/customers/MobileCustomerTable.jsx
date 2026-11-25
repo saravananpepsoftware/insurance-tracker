@@ -2,7 +2,7 @@ import React from 'react';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { calculateRemaining, getPaymentStatus } from '../../utils/calculations';
 import { PaymentStatusBadge } from '../common/StatusBadge';
-import { Eye, Phone, User, ChevronRight } from 'lucide-react';
+import { Eye, Phone } from 'lucide-react';
 
 export function MobileCustomerTable({
   customers,
@@ -15,16 +15,16 @@ export function MobileCustomerTable({
           <span className="mobile-table-title">Customer Directory</span>
           <span className="mobile-table-count-badge">{customers.length}</span>
         </div>
-        <span className="mobile-table-hint">Tap any row for full details</span>
+        <span className="mobile-table-hint">Tap row for details</span>
       </div>
 
       <div className="mobile-table-wrapper">
         <table className="mobile-customer-table">
           <thead>
             <tr>
-              <th style={{ width: '45%', textAlign: 'left', paddingLeft: '14px' }}>Customer</th>
-              <th style={{ width: '32%', textAlign: 'left' }}>Status & Due</th>
-              <th style={{ width: '23%', textAlign: 'right', paddingRight: '14px' }}>Action</th>
+              <th className="m-th-customer">Customer</th>
+              <th className="m-th-status">Status & Due</th>
+              <th className="m-th-action">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -41,7 +41,7 @@ export function MobileCustomerTable({
                   className="mobile-table-row"
                   onClick={() => onViewDetail(c)}
                 >
-                  <td style={{ paddingLeft: '14px' }}>
+                  <td className="m-td-customer">
                     <div className="m-table-cust-cell">
                       <div className="m-table-cust-avatar">
                         {initial}
@@ -61,27 +61,27 @@ export function MobileCustomerTable({
                     </div>
                   </td>
 
-                  <td>
+                  <td className="m-td-status">
                     <div className="m-table-status-cell">
-                      <PaymentStatusBadge status={status} />
+                      <PaymentStatusBadge status={status} short />
                       <span className={`m-table-due ${remaining > 0 ? 'due-danger' : 'due-settled'}`}>
                         {remaining > 0 ? formatCurrency(remaining) : 'Settled'}
                       </span>
                     </div>
                   </td>
 
-                  <td style={{ textAlign: 'right', paddingRight: '14px' }}>
+                  <td className="m-td-action">
                     <button
                       type="button"
-                      className="btn btn-secondary btn-sm m-table-detail-btn"
+                      className="m-table-detail-btn"
                       onClick={(e) => {
                         e.stopPropagation();
                         onViewDetail(c);
                       }}
-                      title="View all details for this customer"
+                      title="View Details"
                     >
                       <Eye size={12} />
-                      <span>View Detail</span>
+                      <span>View</span>
                     </button>
                   </td>
                 </tr>

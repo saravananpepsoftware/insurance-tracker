@@ -2,7 +2,7 @@ import React from 'react';
 import { getUrgencyInfo } from '../../utils/dateUtils';
 import { Car, ShieldCheck } from 'lucide-react';
 
-export function PaymentStatusBadge({ status }) {
+export function PaymentStatusBadge({ status, short = false }) {
   if (status === 'Paid') {
     return (
       <span className="table-status-clean status-paid">
@@ -13,7 +13,7 @@ export function PaymentStatusBadge({ status }) {
   if (status === 'Partial Payment') {
     return (
       <span className="table-status-clean status-partial">
-        Partial Payment
+        {short ? 'Partial' : 'Partial Payment'}
       </span>
     );
   }
