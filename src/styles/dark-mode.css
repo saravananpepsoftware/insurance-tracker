@@ -1275,3 +1275,102 @@ body[data-theme="dark"],
     transform: translateX(23px);
   }
 }
+
+/* ==========================================================================
+   Dark Mode: Mobile Customer Table & Mobile Detail Sheet
+   ========================================================================== */
+
+[data-theme="dark"] .mobile-table-card {
+  background-color: #212121 !important;
+  border-color: #333333 !important;
+}
+
+[data-theme="dark"] .mobile-table-header-strip {
+  background-color: #262626 !important;
+  border-bottom-color: #333333 !important;
+}
+
+[data-theme="dark"] .mobile-customer-table thead th {
+  background-color: #262626 !important;
+  border-bottom-color: #333333 !important;
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .mobile-customer-table tbody tr {
+  border-bottom-color: #2E2E2E !important;
+}
+
+[data-theme="dark"] .mobile-customer-table tbody tr:active,
+[data-theme="dark"] .mobile-customer-table tbody tr:hover {
+  background-color: #282828 !important;
+}
+
+[data-theme="dark"] .m-table-cust-avatar {
+  background-color: rgba(255, 107, 0, 0.15) !important;
+  color: #FF6B00 !important;
+}
+
+[data-theme="dark"] .mobile-sheet-handle {
+  background-color: #444444 !important;
+}
+
+[data-theme="dark"] .mobile-detail-modal {
+  background-color: #212121 !important;
+  border-color: #333333 !important;
+}
+
+[data-theme="dark"] .mobile-detail-header {
+  border-bottom-color: #333333 !important;
+}
+
+[data-theme="dark"] .mobile-detail-close-btn {
+  background-color: #2A2A2A !important;
+  border-color: #383838 !important;
+  color: #CBD5E1 !important;
+}
+
+[data-theme="dark"] .mobile-contact-call {
+  background-color: rgba(255, 107, 0, 0.15) !important;
+  border-color: rgba(255, 107, 0, 0.3) !important;
+  color: #FF8533 !important;
+}
+
+[data-theme="dark"] .mobile-contact-whatsapp {
+  background-color: rgba(37, 211, 102, 0.15) !important;
+  border-color: rgba(37, 211, 102, 0.35) !important;
+  color: #4ADE80 !important;
+}
+
+[data-theme="dark"] .mobile-detail-card {
+  background-color: #262626 !important;
+  border-color: #333333 !important;
+}
+
+[data-theme="dark"] .mobile-stat-box {
+  background-color: #212121 !important;
+  border-color: #333333 !important;
+}
+
+[data-theme="dark"] .mobile-stat-box.highlight {
+  background-color: rgba(255, 107, 0, 0.08) !important;
+  border-color: rgba(255, 107, 0, 0.35) !important;
+}
+
+[data-theme="dark"] .mobile-detail-row {
+  border-bottom-color: #333333 !important;
+}
+
+[data-theme="dark"] .mobile-pdf-preview-box {
+  background-color: #212121 !important;
+  border-color: #333333 !important;
+}
+
+[data-theme="dark"] .mobile-detail-footer {
+  background-color: #212121 !important;
+  border-top-color: #333333 !important;
+}
+
+[data-theme="dark"] .mobile-full-page-btn {
+  background-color: #262626 !important;
+  border-color: #383838 !important;
+}

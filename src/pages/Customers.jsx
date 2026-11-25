@@ -2,6 +2,9 @@ import React, { useState, useMemo } from 'react';
 import { useCustomers } from '../context/CustomerContext';
 import { calculateDaysRemaining } from '../utils/dateUtils';
 import { CustomerTable } from '../components/customers/CustomerTable';
+import { MobileCustomerTable } from '../components/customers/MobileCustomerTable';
+import { MobileCustomerDetailModal } from '../components/customers/MobileCustomerDetailModal';
+import { PdfViewerModal } from '../components/common/PdfViewerModal';
 import { CustomerCard } from '../components/customers/CustomerCard';
 import { CustomerFilterBar } from '../components/customers/CustomerFilterBar';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
@@ -21,6 +24,8 @@ export function Customers({ onOpenAddCustomer, onOpenEditCustomer }) {
   // Modals state
   const [customerToDelete, setCustomerToDelete] = useState(null);
   const [customerForPayment, setCustomerForPayment] = useState(null);
+  const [selectedCustomerForDetail, setSelectedCustomerForDetail] = useState(null);
+  const [customerForPdf, setCustomerForPdf] = useState(null);
 
   // Multi-filter evaluation
   const filteredCustomers = useMemo(() => {
@@ -131,18 +136,30 @@ export function Customers({ onOpenAddCustomer, onOpenEditCustomer }) {
             onAddPayment={(c) => setCustomerForPayment(c)}
           />
 
-          {/* Mobile Card List View */}
-          <div className="mobile-card-list">
-            {filteredCustomers.map((c) => (
-              <CustomerCard
-                key={c.id}
-                customer={c}
-                onAddPayment={(c) => setCustomerForPayment(c)}
-              />
-            ))}
-          </div>
+          {/* Mobile Table View (Clean, compact, no big cards) */}
+          <MobileCustomerTable
+            customers={filteredCustomers}
+            onViewDetail={(c) => setSelectedCustomerForDetail(c)}
+          />
         </>
       )}
+
+      {/* Mobile Customer Full Detail Modal */}
+      <MobileCustomerDetailModal
+        isOpen={!!selectedCustomerForDetail}
+        customer={selectedCustomerForDetail}
+        onClose={() => setSelectedCustomerForDetail(null)}
+        onAddPayment={(c) => setCustomerForPayment(c)}
+        onEditCustomer={(c) => onOpenEditCustomer(c)}
+        onViewPdf={(c) => setCustomerForPdf(c)}
+      />
+
+      {/* PDF Viewer Modal */}
+      <PdfViewerModal
+        isOpen={!!customerForPdf}
+        customer={customerForPdf}
+        onClose={() => setCustomerForPdf(null)}
+      />
 
       {/* Delete Confirmation Modal */}
       <ConfirmDialog
