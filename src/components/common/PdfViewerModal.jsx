@@ -17,61 +17,53 @@ export function PdfViewerModal({ isOpen, customer, onClose }) {
       setError(null);
       setDocData(null);
 
-      getPdfDocument(customer.id)
-        .then(async (doc) => {
-          if (!active) return;
-          if (doc && doc.blob) {
-            createdUrl = doc.url;
-            setDocData(doc);
-          } else if (customer.pdfDataUri) {
-            try {
-              const res = await fetch(customer.pdfDataUri);
-              const blob = await res.blob();
-              createdUrl = URL.createObjectURL(blob);
-              setDocData({
-                blob,
-                url: createdUrl,
-                fileName: customer.pdfFileName || `${customer.name}_Policy.pdf`,
-                fileSize: customer.pdfFileSize || blob.size
-              });
-            } catch (b64Err) {
-              setDocData({
-                url: customer.pdfDataUri,
-                fileName: customer.pdfFileName || `${customer.name}_Policy.pdf`,
-                fileSize: customer.pdfFileSize || 0
-              });
-            }
-          } else if (customer.pdfUrl) {
-            try {
-              const res = await fetch(customer.pdfUrl);
-              const blob = await res.blob();
-              createdUrl = URL.createObjectURL(blob);
-              setDocData({
-                blob,
-                url: createdUrl,
-                fileName: customer.pdfFileName || `${customer.name}_Policy.pdf`,
-                fileSize: customer.pdfFileSize || blob.size
-              });
-            } catch (fetchErr) {
-              console.warn('Could not fetch blob from pdfUrl, using direct URL:', fetchErr);
-              setDocData({
-                url: customer.pdfUrl,
-                fileName: customer.pdfFileName || `${customer.name}_Policy.pdf`,
-                fileSize: customer.pdfFileSize || 0
-              });
-            }
-          } else {
-            setError('No PDF file found for this customer.');
-          }
-        })
-        .catch((err) => {
-          if (!active) return;
-          console.error('Error loading PDF document:', err);
-          setError('Failed to load PDF document from storage.');
-        })
-        .finally(() => {
-          if (active) setLoading(false);
+      // Prioritize live Firebase Storage URL
+      if (customer.pdfUrl) {
+        setDocData({
+          url: customer.pdfUrl,
+          fileName: customer.pdfFileName || `${customer.name}_Policy.pdf`,
+          fileSize: customer.pdfFileSize || 0
         });
+        setLoading(false);
+      } else {
+        // Fallback to IndexedDB / local document cache
+        getPdfDocument(customer.id)
+          .then(async (doc) => {
+            if (!active) return;
+            if (doc && doc.blob) {
+              createdUrl = doc.url;
+              setDocData(doc);
+            } else if (customer.pdfDataUri) {
+              try {
+                const res = await fetch(customer.pdfDataUri);
+                const blob = await res.blob();
+                createdUrl = URL.createObjectURL(blob);
+                setDocData({
+                  blob,
+                  url: createdUrl,
+                  fileName: customer.pdfFileName || `${customer.name}_Policy.pdf`,
+                  fileSize: customer.pdfFileSize || blob.size
+                });
+              } catch (b64Err) {
+                setDocData({
+                  url: customer.pdfDataUri,
+                  fileName: customer.pdfFileName || `${customer.name}_Policy.pdf`,
+                  fileSize: customer.pdfFileSize || 0
+                });
+              }
+            } else {
+              setError('No PDF file found for this customer.');
+            }
+          })
+          .catch((err) => {
+            if (!active) return;
+            console.error('Error loading PDF document:', err);
+            setError('Failed to load PDF document from storage.');
+          })
+          .finally(() => {
+            if (active) setLoading(false);
+          });
+      }
     }
 
     return () => {
@@ -85,15 +77,25 @@ export function PdfViewerModal({ isOpen, customer, onClose }) {
   if (!isOpen) return null;
 
   const handleDownload = () => {
-    if (!docData?.blob) return;
-    const url = URL.createObjectURL(docData.blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = docData.fileName || `${customer.name}_Policy.pdf`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    if (docData?.blob) {
+      const url = URL.createObjectURL(docData.blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = docData.fileName || `${customer?.name || 'Customer'}_Policy.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } else if (docData?.url || customer?.pdfUrl) {
+      const targetUrl = docData?.url || customer?.pdfUrl;
+      const a = document.createElement('a');
+      a.href = targetUrl;
+      a.target = '_blank';
+      a.download = docData?.fileName || customer?.pdfFileName || `${customer?.name || 'Customer'}_Policy.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   };
 
   const handleOpenNewTab = () => {

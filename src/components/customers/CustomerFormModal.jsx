@@ -511,7 +511,7 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '13px' }}>{existingPdfName}</div>
                       <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
-                        {formatFileSize(existingPdfSize)} • Uploaded to Secure IndexedDB
+                        {formatFileSize(existingPdfSize)} • Stored in Firebase Storage
                       </div>
                     </div>
                   </div>
@@ -543,7 +543,7 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
                         {pdfFile.name} (Ready to Save)
                       </div>
                       <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
-                        {formatFileSize(pdfFile.size)} • PDF Document
+                        {formatFileSize(pdfFile.size)} • PDF Document (Will store in Firebase Storage)
                       </div>
                     </div>
                   </div>

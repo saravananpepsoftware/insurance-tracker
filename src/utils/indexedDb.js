@@ -10,6 +10,9 @@ const STORE_NAME = 'policy_documents';
 let dbInstance = null;
 
 function openDB() {
+  if (typeof window === 'undefined' || typeof indexedDB === 'undefined') {
+    return Promise.reject(new Error('IndexedDB not supported in this environment'));
+  }
   if (dbInstance) return Promise.resolve(dbInstance);
 
   return new Promise((resolve, reject) => {

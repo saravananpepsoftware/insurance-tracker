@@ -108,7 +108,8 @@ export async function addCustomerToFirebase(formData, pdfFile) {
 
     // 2. Upload to Firebase Cloud Storage (NEVER store binary/base64 in Firestore)
     try {
-      const storageRef = ref(storage, `policies/${newId}/${pdfFile.name}`);
+      const sanitizedFileName = pdfFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const storageRef = ref(storage, `policies/${newId}/${sanitizedFileName}`);
       await uploadBytes(storageRef, pdfFile, {
         contentType: 'application/pdf',
         customMetadata: {
@@ -119,9 +120,10 @@ export async function addCustomerToFirebase(formData, pdfFile) {
         }
       });
       pdfUrl = await getDownloadURL(storageRef);
+      console.log(`PDF uploaded to Firebase Storage successfully for ${newId}:`, pdfUrl);
     } catch (storageErr) {
-      console.warn('Firebase Cloud Storage upload error:', storageErr);
-      // We do NOT store base64 in Firestore even if Storage fails
+      console.error('Firebase Cloud Storage upload error:', storageErr);
+      throw new Error(`Failed to upload PDF to Firebase Cloud Storage: ${storageErr.message || 'Storage error'}`);
     }
 
     // 3. Local client cache in IndexedDB for instant preview & offline retrieval
@@ -216,7 +218,8 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
     // Delete old file from Storage if name changed
     if (existing.pdfFileName && existing.pdfFileName !== newPdfFile.name) {
       try {
-        const oldStorageRef = ref(storage, `policies/${id}/${existing.pdfFileName}`);
+        const sanitizedOldName = existing.pdfFileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const oldStorageRef = ref(storage, `policies/${id}/${sanitizedOldName}`);
         await deleteObject(oldStorageRef);
       } catch (e) {
         console.warn('Failed to delete old PDF from Storage:', e);
@@ -229,7 +232,8 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
 
     // 2. Upload to Firebase Cloud Storage (NEVER in Firestore!)
     try {
-      const storageRef = ref(storage, `policies/${id}/${newPdfFile.name}`);
+      const sanitizedFileName = newPdfFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const storageRef = ref(storage, `policies/${id}/${sanitizedFileName}`);
       await uploadBytes(storageRef, newPdfFile, {
         contentType: 'application/pdf',
         customMetadata: {
@@ -240,8 +244,10 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
         }
       });
       pdfUrl = await getDownloadURL(storageRef);
+      console.log(`PDF updated in Firebase Storage successfully for ${id}:`, pdfUrl);
     } catch (storageErr) {
-      console.warn('Firebase Storage upload error:', storageErr);
+      console.error('Firebase Storage upload error:', storageErr);
+      throw new Error(`Failed to upload PDF to Firebase Cloud Storage: ${storageErr.message || 'Storage error'}`);
     }
 
     // 3. Cache in IndexedDB
@@ -337,9 +343,10 @@ export async function deleteCustomerFromFirebase(id, customer) {
   await deleteDoc(docRef);
 
   // 2. Delete from Firebase Storage if had file URL
-  if (customer?.pdfFileName && customer?.pdfUrl) {
+  if (customer?.pdfFileName) {
     try {
-      const storageRef = ref(storage, `policies/${id}/${customer.pdfFileName}`);
+      const sanitizedFileName = customer.pdfFileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const storageRef = ref(storage, `policies/${id}/${sanitizedFileName}`);
       await deleteObject(storageRef);
     } catch (e) {
       console.warn('Firebase Storage file delete error:', e);

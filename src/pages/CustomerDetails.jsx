@@ -234,6 +234,10 @@ export function CustomerDetails({ onOpenEditCustomer }) {
 
   const handleDownloadPdf = async () => {
     try {
+      if (customer?.pdfUrl) {
+        window.open(customer.pdfUrl, '_blank');
+        return;
+      }
       const doc = await getPdfDocument(customer.id);
       if (doc?.blob) {
         const url = URL.createObjectURL(doc.blob);
@@ -244,27 +248,12 @@ export function CustomerDetails({ onOpenEditCustomer }) {
         a.click();
         document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(url), 1000);
-      } else if (customer?.pdfUrl) {
-        window.open(customer.pdfUrl, '_blank');
-      } else if (customer?.pdfDataUri) {
-        const res = await fetch(customer.pdfDataUri);
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = customer.pdfFileName || `${customer.name.replace(/\s+/g, '_')}_Policy.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
       } else {
         alert('No policy PDF document is currently attached to this record.');
       }
     } catch (e) {
       console.error(e);
-      if (customer?.pdfDataUri) {
-        window.open(customer.pdfDataUri, '_blank');
-      } else if (customer?.pdfUrl) {
+      if (customer?.pdfUrl) {
         window.open(customer.pdfUrl, '_blank');
       } else {
         alert('Failed to retrieve PDF file for download.');
@@ -883,7 +872,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12.5px', color: '#64748B', fontWeight: 600 }}>
                 <ShieldCheck size={16} color="#16A34A" />
-                <span>Stored securely in Ashok Auto Insurance</span>
+                <span>Stored securely in Firebase Cloud Storage</span>
               </div>
             </div>
 
@@ -1042,7 +1031,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                 <div>
                   <div className="policy-doc-name">{displayPdfName}</div>
                   <div className="policy-doc-meta">
-                    {formatFileSize(displayPdfSize)} • IndexedDB Secure File Blob • Generated Certificate
+                    {formatFileSize(displayPdfSize)} • Firebase Storage • Downloadable Policy Document
                   </div>
                 </div>
               </div>
