@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCustomers } from '../context/CustomerContext';
+import { useAuth } from '../context/AuthContext';
 import { formatCurrency } from '../utils/formatCurrency';
 import { AnalyticsCharts } from '../components/dashboard/AnalyticsCharts';
 import { UpcomingRenewalsList } from '../components/dashboard/UpcomingRenewalsList';
@@ -8,6 +9,8 @@ import { DashboardStatRibbon } from '../components/dashboard/DashboardStatRibbon
 
 export function Dashboard() {
   const { customers, metrics } = useCustomers();
+  const { user } = useAuth();
+  const isStaff = user?.role === 'staff';
 
   return (
     <div className="page-container dashboard-page">
@@ -23,9 +26,11 @@ export function Dashboard() {
         <div className="header-with-accent">
           <div className="header-accent-bar" />
           <div>
-            <h1 className="page-title">Executive Dashboard</h1>
+            <h1 className="page-title">{isStaff ? 'Staff Dashboard' : 'Executive Dashboard'}</h1>
             <p className="page-subtitle">
-              Insurance portfolio performance, pending payments, and renewal alerts
+              {isStaff
+                ? 'Customer renewal alerts, policy follow-ups, and operational tasks'
+                : 'Insurance portfolio performance, pending payments, and renewal alerts'}
             </p>
           </div>
         </div>
@@ -36,11 +41,16 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* Dynamic Segmented Stat Ribbon Bar (Matches Reference Design) */}
-      <DashboardStatRibbon metrics={metrics} />
+      {/* Hide Stat Ribbon and Analytics Charts for Staff Login */}
+      {!isStaff && (
+        <>
+          {/* Dynamic Segmented Stat Ribbon Bar (Matches Reference Design) */}
+          <DashboardStatRibbon metrics={metrics} />
 
-      {/* Dashboard Analytics Charts */}
-      <AnalyticsCharts metrics={metrics} />
+          {/* Dashboard Analytics Charts */}
+          <AnalyticsCharts metrics={metrics} />
+        </>
+      )}
 
       {/* Upcoming Renewals Section */}
       <UpcomingRenewalsList customers={customers} />
