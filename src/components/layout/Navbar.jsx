@@ -1,37 +1,19 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useCustomers } from '../../context/CustomerContext';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
-  Search,
   Plus,
   ShieldCheck,
-  X,
   ChevronDown,
   LogOut,
   UserCheck
 } from 'lucide-react';
 
 export function Navbar({ onOpenAddCustomer }) {
-  const { searchTerm, setSearchTerm } = useCustomers();
   const { user, logout } = useAuth();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const searchInputRef = useRef(null);
   const profileMenuRef = useRef(null);
   const navigate = useNavigate();
-  const location = useLocation();
-
-  // Handle Ctrl+K shortcut
-  useEffect(() => {
-    function handleKeyDown(e) {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   // Close profile dropdown on outside click
   useEffect(() => {
@@ -43,18 +25,6 @@ export function Navbar({ onOpenAddCustomer }) {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const handleSearchChange = (e) => {
-    const val = e.target.value;
-    setSearchTerm(val);
-    if (val && location.pathname !== '/customers' && location.pathname !== '/payments' && location.pathname !== '/renewals') {
-      navigate('/customers');
-    }
-  };
-
-  const clearSearch = () => {
-    setSearchTerm('');
-  };
 
   const handleLogout = () => {
     setShowProfileMenu(false);
@@ -71,28 +41,6 @@ export function Navbar({ onOpenAddCustomer }) {
         </div>
         <div className="navbar-mobile-brand-text">
           Ashok Auto <span style={{ color: 'var(--primary-orange)' }}>Insurance</span>
-        </div>
-      </div>
-
-      {/* Global Search Bar (Desktop) */}
-      <div className="navbar-left">
-        <div className="global-search-bar">
-          <Search size={16} color="#94A3B8" />
-          <input
-            ref={searchInputRef}
-            type="text"
-            className="global-search-input"
-            placeholder="Search by customer name, phone, or company..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-          {searchTerm ? (
-            <button onClick={clearSearch} style={{ color: 'var(--text-muted)' }}>
-              <X size={14} />
-            </button>
-          ) : (
-            <span className="search-shortcut-badge">Ctrl + K</span>
-          )}
         </div>
       </div>
 
