@@ -255,16 +255,91 @@
   background-color: #162030 !important;
 }
 
-[data-theme="dark"] .stat-ribbon-segment .stat-label {
+[data-theme="dark"] .stat-ribbon-segment .stat-label,
+[data-theme="dark"] .stat-ribbon-segment .stat-title {
   color: #94A3B8 !important;
 }
 
-[data-theme="dark"] .stat-ribbon-segment .stat-value {
+[data-theme="dark"] .stat-ribbon-segment .stat-value,
+[data-theme="dark"] .stat-ribbon-segment .stat-metric {
   color: #F8FAFC !important;
 }
 
-[data-theme="dark"] .stat-ribbon-segment .stat-subtext {
-  color: #64748B !important;
+[data-theme="dark"] .stat-ribbon-segment .stat-subtext,
+[data-theme="dark"] .stat-ribbon-segment .stat-subtitle {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .stat-icon-circle.icon-peach {
+  background-color: #2D1A0D !important;
+  border-color: #593116 !important;
+  color: #FB923C !important;
+}
+
+[data-theme="dark"] .stat-icon-circle.icon-mint {
+  background-color: #0B291A !important;
+  border-color: #14532D !important;
+  color: #4ADE80 !important;
+}
+
+[data-theme="dark"] .stat-icon-circle.icon-lavender {
+  background-color: #251B38 !important;
+  border-color: #4C1D95 !important;
+  color: #A78BFA !important;
+}
+
+[data-theme="dark"] .segment-slant-line line {
+  stroke: #1E293B !important;
+}
+
+[data-theme="dark"] .chart-view-toggle {
+  background-color: #1E293B !important;
+}
+
+[data-theme="dark"] .chart-toggle-btn {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .chart-toggle-btn.active {
+  background-color: #121A26 !important;
+  color: var(--primary-orange) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .recharts-cartesian-grid line {
+  stroke: #1E293B !important;
+}
+
+[data-theme="dark"] .card-header {
+  background-color: #121A26 !important;
+  border-bottom-color: #1E293B !important;
+}
+
+[data-theme="dark"] .dashboard-filter-tab {
+  background: #16202E !important;
+  border: 1px solid #1E293B !important;
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .dashboard-filter-tab.active {
+  background: var(--primary-orange) !important;
+  border-color: var(--primary-orange) !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .dashboard-filter-tab .tab-count-pill {
+  background: rgba(0, 0, 0, 0.3) !important;
+  color: inherit !important;
+}
+
+[data-theme="dark"] .btn-outline-orange {
+  border-color: var(--primary-orange) !important;
+  color: var(--primary-orange) !important;
+  background: transparent !important;
+}
+
+[data-theme="dark"] .btn-outline-orange:hover {
+  background: rgba(255, 122, 26, 0.12) !important;
 }
 
 [data-theme="dark"] .stat-card {

@@ -276,7 +276,7 @@ export function AnalyticsCharts({ metrics = {} }) {
                       dataKey="value"
                       position="top"
                       formatter={(val) => formatCurrency(val)}
-                      style={{ fill: '#1E293B', fontSize: '12px', fontWeight: 800 }}
+                      style={{ fill: 'var(--text-primary)', fontSize: '12px', fontWeight: 800 }}
                     />
                   </Bar>
                 </BarChart>
@@ -324,7 +324,7 @@ export function AnalyticsCharts({ metrics = {} }) {
                     <LabelList
                       dataKey="count"
                       position="top"
-                      style={{ fill: '#1E293B', fontSize: '13px', fontWeight: 800 }}
+                      style={{ fill: 'var(--text-primary)', fontSize: '13px', fontWeight: 800 }}
                     />
                   </Bar>
                 </BarChart>
