@@ -217,6 +217,20 @@ body[data-theme="dark"],
   border-right-color: #1E293B !important;
 }
 
+[data-theme="dark"] .sidebar-collapse-toggle-btn {
+  background-color: #16202E !important;
+  border-color: #334155 !important;
+  color: #94A3B8 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .sidebar-collapse-toggle-btn:hover {
+  background-color: var(--primary-orange) !important;
+  border-color: var(--primary-orange) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.45) !important;
+}
+
 [data-theme="dark"] .sidebar-brand-title,
 [data-theme="dark"] .logo-brand {
   color: #F8FAFC !important;

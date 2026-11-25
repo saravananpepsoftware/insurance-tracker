@@ -61,6 +61,7 @@
 
   /* Layout Widths */
   --sidebar-width: 260px;
+  --sidebar-collapsed-width: 78px;
   --navbar-height: 72px;
   --bottom-nav-height: 64px;
 }

@@ -22,7 +22,7 @@
   display: flex;
   flex-direction: column;
   z-index: 40;
-  transition: transform var(--transition-smooth);
+  transition: width var(--transition-smooth), transform var(--transition-smooth);
   user-select: none;
 }
 
@@ -334,6 +334,172 @@
   color: var(--primary-orange);
 }
 
+/* Minimize / Expand Toggle Button */
+.sidebar-collapse-toggle-btn {
+  position: absolute;
+  top: 26px;
+  right: -13px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 50;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  transition: all var(--transition-fast);
+  outline: none;
+  padding: 0;
+}
+
+.sidebar-collapse-toggle-btn:hover {
+  background-color: var(--primary-orange);
+  color: #FFFFFF;
+  border-color: var(--primary-orange);
+  transform: scale(1.12);
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.35);
+}
+
+.sidebar-collapse-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* ==========================================================================
+   COLLAPSED SIDEBAR RULES (isCollapsed = true)
+   ========================================================================== */
+
+.app-container.sidebar-collapsed .sidebar {
+  width: var(--sidebar-collapsed-width);
+}
+
+.app-container.sidebar-collapsed .main-wrapper {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+.app-container.sidebar-collapsed .sidebar-header {
+  padding: 20px 8px 14px;
+  justify-content: center;
+}
+
+.app-container.sidebar-collapsed .sidebar-brand-group {
+  justify-content: center;
+  width: 100%;
+}
+
+.app-container.sidebar-collapsed .sidebar-brand-logo-img {
+  width: 44px;
+  height: 40px;
+  margin: 0 auto;
+  transition: transform var(--transition-fast);
+}
+
+.app-container.sidebar-collapsed .sidebar-brand-logo-img:hover {
+  transform: scale(1.08);
+}
+
+.app-container.sidebar-collapsed .sidebar-brand-divider,
+.app-container.sidebar-collapsed .sidebar-brand-text {
+  display: none !important;
+}
+
+.app-container.sidebar-collapsed .sidebar-nav {
+  padding: 10px 8px;
+  align-items: center;
+}
+
+.app-container.sidebar-collapsed .sidebar-section-header {
+  padding: 12px 0 6px;
+  justify-content: center;
+  width: 100%;
+}
+
+.app-container.sidebar-collapsed .sidebar-section-header span:first-child {
+  display: none !important;
+}
+
+.app-container.sidebar-collapsed .sidebar-section-dash {
+  width: 24px;
+  margin: 0 auto;
+}
+
+.app-container.sidebar-collapsed .nav-link-pill {
+  width: 48px !important;
+  height: 48px !important;
+  padding: 0 !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 14px !important;
+  margin-bottom: 6px !important;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.app-container.sidebar-collapsed .nav-pill-left {
+  justify-content: center;
+  gap: 0;
+}
+
+.app-container.sidebar-collapsed .nav-pill-left span {
+  display: none !important;
+}
+
+.app-container.sidebar-collapsed .nav-active-caret {
+  display: none !important;
+}
+
+.app-container.sidebar-collapsed .nav-pill-right {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+}
+
+.app-container.sidebar-collapsed .nav-pill-badge {
+  font-size: 9px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.app-container.sidebar-collapsed .sidebar-footer-container {
+  padding: 12px 8px 18px;
+  background: transparent !important;
+  align-items: center;
+}
+
+.app-container.sidebar-collapsed .sidebar-illustration-wrapper,
+.app-container.sidebar-collapsed .sidebar-car-illustration-wrapper,
+.app-container.sidebar-collapsed .sidebar-artwork-container,
+.app-container.sidebar-collapsed .sidebar-bottom-wave-bg,
+.app-container.sidebar-collapsed .sidebar-3d-artwork-img {
+  display: none !important;
+}
+
+.app-container.sidebar-collapsed .sidebar-floating-pending-card {
+  position: static;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
+  border-radius: 14px;
+  margin: 0 auto;
+}
+
+.app-container.sidebar-collapsed .sidebar-floating-pending-card .pending-card-icon-box {
+  margin: 0;
+}
+
+.app-container.sidebar-collapsed .pending-card-text,
+.app-container.sidebar-collapsed .pending-card-chevron {
+  display: none !important;
+}
+
 /* Main Content Area */
 .main-wrapper {
   flex: 1;
@@ -341,6 +507,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: margin-left var(--transition-smooth);
 }
 
 /* Top Navbar - Floating Stadium Capsule Design */

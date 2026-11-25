@@ -36,7 +36,8 @@
   }
 
   /* Hide Desktop Sidebar */
-  .sidebar {
+  .sidebar,
+  .sidebar-collapse-toggle-btn {
     display: none !important;
   }
 

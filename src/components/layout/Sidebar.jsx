@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useCustomers } from '../../context/CustomerContext';
 import { useAuth } from '../../context/AuthContext';
@@ -12,14 +12,27 @@ import {
   RefreshCw,
   BarChart3,
   ChevronRight,
+  ChevronLeft,
   ChevronDown,
   LogOut
 } from 'lucide-react';
 
-export function Sidebar() {
+export function Sidebar({ isCollapsed = false, onToggleCollapse }) {
   const { customers, metrics } = useCustomers();
   const { logout } = useAuth();
   const navigate = useNavigate();
+
+  // Keyboard shortcut Ctrl+B / Cmd+B to toggle sidebar
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        if (onToggleCollapse) onToggleCollapse();
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onToggleCollapse]);
 
   const handleLogout = () => {
     logout();
@@ -27,10 +40,32 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
+      {/* Minimize / Expand Toggle Button */}
+      {onToggleCollapse && (
+        <button
+          type="button"
+          className="sidebar-collapse-toggle-btn"
+          onClick={onToggleCollapse}
+          title={isCollapsed ? 'Expand Sidebar (Ctrl+B)' : 'Minimize Sidebar (Ctrl+B)'}
+          aria-label={isCollapsed ? 'Expand Sidebar' : 'Minimize Sidebar'}
+        >
+          {isCollapsed ? (
+            <ChevronRight size={14} strokeWidth={2.8} />
+          ) : (
+            <ChevronLeft size={14} strokeWidth={2.8} />
+          )}
+        </button>
+      )}
+
       {/* Brand Header */}
       <div className="sidebar-header">
-        <div className="sidebar-brand-group">
+        <div
+          className="sidebar-brand-group"
+          onClick={isCollapsed ? onToggleCollapse : undefined}
+          style={isCollapsed ? { cursor: 'pointer' } : undefined}
+          title={isCollapsed ? 'Click to expand sidebar' : undefined}
+        >
           <img
             src={brandLogoImg}
             alt="Ashok Auto Insurance Logo"
@@ -64,6 +99,7 @@ export function Sidebar() {
           to="/"
           end
           className={({ isActive }) => `nav-link-pill ${isActive ? 'active' : ''}`}
+          title="Dashboard"
         >
           {({ isActive }) => (
             <>
@@ -79,6 +115,7 @@ export function Sidebar() {
         <NavLink
           to="/customers"
           className={({ isActive }) => `nav-link-pill ${isActive ? 'active' : ''}`}
+          title={`Customers (${customers.length})`}
         >
           {({ isActive }) => (
             <>
@@ -99,6 +136,7 @@ export function Sidebar() {
         <NavLink
           to="/payments"
           className={({ isActive }) => `nav-link-pill ${isActive ? 'active' : ''}`}
+          title="Payments"
         >
           {({ isActive }) => (
             <>
@@ -114,6 +152,7 @@ export function Sidebar() {
         <NavLink
           to="/renewals"
           className={({ isActive }) => `nav-link-pill ${isActive ? 'active' : ''}`}
+          title={metrics.upcomingRenewalsCount > 0 ? `Renewals (${metrics.upcomingRenewalsCount})` : 'Renewals'}
         >
           {({ isActive }) => (
             <>
@@ -142,6 +181,7 @@ export function Sidebar() {
         <NavLink
           to="/reports"
           className={({ isActive }) => `nav-link-pill ${isActive ? 'active' : ''}`}
+          title="Reports"
         >
           {({ isActive }) => (
             <>
