@@ -158,8 +158,16 @@ export function Navbar({ onOpenAddCustomer }) {
             <div className="navbar-user-profile-container" ref={profileMenuRef}>
               <div
                 className="navbar-user-profile user-profile-widget"
-                onClick={() => setShowProfileMenu(!showProfileMenu)}
-                title={`Click to view ${isStaff ? 'Staff' : 'Admin'} account / Logout`}
+                role="button"
+                tabIndex={0}
+                onClick={() => setShowProfileMenu((prev) => !prev)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setShowProfileMenu((prev) => !prev);
+                  }
+                }}
+                title={`Click to view ${isStaff ? 'Staff' : 'Admin'} profile & Log Out`}
               >
                 <div
                   className="navbar-user-avatar user-avatar"
@@ -213,7 +221,7 @@ export function Navbar({ onOpenAddCustomer }) {
                     className="navbar-user-dropdown-logout"
                   >
                     <LogOut size={15} />
-                    <span>Sign Out (Logout)</span>
+                    <span>Log Out</span>
                   </button>
                 </div>
               )}

@@ -570,7 +570,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 24px 0 20px;
-  overflow: hidden;
+  overflow: visible;
   box-sizing: border-box;
 }
 
@@ -714,7 +714,13 @@
   gap: 10px;
   cursor: pointer;
   user-select: none;
-  padding: 4px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  transition: all 0.18s ease;
+}
+
+.navbar-user-profile:hover {
+  background-color: rgba(255, 122, 0, 0.08);
 }
 
 .navbar-user-avatar {
@@ -757,19 +763,30 @@
 /* User Profile Dropdown */
 .navbar-user-dropdown {
   position: absolute;
-  top: calc(100% + 12px);
+  top: calc(100% + 14px);
   right: 0;
-  width: 260px;
+  width: 270px;
   background-color: #FFFFFF;
-  border-radius: 16px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14), 0 4px 14px rgba(255, 107, 0, 0.08);
   border: 1px solid var(--card-border);
-  padding: 14px;
-  z-index: 100;
+  padding: 16px;
+  z-index: 10000;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  animation: fadeIn 0.15s ease-out;
+  gap: 12px;
+  animation: dropdownFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .navbar-user-dropdown-header {
