@@ -217,8 +217,14 @@ body[data-theme="dark"],
   border-right-color: #1E293B !important;
 }
 
+[data-theme="dark"] .sidebar-brand-title,
 [data-theme="dark"] .logo-brand {
   color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .sidebar-brand-divider {
+  background-color: #334155 !important;
+  opacity: 0.6 !important;
 }
 
 [data-theme="dark"] .logo-tagline {

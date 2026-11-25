@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useCustomers } from '../../context/CustomerContext';
 import { useAuth } from '../../context/AuthContext';
 import { SidebarCarIllustration } from './SidebarCarIllustration';
+import brandLogoImg from '../../assets/navbar-brand-logo.png';
 import {
   Shield,
   LayoutGrid,
@@ -29,14 +30,25 @@ export function Sidebar() {
     <aside className="sidebar">
       {/* Brand Header */}
       <div className="sidebar-header">
-        <div className="logo-icon-box">
-          <Shield size={22} className="logo-shield-icon" strokeWidth={2.4} />
-        </div>
-        <div className="logo-text-group">
-          <div className="logo-brand">
-            Ashok Auto <span>Insurance</span>
+        <div className="sidebar-brand-group">
+          <img
+            src={brandLogoImg}
+            alt="Ashok Auto Insurance Logo"
+            className="sidebar-brand-logo-img"
+          />
+          <div className="sidebar-brand-divider" />
+          <div className="sidebar-brand-text">
+            <span className="sidebar-brand-title">Ashok Auto</span>
+            <div className="sidebar-brand-sub-wrap">
+              <span className="sidebar-brand-subtitle">Insurance</span>
+              <svg className="sidebar-brand-swoosh" viewBox="0 0 100 8" fill="none">
+                <path
+                  d="M 2 7 C 28 2, 62 1, 98 3 C 65 5, 30 6, 2 7 Z"
+                  fill="#FF7500"
+                />
+              </svg>
+            </div>
           </div>
-          <div className="logo-tagline">INSURANCE MANAGEMENT</div>
         </div>
       </div>
 
