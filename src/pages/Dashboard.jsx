@@ -6,6 +6,7 @@ import { AnalyticsCharts } from '../components/dashboard/AnalyticsCharts';
 import { UpcomingRenewalsList } from '../components/dashboard/UpcomingRenewalsList';
 import { DashboardHeroArtwork } from '../components/dashboard/DashboardHeroArtwork';
 import { DashboardStatRibbon } from '../components/dashboard/DashboardStatRibbon';
+import { LayoutDashboard } from 'lucide-react';
 
 export function Dashboard() {
   const { customers, metrics } = useCustomers();
@@ -14,29 +15,24 @@ export function Dashboard() {
 
   return (
     <div className="page-container dashboard-page">
-      {/* Header with Orange Accent Bar and Right Artwork from Reference */}
-      <div className="dashboard-header-wrapper" style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: '20px',
-        gap: '16px',
-        flexWrap: 'wrap'
-      }}>
-        <div className="header-with-accent">
-          <div className="header-accent-bar" />
+      {/* Header matching exact reference */}
+      <div className="customer-registry-header">
+        <div className="customer-registry-header-left">
+          <div className="customer-registry-icon-badge">
+            <LayoutDashboard size={22} color="#FFFFFF" strokeWidth={2.4} />
+          </div>
           <div>
-            <h1 className="page-title">{isStaff ? 'Staff Dashboard' : 'Executive Dashboard'}</h1>
-            <p className="page-subtitle">
+            <h1 className="customer-registry-title">{isStaff ? 'Staff Dashboard' : 'Executive Dashboard'}</h1>
+            <p className="customer-registry-subtitle">
               {isStaff
                 ? 'Customer renewal alerts, policy follow-ups, and operational tasks'
-                : 'Insurance portfolio performance, pending payments, and renewal alerts'}
+                : `Insurance portfolio performance, pending payments, and renewal alerts (${customers.length} policies)`}
             </p>
           </div>
         </div>
 
-        {/* Top Right Reference Artwork (Hidden on mobile) */}
-        <div className="dashboard-hero-artwork">
+        {/* Top Right Reference Artwork */}
+        <div className="customer-hero-artwork">
           <DashboardHeroArtwork />
         </div>
       </div>

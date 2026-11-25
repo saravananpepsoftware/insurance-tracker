@@ -8,6 +8,7 @@ import { PaymentStatusBadge } from '../components/common/StatusBadge';
 import { StatCard } from '../components/common/StatCard';
 import { PaymentModal } from '../components/payments/PaymentModal';
 import { EmptyState } from '../components/common/EmptyState';
+import { DashboardHeroArtwork } from '../components/dashboard/DashboardHeroArtwork';
 import {
   CreditCard,
   Layers,
@@ -46,14 +47,23 @@ export function Payments() {
 
   return (
     <div className="page-container">
-      {/* Header with accent bar */}
-      <div className="header-with-accent" style={{ marginBottom: '20px' }}>
-        <div className="header-accent-bar" />
-        <div>
-          <h1 className="page-title">Payments & Premiums</h1>
-          <p className="page-subtitle">
-            Track premium collections, outstanding balances, and installment records
-          </p>
+      {/* Header matching exact reference */}
+      <div className="customer-registry-header">
+        <div className="customer-registry-header-left">
+          <div className="customer-registry-icon-badge">
+            <CreditCard size={22} color="#FFFFFF" strokeWidth={2.4} />
+          </div>
+          <div>
+            <h1 className="customer-registry-title">Payments & Premiums</h1>
+            <p className="customer-registry-subtitle">
+              Track premium collections, outstanding balances, and installment records ({customers.length} total)
+            </p>
+          </div>
+        </div>
+
+        {/* Top Right Reference Artwork */}
+        <div className="customer-hero-artwork">
+          <DashboardHeroArtwork />
         </div>
       </div>
 
@@ -243,81 +253,103 @@ export function Payments() {
             </table>
           </div>
 
-          {/* Native Mobile Payment Cards (Zero swipe!) */}
-          <div className="mobile-only mobile-renewal-card-list">
-            {filteredCustomers.map((c) => {
-              const paid = Number(c.partialAmount ?? c.paidAmount) || 0;
-              const total = Number(c.totalAmount) || 0;
-              const remaining = calculateRemaining(total, paid);
-              const status = getPaymentStatus(total, paid);
-              const carrier = getCarrierBadge(c.insuranceCompany, c.carrierCode);
+          {/* Mobile Payments Table View (Matches exact Customer Directory style, zero swipe!) */}
+          <div className="mobile-table-card mobile-only">
+            <div className="mobile-table-header-strip">
+              <div className="mobile-table-title-area">
+                <span className="mobile-table-title">Payment Directory</span>
+                <span className="mobile-table-count-badge">{filteredCustomers.length}</span>
+              </div>
+              <span className="mobile-table-hint">Tap row for details</span>
+            </div>
 
-              return (
-                <div
-                  key={`m-payment-${c.id}`}
-                  className="mobile-renewal-card"
-                  onClick={() => navigate(`/customers/${c.id}`)}
-                >
-                  <div className="mobile-renewal-header">
-                    <div className="mobile-renewal-user">
-                      <div className="table-customer-avatar">
-                        <User size={15} />
-                      </div>
-                      <div>
-                        <div className="mobile-renewal-name">{c.name}</div>
-                        <div style={{ fontSize: '11.5px', color: '#64748B' }}>
-                          {c.phone}
-                        </div>
-                      </div>
-                    </div>
+            <div className="mobile-table-wrapper">
+              <table className="mobile-customer-table">
+                <thead>
+                  <tr>
+                    <th className="m-th-customer">Customer</th>
+                    <th className="m-th-status">Status & Due</th>
+                    <th className="m-th-action">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredCustomers.map((c) => {
+                    const total = Number(c.totalAmount) || 0;
+                    const paid = Number(c.partialAmount ?? c.paidAmount) || 0;
+                    const remaining = calculateRemaining(total, paid);
+                    const status = getPaymentStatus(total, paid);
+                    const initial = c.name ? c.name.trim().charAt(0).toUpperCase() : 'C';
 
-                    <PaymentStatusBadge status={status} />
-                  </div>
-
-                  <div className="mobile-renewal-meta">
-                    <span style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                      {c.insuranceCompany}
-                    </span>
-
-                    <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                      Total: <strong style={{ color: 'var(--text-primary)' }}>{formatCurrency(c.totalAmount)}</strong>
-                    </div>
-                  </div>
-
-                  <div className="mobile-renewal-footer">
-                    <div>
-                      <span style={{ fontSize: '11px', color: '#64748B', display: 'block' }}>Remaining Balance</span>
-                      <span style={{ fontSize: '15px', fontWeight: 800, color: remaining > 0 ? '#DC2626' : '#22C55E' }}>
-                        {formatCurrency(remaining)}
-                      </span>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      {remaining > 0 && (
-                        <button
-                          className="btn btn-primary btn-sm"
-                          style={{ padding: '4px 10px', fontSize: '11.5px' }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setCustomerForPayment(c);
-                          }}
-                        >
-                          <PlusCircle size={13} />
-                          <span>Pay</span>
-                        </button>
-                      )}
-                      <button
-                        className="btn btn-secondary btn-sm"
-                        style={{ padding: '4px 10px', fontSize: '11.5px', borderRadius: '8px' }}
+                    return (
+                      <tr
+                        key={`m-pay-${c.id}`}
+                        className="mobile-table-row"
                         onClick={() => navigate(`/customers/${c.id}`)}
                       >
-                        <ChevronRight size={14} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+                        <td className="m-td-customer">
+                          <div className="m-table-cust-cell">
+                            <div className="m-table-cust-avatar">
+                              {initial}
+                            </div>
+                            <div className="m-table-cust-info">
+                              <span className="m-table-cust-name" title={c.name}>{c.name}</span>
+                              <span className="m-table-cust-phone">
+                                <Phone size={10} color="#888" style={{ flexShrink: 0 }} />
+                                <span>{c.phone}</span>
+                              </span>
+                              {c.insuranceCompany && (
+                                <span className="m-table-cust-company" title={c.insuranceCompany}>
+                                  {c.insuranceCompany}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
+
+                        <td className="m-td-status">
+                          <div className="m-table-status-cell">
+                            <PaymentStatusBadge status={status} short />
+                            <span className={`m-table-due ${remaining > 0 ? 'due-danger' : 'due-settled'}`}>
+                              {remaining > 0 ? formatCurrency(remaining) : 'Settled'}
+                            </span>
+                          </div>
+                        </td>
+
+                        <td className="m-td-action">
+                          {remaining > 0 ? (
+                            <button
+                              type="button"
+                              className="m-table-detail-btn m-table-pay-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setCustomerForPayment(c);
+                              }}
+                              title="Add Payment"
+                            >
+                              <PlusCircle size={12} />
+                              <span>Pay</span>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="m-table-detail-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/customers/${c.id}`);
+                              }}
+                              title="View Details"
+                            >
+                              <Eye size={12} />
+                              <span>View</span>
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </>
       )}

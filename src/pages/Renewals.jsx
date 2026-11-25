@@ -6,6 +6,7 @@ import { formatIndianDate, calculateDaysRemaining, getUrgencyInfo } from '../uti
 import { getCarrierBadge } from '../utils/carrierUtils';
 import { InsuranceTypeBadge, PaymentStatusBadge, RenewalUrgencyBadge } from '../components/common/StatusBadge';
 import { EmptyState } from '../components/common/EmptyState';
+import { DashboardHeroArtwork } from '../components/dashboard/DashboardHeroArtwork';
 import {
   RefreshCw,
   Search,
@@ -76,14 +77,23 @@ export function Renewals() {
 
   return (
     <div className="page-container">
-      {/* Header with accent bar */}
-      <div className="header-with-accent" style={{ marginBottom: '20px' }}>
-        <div className="header-accent-bar" />
-        <div>
-          <h1 className="page-title">Policy Renewal Radar</h1>
-          <p className="page-subtitle">
-            Proactively monitor approaching expirations, lapse prevention, and upcoming policy renewals
-          </p>
+      {/* Header matching exact reference */}
+      <div className="customer-registry-header">
+        <div className="customer-registry-header-left">
+          <div className="customer-registry-icon-badge">
+            <RefreshCw size={22} color="#FFFFFF" strokeWidth={2.4} />
+          </div>
+          <div>
+            <h1 className="customer-registry-title">Policy Renewal Radar</h1>
+            <p className="customer-registry-subtitle">
+              Monitor approaching expirations, lapse prevention, and upcoming renewals ({customers.length} total)
+            </p>
+          </div>
+        </div>
+
+        {/* Top Right Reference Artwork */}
+        <div className="customer-hero-artwork">
+          <DashboardHeroArtwork />
         </div>
       </div>
 
@@ -246,84 +256,99 @@ export function Renewals() {
             </table>
           </div>
 
-          {/* Native Mobile Cards View (No horizontal swipe!) */}
-          <div className="mobile-only mobile-renewal-card-list">
-            {filteredCustomers.map((c) => {
-              const days = calculateDaysRemaining(c.policyEndDate);
-              const urgency = getUrgencyInfo(c.policyEndDate);
-              const remaining = Number(c.remainingAmount) || 0;
-              const carrier = getCarrierBadge(c.insuranceCompany, c.carrierCode);
+          {/* Mobile Renewals Table View (Matches exact Customer Directory style, zero swipe!) */}
+          <div className="mobile-table-card mobile-only">
+            <div className="mobile-table-header-strip">
+              <div className="mobile-table-title-area">
+                <span className="mobile-table-title">Renewals Directory</span>
+                <span className="mobile-table-count-badge">{filteredCustomers.length}</span>
+              </div>
+              <span className="mobile-table-hint">Tap row for details</span>
+            </div>
 
-              return (
-                <div
-                  key={`m-renewal-page-${c.id}`}
-                  className="mobile-renewal-card"
-                  onClick={() => navigate(`/customers/${c.id}`)}
-                >
-                  <div className="mobile-renewal-header">
-                    <div className="mobile-renewal-user">
-                      <div className="table-customer-avatar">
-                        <User size={15} />
-                      </div>
-                      <div>
-                        <div className="mobile-renewal-name">{c.name}</div>
-                        <a
-                          href={`tel:${c.phone}`}
-                          className="mobile-renewal-phone"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Phone size={11} color="var(--primary-orange)" />
-                          <span>{c.phone}</span>
-                        </a>
-                      </div>
-                    </div>
+            <div className="mobile-table-wrapper">
+              <table className="mobile-customer-table">
+                <thead>
+                  <tr>
+                    <th className="m-th-customer">Customer</th>
+                    <th className="m-th-status">Expiry & Due</th>
+                    <th className="m-th-action">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredCustomers.map((c) => {
+                    const days = calculateDaysRemaining(c.policyEndDate);
+                    const urgency = getUrgencyInfo(c.policyEndDate);
+                    const remaining = Number(c.remainingAmount) || 0;
+                    const initial = c.name ? c.name.trim().charAt(0).toUpperCase() : 'C';
 
-                    <span
-                      className={`urgency-pill ${
-                        days <= 7
-                          ? 'urgency-critical'
-                          : days <= 15
-                          ? 'urgency-warning'
-                          : 'urgency-notice'
-                      }`}
-                      style={{ fontSize: '11px', padding: '3px 8px' }}
-                    >
-                      <span className="urgency-dot" />
-                      <span>{urgency.label}</span>
-                    </span>
-                  </div>
+                    return (
+                      <tr
+                        key={`m-renewal-row-${c.id}`}
+                        className="mobile-table-row"
+                        onClick={() => navigate(`/customers/${c.id}`)}
+                      >
+                        <td className="m-td-customer">
+                          <div className="m-table-cust-cell">
+                            <div className="m-table-cust-avatar">
+                              {initial}
+                            </div>
+                            <div className="m-table-cust-info">
+                              <span className="m-table-cust-name" title={c.name}>{c.name}</span>
+                              <span className="m-table-cust-phone">
+                                <Phone size={10} color="#888" style={{ flexShrink: 0 }} />
+                                <span>{c.phone}</span>
+                              </span>
+                              {c.insuranceCompany && (
+                                <span className="m-table-cust-company" title={c.insuranceCompany}>
+                                  {c.insuranceCompany}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </td>
 
-                  <div className="mobile-renewal-meta">
-                    <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                      {c.insuranceCompany}
-                    </span>
+                        <td className="m-td-status">
+                          <div className="m-table-status-cell">
+                            <span
+                              className={`urgency-pill ${
+                                days <= 7
+                                  ? 'urgency-critical'
+                                  : days <= 15
+                                  ? 'urgency-warning'
+                                  : 'urgency-notice'
+                              }`}
+                              style={{ fontSize: '10.5px', padding: '2px 6px' }}
+                            >
+                              <span className="urgency-dot" />
+                              <span>{urgency.shortLabel || urgency.label}</span>
+                            </span>
+                            <span className="m-table-due" style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                              {formatIndianDate(c.policyEndDate)}
+                            </span>
+                          </div>
+                        </td>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', color: '#64748B' }}>
-                      <Calendar size={12} color="var(--primary-orange)" />
-                      <span>{formatIndianDate(c.policyEndDate)}</span>
-                    </div>
-                  </div>
-
-                  <div className="mobile-renewal-footer">
-                    <div>
-                      <span style={{ fontSize: '11px', color: '#64748B', display: 'block' }}>Remaining Balance</span>
-                      <span style={{ fontSize: '15px', fontWeight: 800, color: remaining > 0 ? '#DC2626' : '#22C55E' }}>
-                        {formatCurrency(remaining)}
-                      </span>
-                    </div>
-
-                    <button
-                      className="btn btn-secondary btn-sm"
-                      style={{ padding: '4px 10px', fontSize: '11.5px', borderRadius: '8px' }}
-                      onClick={() => navigate(`/customers/${c.id}`)}
-                    >
-                      <span>Details</span>
-                      <ChevronRight size={13} />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                        <td className="m-td-action">
+                          <button
+                            type="button"
+                            className="m-table-detail-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/customers/${c.id}`);
+                            }}
+                            title="View Details"
+                          >
+                            <Eye size={12} />
+                            <span>View</span>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </>
       )}

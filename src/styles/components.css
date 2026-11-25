@@ -3059,6 +3059,19 @@ table .badge-pending {
   color: var(--primary-orange);
 }
 
+.m-table-pay-btn {
+  background: linear-gradient(135deg, #FF6B00 0%, #FA5A00 100%) !important;
+  border-color: #FF6B00 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+}
+
+.m-table-pay-btn:hover,
+.m-table-pay-btn:active {
+  background: linear-gradient(135deg, #EA580C 0%, #C2410C 100%) !important;
+  color: #FFFFFF !important;
+}
+
 /* ==========================================================================
    Mobile Detail Bottom-Sheet Modal
    ========================================================================== */

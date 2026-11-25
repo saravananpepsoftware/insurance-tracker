@@ -3,6 +3,7 @@ import { useCustomers } from '../context/CustomerContext';
 import { formatCurrency } from '../utils/formatCurrency';
 import { getCarrierBadge } from '../utils/carrierUtils';
 import { StatCard } from '../components/common/StatCard';
+import { DashboardHeroArtwork } from '../components/dashboard/DashboardHeroArtwork';
 import {
   BarChart3,
   Download,
@@ -69,28 +70,35 @@ export function Reports({ onOpenAddCustomer }) {
 
   return (
     <div className="page-container">
-      {/* Page Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
-        <div className="header-with-accent">
-          <div className="header-accent-bar" />
+      {/* Header matching exact reference */}
+      <div className="customer-registry-header">
+        <div className="customer-registry-header-left">
+          <div className="customer-registry-icon-badge">
+            <BarChart3 size={22} color="#FFFFFF" strokeWidth={2.4} />
+          </div>
           <div>
-            <h1 className="page-title">Executive Reports & Analytics</h1>
-            <p className="page-subtitle">
-              Comprehensive business performance, collection audit, and carrier portfolio breakdown
+            <h1 className="customer-registry-title">Executive Reports & Analytics</h1>
+            <p className="customer-registry-subtitle">
+              Comprehensive business performance, collection audit, and carrier breakdown ({carrierBreakdown.length} carriers)
             </p>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          <button className="btn btn-outline" onClick={handlePrint}>
-            <Printer size={15} />
-            <span>Print Report</span>
-          </button>
-          <button className="btn btn-primary" onClick={handleExportCSV}>
-            <Download size={15} />
-            <span>Export CSV</span>
-          </button>
+        {/* Top Right Reference Artwork */}
+        <div className="customer-hero-artwork">
+          <DashboardHeroArtwork />
         </div>
+      </div>
+
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px' }}>
+        <button className="btn btn-outline" onClick={handlePrint}>
+          <Printer size={15} />
+          <span>Print Report</span>
+        </button>
+        <button className="btn btn-primary" onClick={handleExportCSV}>
+          <Download size={15} />
+          <span>Export CSV</span>
+        </button>
       </div>
 
       {/* 4 Key Financial Metrics */}
@@ -144,7 +152,8 @@ export function Reports({ onOpenAddCustomer }) {
           </span>
         </div>
 
-        <div className="table-container" style={{ border: 'none', borderRadius: 0, boxShadow: 'none' }}>
+        {/* Desktop Data Table */}
+        <div className="table-container desktop-only" style={{ border: 'none', borderRadius: 0, boxShadow: 'none' }}>
           <table className="data-table">
             <thead>
               <tr>
@@ -192,6 +201,80 @@ export function Reports({ onOpenAddCustomer }) {
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Carrier Table View (Matches exact Customer Directory style, zero swipe!) */}
+        <div className="mobile-table-card mobile-only" style={{ margin: 0, border: 'none' }}>
+          <div className="mobile-table-header-strip">
+            <div className="mobile-table-title-area">
+              <span className="mobile-table-title">Carrier Directory</span>
+              <span className="mobile-table-count-badge">{carrierBreakdown.length}</span>
+            </div>
+            <span className="mobile-table-hint">Performance Summary</span>
+          </div>
+
+          <div className="mobile-table-wrapper">
+            <table className="mobile-customer-table">
+              <thead>
+                <tr>
+                  <th className="m-th-customer">Carrier</th>
+                  <th className="m-th-status">Gross & Due</th>
+                  <th className="m-th-action">Collect %</th>
+                </tr>
+              </thead>
+              <tbody>
+                {carrierBreakdown.map((item) => {
+                  const percent = item.totalAmount > 0 ? Math.round((item.paidAmount / item.totalAmount) * 100) : 0;
+                  const initial = item.name ? item.name.trim().charAt(0).toUpperCase() : 'C';
+
+                  return (
+                    <tr key={`m-carrier-${item.name}`} className="mobile-table-row">
+                      <td className="m-td-customer">
+                        <div className="m-table-cust-cell">
+                          <div className="m-table-cust-avatar">
+                            {initial}
+                          </div>
+                          <div className="m-table-cust-info">
+                            <span className="m-table-cust-name" title={item.name}>{item.name}</span>
+                            <span className="m-table-cust-phone">
+                              <span>{item.count} {item.count === 1 ? 'Policy' : 'Policies'}</span>
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="m-td-status">
+                        <div className="m-table-status-cell">
+                          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
+                            {formatCurrency(item.totalAmount)}
+                          </span>
+                          <span className={`m-table-due ${item.remainingAmount > 0 ? 'due-danger' : 'due-settled'}`}>
+                            {item.remainingAmount > 0 ? `${formatCurrency(item.remainingAmount)} due` : '100% Settled'}
+                          </span>
+                        </div>
+                      </td>
+
+                      <td className="m-td-action">
+                        <span
+                          className="badge"
+                          style={{
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            backgroundColor: percent >= 75 ? 'rgba(34, 197, 94, 0.15)' : percent >= 40 ? 'rgba(234, 88, 12, 0.15)' : 'rgba(220, 38, 38, 0.15)',
+                            color: percent >= 75 ? '#22C55E' : percent >= 40 ? '#EA580C' : '#DC2626'
+                          }}
+                        >
+                          {percent}%
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

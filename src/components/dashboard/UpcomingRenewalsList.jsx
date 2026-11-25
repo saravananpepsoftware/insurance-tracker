@@ -14,7 +14,8 @@ import {
   ChevronRight,
   CalendarClock,
   Coins,
-  Filter
+  Filter,
+  Eye
 } from 'lucide-react';
 
 export function UpcomingRenewalsList({ customers = [] }) {
@@ -321,96 +322,120 @@ export function UpcomingRenewalsList({ customers = [] }) {
               </table>
             </div>
 
-            {/* Native Mobile Renewal Cards */}
-            <div className="mobile-only mobile-renewal-card-list">
-              {filteredList.slice(0, 8).map((c) => {
-                const days = calculateDaysRemaining(c.policyEndDate);
-                const urgency = getUrgencyInfo(c.policyEndDate);
-                const remaining = Number(c.remainingAmount) || 0;
-                const carrier = getCarrierBadge(c.insuranceCompany, c.carrierCode);
+            {/* Native Mobile Table View (Matches exact Customer Directory style, zero swipe!) */}
+            <div className="mobile-table-card mobile-only">
+              <div className="mobile-table-header-strip">
+                <div className="mobile-table-title-area">
+                  <span className="mobile-table-title">
+                    {activeTab === 'expiring' ? 'Approaching Renewals' : 'Outstanding Premiums'}
+                  </span>
+                  <span className="mobile-table-count-badge">{filteredList.length}</span>
+                </div>
+                <span className="mobile-table-hint">Tap row for details</span>
+              </div>
 
-                return (
-                  <div
-                    key={`m-renewal-${c.id}`}
-                    className="mobile-renewal-card"
-                    onClick={() => navigate(`/customers/${c.id}`)}
-                  >
-                    {/* Top row: Customer Avatar, Name, and Urgency / Status */}
-                    <div className="mobile-renewal-header">
-                      <div className="mobile-renewal-user">
-                        <div className="table-customer-avatar">
-                          <User size={15} />
-                        </div>
-                        <div>
-                          <div className="mobile-renewal-name">{c.name}</div>
-                          <a
-                            href={`tel:${c.phone}`}
-                            className="mobile-renewal-phone"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Phone size={11} color="var(--primary-orange)" />
-                            <span>{c.phone}</span>
-                          </a>
-                        </div>
-                      </div>
+              <div className="mobile-table-wrapper">
+                <table className="mobile-customer-table">
+                  <thead>
+                    <tr>
+                      <th className="m-th-customer">Customer</th>
+                      <th className="m-th-status">
+                        {activeTab === 'expiring' ? 'Expiry Status' : 'Status & Due'}
+                      </th>
+                      <th className="m-th-action">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredList.slice(0, 8).map((c) => {
+                      const days = calculateDaysRemaining(c.policyEndDate);
+                      const urgency = getUrgencyInfo(c.policyEndDate);
+                      const total = Number(c.totalAmount) || 0;
+                      const paid = Number(c.partialAmount ?? c.paidAmount) || 0;
+                      const remaining = Number(c.remainingAmount ?? (total - paid)) || 0;
+                      const initial = c.name ? c.name.trim().charAt(0).toUpperCase() : 'C';
 
-                      {activeTab === 'expiring' ? (
-                        <span
-                          className={`urgency-pill ${
-                            days < 0
-                              ? 'urgency-expired'
-                              : days <= 7
-                              ? 'urgency-critical'
-                              : days <= 15
-                              ? 'urgency-warning'
-                              : days <= 30
-                              ? 'urgency-notice'
-                              : 'urgency-active'
-                          }`}
-                          style={{ fontSize: '11px', padding: '3px 8px' }}
+                      return (
+                        <tr
+                          key={`m-dash-renew-${c.id}`}
+                          className="mobile-table-row"
+                          onClick={() => navigate(`/customers/${c.id}`)}
                         >
-                          <span className="urgency-dot" />
-                          <span>{urgency.label}</span>
-                        </span>
-                      ) : (
-                        <PaymentStatusBadge status={c.paymentStatus} />
-                      )}
-                    </div>
+                          <td className="m-td-customer">
+                            <div className="m-table-cust-cell">
+                              <div className="m-table-cust-avatar">
+                                {initial}
+                              </div>
+                              <div className="m-table-cust-info">
+                                <span className="m-table-cust-name" title={c.name}>{c.name}</span>
+                                <span className="m-table-cust-phone">
+                                  <Phone size={10} color="#888" style={{ flexShrink: 0 }} />
+                                  <span>{c.phone}</span>
+                                </span>
+                                {c.insuranceCompany && (
+                                  <span className="m-table-cust-company" title={c.insuranceCompany}>
+                                    {c.insuranceCompany}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </td>
 
-                    {/* Middle row: Carrier and Policy End Date */}
-                    <div className="mobile-renewal-meta">
-                      <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)' }}>
-                        {c.insuranceCompany}
-                      </span>
+                          <td className="m-td-status">
+                            <div className="m-table-status-cell">
+                              {activeTab === 'expiring' ? (
+                                <>
+                                  <span
+                                    className={`urgency-pill ${
+                                      days < 0
+                                        ? 'urgency-expired'
+                                        : days <= 7
+                                        ? 'urgency-critical'
+                                        : days <= 15
+                                        ? 'urgency-warning'
+                                        : days <= 30
+                                        ? 'urgency-notice'
+                                        : 'urgency-active'
+                                    }`}
+                                    style={{ fontSize: '10.5px', padding: '2px 6px' }}
+                                  >
+                                    <span className="urgency-dot" />
+                                    <span>{urgency.shortLabel || urgency.label}</span>
+                                  </span>
+                                  <span className="m-table-due" style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                                    {formatIndianDate(c.policyEndDate)}
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <PaymentStatusBadge status={c.paymentStatus} short />
+                                  <span className={`m-table-due ${remaining > 0 ? 'due-danger' : 'due-settled'}`}>
+                                    {remaining > 0 ? formatCurrency(remaining) : 'Settled'}
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                          </td>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11.5px', color: '#64748B' }}>
-                        <Calendar size={12} color="var(--primary-orange)" />
-                        <span>{formatIndianDate(c.policyEndDate)}</span>
-                      </div>
-                    </div>
-
-                    {/* Bottom row: Balance Due and Tap to View Details */}
-                    <div className="mobile-renewal-footer">
-                      <div>
-                        <span style={{ fontSize: '11px', color: '#64748B', display: 'block' }}>Remaining Due</span>
-                        <span style={{ fontSize: '15px', fontWeight: 800, color: remaining > 0 ? '#DC2626' : '#22C55E' }}>
-                          {formatCurrency(remaining)}
-                        </span>
-                      </div>
-
-                      <button
-                        type="button"
-                        className="btn btn-secondary btn-sm"
-                        style={{ padding: '4px 10px', fontSize: '11.5px', borderRadius: '8px' }}
-                        onClick={() => navigate(`/customers/${c.id}`)}
-                      >
-                        <span>Details</span>
-                        <ChevronRight size={13} />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+                          <td className="m-td-action">
+                            <button
+                              type="button"
+                              className="m-table-detail-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/customers/${c.id}`);
+                              }}
+                              title="View Details"
+                            >
+                              <Eye size={12} />
+                              <span>View</span>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </>
         )}
