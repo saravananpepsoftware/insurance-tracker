@@ -244,16 +244,11 @@ export function Login() {
               </button>
             </div>
 
-            {/* Title & Subtitle */}
+            {/* Title */}
             <div className="login-form-title-group">
               <h1 className="login-portal-title">
                 {portalType === 'staff' ? 'Staff Portal Sign In' : 'Admin Portal Sign In'}
               </h1>
-              <p className="login-portal-subtitle">
-                {portalType === 'staff'
-                  ? 'Enter your staff credentials to access customer and policy records.'
-                  : 'Enter your credentials to manage policies, customers, and payments.'}
-              </p>
             </div>
 
             {/* Error Banner */}
