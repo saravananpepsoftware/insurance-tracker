@@ -616,40 +616,331 @@ body[data-theme="dark"],
    CUSTOMER DETAILS, CARDS & PANELS IN DARK MODE
    ========================================================================== */
 
+[data-theme="dark"] .customer-hero-banner {
+  background-color: #121A26 !important;
+  border-color: #1E293B !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .customer-hero-banner::after {
+  background: radial-gradient(ellipse at 100% 50%, rgba(255, 122, 0, 0.08) 0%, transparent 60%) !important;
+}
+
+[data-theme="dark"] .customer-hero-avatar {
+  background-color: #2D1A0D !important;
+  color: var(--primary-orange) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .customer-hero-name {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .customer-hero-meta-row,
+[data-theme="dark"] .customer-hero-meta-item {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .customer-hero-divider {
+  color: #334155 !important;
+}
+
+/* Customer View Navigation Tabs Bar */
+[data-theme="dark"] .customer-nav-tabs-bar {
+  background-color: #121A26 !important;
+  border-color: #1E293B !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+}
+
+[data-theme="dark"] .customer-nav-tab-btn {
+  color: #94A3B8 !important;
+  background: transparent !important;
+}
+
+[data-theme="dark"] .customer-nav-tab-btn:hover:not(.active) {
+  background-color: #16202E !important;
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .customer-nav-tab-btn.active {
+  background: linear-gradient(135deg, #FF7A00 0%, #FA5200 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(255, 107, 0, 0.35) !important;
+}
+
+/* Financial Summary 3-Box Metrics Grid */
+[data-theme="dark"] .financial-summary-grid {
+  gap: 12px;
+}
+
+[data-theme="dark"] .metric-inner-box {
+  background-color: #16202E !important;
+  background: #16202E !important;
+  border-color: #1E293B !important;
+}
+
+[data-theme="dark"] .metric-inner-box:hover {
+  border-color: #2D3E56 !important;
+}
+
+[data-theme="dark"] .metric-box-icon {
+  background-color: #1E293B !important;
+}
+
+[data-theme="dark"] .metric-box-label {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .metric-box-value {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .financial-status-footer {
+  background-color: #16202E !important;
+  border-color: #1E293B !important;
+}
+
+/* Validity & Policy Duration Rows */
+[data-theme="dark"] .validity-list-row {
+  border-bottom-color: #1E293B !important;
+}
+
+[data-theme="dark"] .validity-row-left {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .validity-row-right {
+  color: #F8FAFC !important;
+}
+
+/* Policy Document Boxes */
+[data-theme="dark"] .policy-doc-box {
+  background-color: #16202E !important;
+  background: #16202E !important;
+  border-color: #1E293B !important;
+}
+
+[data-theme="dark"] .pdf-icon-badge {
+  background-color: #2D1A0D !important;
+  border-color: #4D2611 !important;
+  color: var(--primary-orange) !important;
+}
+
+[data-theme="dark"] .policy-doc-name {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .policy-doc-meta {
+  color: #94A3B8 !important;
+}
+
+/* Renewal Reminder Banner */
+[data-theme="dark"] .renewal-reminder-banner {
+  background: linear-gradient(135deg, #1F1710 0%, #161210 100%) !important;
+  border-color: #4D2611 !important;
+  border-left-color: var(--primary-orange) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .renewal-reminder-banner.banner-critical {
+  background: linear-gradient(135deg, #2D1010 0%, #1A0D0D 100%) !important;
+  border-color: #7F1D1D !important;
+  border-left-color: #DC2626 !important;
+}
+
+[data-theme="dark"] .reminder-bell-icon-box {
+  background-color: #2D1A0D !important;
+  color: var(--primary-orange) !important;
+}
+
+[data-theme="dark"] .banner-critical .reminder-bell-icon-box {
+  background-color: #380D0D !important;
+  color: #DC2626 !important;
+}
+
+[data-theme="dark"] .renewal-reminder-title {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .renewal-reminder-desc {
+  color: #94A3B8 !important;
+}
+
+/* Timeline Activity in Customer Details */
+[data-theme="dark"] .timeline-icon-box {
+  background-color: #1E293B !important;
+}
+
+/* WhatsApp Reminder Popover */
+[data-theme="dark"] .whatsapp-reminder-popover {
+  background-color: #16202E !important;
+  border-color: #243042 !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] .whatsapp-popover-item:hover,
+[data-theme="dark"] .whatsapp-popover-item:focus-visible {
+  background-color: #1E293B !important;
+}
+
+[data-theme="dark"] .whatsapp-popover-title {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .whatsapp-popover-sub {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .whatsapp-popover-divider {
+  background-color: #1E293B !important;
+}
+
+/* Customer Nav Reminders Dropdown */
+[data-theme="dark"] .customer-nav-reminder-dropdown {
+  background-color: #16202E !important;
+  border-color: #243042 !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] .reminder-dropdown-title-item {
+  color: #E2E8F0 !important;
+}
+
+[data-theme="dark"] .reminder-dropdown-title-item:hover,
+[data-theme="dark"] .reminder-dropdown-title-item:focus-visible {
+  background-color: #1E293B !important;
+  color: var(--primary-orange) !important;
+}
+
+[data-theme="dark"] .reminder-dropdown-divider {
+  background-color: #1E293B !important;
+}
+
+[data-theme="dark"] .reminder-dropdown-card {
+  background-color: #121A26 !important;
+  border-color: #1E293B !important;
+}
+
+/* App Reminder Popup Notification */
+[data-theme="dark"] .reminder-popup-container {
+  background-color: #121A26 !important;
+  border-color: #4D2611 !important;
+  border-left-color: var(--primary-orange) !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme="dark"] .reminder-popup-progress-track {
+  background-color: #2D1A0D !important;
+}
+
+/* Donut & Analytics Elements */
+[data-theme="dark"] .donut-legend-item {
+  background-color: #16202E !important;
+  border-color: #1E293B !important;
+}
+
+[data-theme="dark"] .donut-legend-icon-box {
+  background-color: #1E293B !important;
+}
+
+/* Mobile Customer & Renewal Cards */
+[data-theme="dark"] .mobile-customer-card,
+[data-theme="dark"] .mobile-renewal-card {
+  background-color: #121A26 !important;
+  border-color: #1E293B !important;
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .mobile-renewal-card:active {
+  background-color: #16202E !important;
+  border-color: #2D3E56 !important;
+}
+
+/* Form Sections & Search */
+[data-theme="dark"] .search-input-box {
+  background-color: #16202E !important;
+  border-color: #243042 !important;
+}
+
+[data-theme="dark"] .search-input-box input {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .form-section {
+  background-color: #16202E !important;
+  border-color: #1E293B !important;
+}
+
+[data-theme="dark"] .pdf-upload-box {
+  background-color: #121A26 !important;
+  border-color: #243042 !important;
+}
+
+[data-theme="dark"] .pdf-preview-pill {
+  background-color: #16202E !important;
+  border-color: #1E293B !important;
+}
+
+[data-theme="dark"] .add-company-box {
+  background-color: #16202E !important;
+  border-color: #243042 !important;
+}
+
+[data-theme="dark"] .add-company-input {
+  background-color: #121A26 !important;
+  border-color: #243042 !important;
+  color: #F8FAFC !important;
+}
+
+/* Reminder Modal Styles */
+[data-theme="dark"] .reminder-timing-btn {
+  background-color: #16202E !important;
+  border-color: #243042 !important;
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .reminder-timing-btn:hover {
+  background-color: #1E293B !important;
+  color: var(--primary-orange) !important;
+  border-color: var(--primary-orange) !important;
+}
+
+[data-theme="dark"] .reminder-timing-btn.active {
+  background-color: #2D1A0D !important;
+  border-color: var(--primary-orange) !important;
+  color: var(--primary-orange) !important;
+}
+
+[data-theme="dark"] .reminder-channel-tab {
+  background-color: #16202E !important;
+  border-color: #243042 !important;
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .reminder-channel-tab.active {
+  background-color: #2D1A0D !important;
+  border-color: var(--primary-orange) !important;
+  color: var(--primary-orange) !important;
+}
+
+[data-theme="dark"] .reminder-message-preview {
+  background-color: #121A26 !important;
+  border-color: #243042 !important;
+  color: #F8FAFC !important;
+}
+
+/* Fallback cards & panels */
 [data-theme="dark"] .customer-details-card,
 [data-theme="dark"] .profile-hero-card,
 [data-theme="dark"] .policy-detail-card,
 [data-theme="dark"] .payment-summary-card,
 [data-theme="dark"] .renewal-card,
-[data-theme="dark"] .mobile-renewal-card,
 [data-theme="dark"] .report-card,
 [data-theme="dark"] .settings-card,
 [data-theme="dark"] .card {
   background-color: #121A26 !important;
   border: 1px solid #1E293B !important;
   color: #F8FAFC !important;
-}
-
-[data-theme="dark"] .detail-item,
-[data-theme="dark"] .info-item,
-[data-theme="dark"] .policy-metric-box {
-  background-color: #16202E !important;
-  border: 1px solid #1E293B !important;
-}
-
-[data-theme="dark"] .detail-label,
-[data-theme="dark"] .info-label {
-  color: #94A3B8 !important;
-}
-
-[data-theme="dark"] .detail-value,
-[data-theme="dark"] .info-value {
-  color: #F8FAFC !important;
-}
-
-[data-theme="dark"] .pdf-card-preview {
-  background-color: #16202E !important;
-  border-color: #1E293B !important;
 }
 
 /* ==========================================================================

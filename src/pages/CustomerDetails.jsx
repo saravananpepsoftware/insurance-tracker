@@ -340,8 +340,8 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                 padding: '7px 16px',
                 borderRadius: '10px',
                 borderColor: customer.reminderSent ? '#22C55E' : '#25D366',
-                color: customer.reminderSent ? '#16A34A' : '#15803D',
-                backgroundColor: '#F0FDF4',
+                color: customer.reminderSent ? '#16A34A' : '#25D366',
+                backgroundColor: 'var(--surface-alt)',
                 fontWeight: 700,
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -1066,14 +1066,14 @@ export function CustomerDetails({ onOpenEditCustomer }) {
             </div>
 
             {/* Generated Customer Policy Statement PDF Box */}
-            <div className="policy-doc-box" style={{ marginTop: '14px', backgroundColor: '#FFFDFB', borderColor: '#FED7AA' }}>
+            <div className="policy-doc-box" style={{ marginTop: '14px' }}>
               <div className="policy-doc-left">
-                <div className="pdf-icon-badge" style={{ backgroundColor: '#FFF7ED', color: 'var(--primary-orange)', borderColor: '#FED7AA' }}>
+                <div className="pdf-icon-badge">
                   PDF
                 </div>
                 <div>
                   <div className="policy-doc-name">{customer.name.replace(/\s+/g, '_')}_Insurance_Details.pdf</div>
-                  <div className="policy-doc-meta" style={{ color: '#64748B' }}>
+                  <div className="policy-doc-meta">
                     Formatted A4 Document • Complete Customer Profile, Coverage Details & Payment Ledger Statement
                   </div>
                 </div>
@@ -1108,7 +1108,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
           <div className="card-body" style={{ padding: '24px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#EFF6FF', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div className="timeline-icon-box" style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#EFF6FF', color: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <ShieldCheck size={16} />
                 </div>
                 <div>
@@ -1124,7 +1124,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
 
               {paid > 0 && (
                 <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#F0FDF4', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <div className="timeline-icon-box" style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#F0FDF4', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <Coins size={16} />
                   </div>
                   <div>
@@ -1137,7 +1137,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
               )}
 
               <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: isExpired ? '#FEF2F2' : '#FFFBEB', color: isExpired ? '#DC2626' : '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div className="timeline-icon-box" style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: isExpired ? '#FEF2F2' : '#FFFBEB', color: isExpired ? '#DC2626' : '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <Calendar size={16} />
                 </div>
                 <div>
@@ -1152,7 +1152,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
               {customer.renewalReminders && customer.renewalReminders.length > 0 ? (
                 customer.renewalReminders.map((rem) => (
                   <div key={rem.id} style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#FFF7ED', color: 'var(--primary-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <div className="timeline-icon-box" style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#FFF7ED', color: 'var(--primary-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                       <BellRing size={16} />
                     </div>
                     <div>
@@ -1170,7 +1170,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                 ))
               ) : customer.reminderSent ? (
                 <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#FFF7ED', color: 'var(--primary-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <div className="timeline-icon-box" style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#FFF7ED', color: 'var(--primary-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <BellRing size={16} />
                   </div>
                   <div>
