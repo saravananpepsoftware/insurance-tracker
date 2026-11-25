@@ -280,6 +280,14 @@ body[data-theme="dark"],
    NAVBAR & USER PROFILE IN DARK MODE
    ========================================================================== */
 
+:root {
+  --navbar-shield-cutout: #FFFFFF;
+}
+
+[data-theme="dark"] {
+  --navbar-shield-cutout: #121A26;
+}
+
 [data-theme="dark"] .navbar {
   background-color: transparent !important;
   border-bottom: none !important;
@@ -306,7 +314,13 @@ body[data-theme="dark"],
 }
 
 [data-theme="dark"] .navbar-brand-divider {
-  background-color: #1E293B !important;
+  background-color: #334155 !important;
+  opacity: 0.6 !important;
+}
+
+[data-theme="dark"] .navbar-shield-swoosh-cutout {
+  fill: #121A26 !important;
+  stroke: #121A26 !important;
 }
 
 [data-theme="dark"] .navbar-user-divider {
