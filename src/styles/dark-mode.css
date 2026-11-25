@@ -281,26 +281,78 @@ body[data-theme="dark"],
    ========================================================================== */
 
 [data-theme="dark"] .navbar {
-  background-color: rgba(13, 20, 31, 0.88) !important;
-  border-bottom-color: #1E293B !important;
+  background-color: transparent !important;
+  border-bottom: none !important;
 }
 
-[data-theme="dark"] .navbar-mobile-brand-text {
+[data-theme="dark"] .navbar-corner-accent-left {
+  background: #060B12 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] .navbar-corner-accent-right {
+  background: linear-gradient(135deg, #FF7A00 0%, #FA5200 100%) !important;
+  box-shadow: 0 8px 25px rgba(255, 107, 0, 0.35) !important;
+}
+
+[data-theme="dark"] .navbar-capsule {
+  background: #121A26 !important;
+  border-color: #1E293B !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 2px 12px rgba(255, 107, 0, 0.15) !important;
+}
+
+[data-theme="dark"] .navbar-brand-title {
   color: #F8FAFC !important;
 }
 
+[data-theme="dark"] .navbar-brand-divider {
+  background-color: #1E293B !important;
+}
+
+[data-theme="dark"] .navbar-user-divider {
+  background-color: #1E293B !important;
+}
+
+[data-theme="dark"] .navbar-user-name,
 [data-theme="dark"] .user-name {
   color: #F8FAFC !important;
 }
 
+[data-theme="dark"] .navbar-user-email,
 [data-theme="dark"] .user-role {
   color: #94A3B8 !important;
 }
 
+[data-theme="dark"] .navbar-user-avatar,
+[data-theme="dark"] .user-avatar {
+  background-color: #241A15 !important;
+  color: #FF7A00 !important;
+  border-color: rgba(255, 122, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .navbar-user-dropdown,
 [data-theme="dark"] .user-profile-dropdown {
   background-color: #121A26 !important;
   border-color: #1E293B !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65) !important;
+}
+
+[data-theme="dark"] .navbar-user-dropdown-header {
+  border-bottom-color: #1E293B !important;
+}
+
+[data-theme="dark"] .navbar-user-dropdown-name {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .navbar-user-dropdown-logout {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  color: #F87171 !important;
+}
+
+[data-theme="dark"] .navbar-user-dropdown-logout:hover {
+  background-color: rgba(239, 68, 68, 0.2) !important;
 }
 
 /* ==========================================================================
