@@ -378,24 +378,6 @@ export function Login() {
                 </button>
               </div>
             </form>
-
-            {/* Separator Line */}
-            <div className="login-separator-line">
-              <span className="login-separator-bar" />
-              <span className="login-separator-text">or</span>
-              <span className="login-separator-bar" />
-            </div>
-
-            {/* Secured Footer */}
-            <div className="login-secured-footer">
-              <div className="login-secured-title">
-                <ShieldCheck size={16} color="#16A34A" />
-                <span>Secured Portal</span>
-              </div>
-              <div className="login-secured-desc">
-                Encrypted & Protected with Firebase ({portalType === 'staff' ? 'staff collection' : 'admins collection'})
-              </div>
-            </div>
           </div>
         </div>
       </div>
