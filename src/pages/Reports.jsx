@@ -164,7 +164,7 @@ export function Reports({ onOpenAddCustomer }) {
                 return (
                   <tr key={item.name}>
                     <td>
-                      <span className="carrier-name" style={{ fontWeight: 700, fontSize: '13.5px', color: '#1E293B' }}>{item.name}</span>
+                      <span className="carrier-name" style={{ fontWeight: 700, fontSize: '13.5px', color: 'var(--text-primary)' }}>{item.name}</span>
                     </td>
                     <td style={{ textAlign: 'center', fontWeight: 600 }}>
                       {item.count}

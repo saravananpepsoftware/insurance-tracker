@@ -181,21 +181,44 @@
 }
 
 [data-theme="dark"] .sidebar-section-header {
-  color: #64748B !important;
-}
-
-[data-theme="dark"] .nav-link {
   color: #94A3B8 !important;
 }
 
-[data-theme="dark"] .nav-link:hover {
+[data-theme="dark"] .nav-link-pill {
+  color: #CBD5E1 !important;
+}
+
+[data-theme="dark"] .nav-link-pill .nav-pill-left svg {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .nav-link-pill:hover:not(.active) {
   background-color: #16202E !important;
   color: #FFFFFF !important;
 }
 
-[data-theme="dark"] .nav-link.active {
+[data-theme="dark"] .nav-link-pill:hover:not(.active) .nav-pill-left svg {
+  color: var(--primary-orange) !important;
+}
+
+[data-theme="dark"] .nav-link-pill.active {
   background: linear-gradient(135deg, #FF7A00 0%, #FA5200 100%) !important;
   color: #FFFFFF !important;
+  box-shadow: 0 8px 22px rgba(255, 90, 0, 0.38) !important;
+}
+
+[data-theme="dark"] .nav-link-pill.active .nav-pill-left svg {
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .sidebar-floating-pending-card {
+  background: #16202E !important;
+  border: 1px solid #293548 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .pending-card-text {
+  color: #F8FAFC !important;
 }
 
 [data-theme="dark"] .sidebar-artwork-container,
@@ -413,12 +436,19 @@
    TABLES & REGISTRY IN DARK MODE
    ========================================================================== */
 
-[data-theme="dark"] .customer-table-card,
-[data-theme="dark"] .exact-customer-table {
+[data-theme="dark"] .table-container,
+[data-theme="dark"] .customer-table-card {
   background-color: #121A26 !important;
-  border-color: #1E293B !important;
+  border: 1px solid #1E293B !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
 }
 
+[data-theme="dark"] .data-table,
+[data-theme="dark"] .exact-customer-table {
+  background-color: #121A26 !important;
+}
+
+[data-theme="dark"] .data-table th,
 [data-theme="dark"] .exact-customer-table th,
 [data-theme="dark"] .table-header th {
   background-color: #16202E !important;
@@ -426,24 +456,79 @@
   border-bottom: 1px solid #1E293B !important;
 }
 
+[data-theme="dark"] .data-table td,
 [data-theme="dark"] .exact-customer-table td,
 [data-theme="dark"] .table-row td {
+  background-color: #121A26 !important;
   border-bottom: 1px solid #1E293B !important;
   color: #E2E8F0 !important;
 }
 
+[data-theme="dark"] .data-table tbody tr:hover td,
 [data-theme="dark"] .exact-customer-table tr:hover td,
 [data-theme="dark"] .table-row:hover td {
-  background-color: #162334 !important;
+  background-color: #182334 !important;
 }
 
-[data-theme="dark"] .customer-name-text {
+[data-theme="dark"] .table-customer-name,
+[data-theme="dark"] .customer-name-text,
+[data-theme="dark"] .carrier-name {
   color: #F8FAFC !important;
 }
 
+[data-theme="dark"] .table-customer-phone,
 [data-theme="dark"] .customer-phone-text,
 [data-theme="dark"] .policy-number-text {
   color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .table-amount-cell,
+[data-theme="dark"] .table-amount-bold {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .table-customer-avatar,
+[data-theme="dark"] .table-avatar-box {
+  background-color: #1E293B !important;
+  color: var(--primary-orange) !important;
+  border: 1px solid #334155 !important;
+}
+
+/* Filter Bar & Secondary Buttons in Dark Mode */
+[data-theme="dark"] .btn-secondary {
+  background-color: #16202E !important;
+  color: #CBD5E1 !important;
+  border: 1px solid #293548 !important;
+  box-shadow: none !important;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background-color: #1E293B !important;
+  color: #FFFFFF !important;
+  border-color: #3B4D68 !important;
+}
+
+[data-theme="dark"] .btn-secondary.active {
+  background-color: var(--primary-orange) !important;
+  color: #FFFFFF !important;
+  border-color: var(--primary-orange) !important;
+}
+
+[data-theme="dark"] .filter-bar {
+  background-color: transparent !important;
+}
+
+[data-theme="dark"] .search-input-box {
+  background-color: #16202E !important;
+  border: 1px solid #293548 !important;
+}
+
+[data-theme="dark"] .search-input-box input {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .search-input-box input::placeholder {
+  color: #64748B !important;
 }
 
 [data-theme="dark"] .search-pill-container,
@@ -646,6 +731,67 @@
 [data-theme="dark"] .login-portal-pill-btn.active {
   background: var(--primary-orange) !important;
   color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   PAGE HEADINGS & LABELS IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] .customer-registry-title,
+[data-theme="dark"] .customer-hero-name,
+[data-theme="dark"] .metric-box-value,
+[data-theme="dark"] .validity-row-right,
+[data-theme="dark"] .policy-doc-name,
+[data-theme="dark"] .renewal-reminder-title,
+[data-theme="dark"] .whatsapp-popover-title,
+[data-theme="dark"] .reminder-popup-title {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .customer-registry-subtitle,
+[data-theme="dark"] .policy-doc-meta,
+[data-theme="dark"] .renewal-reminder-desc,
+[data-theme="dark"] .whatsapp-popover-sub,
+[data-theme="dark"] .reminder-popup-desc {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .dashboard-table-subbar {
+  background-color: #121A26 !important;
+  border-bottom: 1px solid #1E293B !important;
+}
+
+[data-theme="dark"] .days-filter-pill {
+  background-color: #16202E !important;
+  border-color: #293548 !important;
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .days-filter-pill:hover {
+  background-color: #1E293B !important;
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .days-filter-pill.active {
+  background-color: #2C1810 !important;
+  border-color: var(--primary-orange) !important;
+  color: var(--primary-orange) !important;
+}
+
+[data-theme="dark"] .days-filter-summary {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .days-filter-summary strong {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .reminder-dropdown-title-item {
+  color: #CBD5E1 !important;
+}
+
+[data-theme="dark"] .reminder-dropdown-title-item.is-sent {
+  color: #F8FAFC !important;
 }
 
 /* ==========================================================================

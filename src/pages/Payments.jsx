@@ -191,7 +191,7 @@ export function Payments() {
                         </div>
                       </td>
                       <td>
-                        <span className="carrier-name" style={{ fontWeight: 600, fontSize: '13.5px', color: '#1E293B' }}>
+                        <span className="carrier-name" style={{ fontWeight: 600, fontSize: '13.5px', color: 'var(--text-primary)' }}>
                           {c.insuranceCompany}
                         </span>
                       </td>
@@ -275,12 +275,12 @@ export function Payments() {
                   </div>
 
                   <div className="mobile-renewal-meta">
-                    <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#334155' }}>
+                    <span style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--text-secondary)' }}>
                       {c.insuranceCompany}
                     </span>
 
-                    <div style={{ fontSize: '12px', color: '#64748B' }}>
-                      Total: <strong style={{ color: '#1E293B' }}>{formatCurrency(c.totalAmount)}</strong>
+                    <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                      Total: <strong style={{ color: 'var(--text-primary)' }}>{formatCurrency(c.totalAmount)}</strong>
                     </div>
                   </div>
 

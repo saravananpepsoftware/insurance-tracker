@@ -66,10 +66,10 @@ export function CustomerTable({
                       {c.name ? c.name.charAt(0).toUpperCase() : 'C'}
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontWeight: 700, fontSize: '14px', color: '#0F172A', whiteSpace: 'nowrap' }}>
+                      <span style={{ fontWeight: 700, fontSize: '14px', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
                         {c.name}
                       </span>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: '#64748B', marginTop: '2px', whiteSpace: 'nowrap' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px', whiteSpace: 'nowrap' }}>
                         <Phone size={11} color="#94A3B8" />
                         <span>{c.phone}</span>
                       </span>
@@ -79,14 +79,14 @@ export function CustomerTable({
 
                 {/* 2. Insurance Company Column (Left-Aligned) */}
                 <td style={{ textAlign: 'left' }}>
-                  <span style={{ fontWeight: 600, fontSize: '13.5px', color: '#1E293B', lineHeight: '1.3' }}>
+                  <span style={{ fontWeight: 600, fontSize: '13.5px', color: 'var(--text-primary)', lineHeight: '1.3' }}>
                     {c.insuranceCompany}
                   </span>
                 </td>
 
                 {/* 3. Policy Type Column (Left-Aligned) */}
                 <td style={{ textAlign: 'left', whiteSpace: 'nowrap' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: '#1E293B' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>
                     {c.insuranceType === 'Motor Insurance' ? (
                       <Car size={16} color="#2563EB" />
                     ) : (
@@ -98,7 +98,7 @@ export function CustomerTable({
 
                 {/* 4. Total Amount Column (Right-Aligned) */}
                 <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                  <span style={{ fontWeight: 700, fontSize: '14.5px', color: '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
+                  <span style={{ fontWeight: 700, fontSize: '14.5px', color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
                     {formatCurrency(c.totalAmount)}
                   </span>
                 </td>
@@ -112,7 +112,7 @@ export function CustomerTable({
 
                 {/* 6. Remaining Amount Column (Right-Aligned, Red when > 0, Dark when 0) */}
                 <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                  <span style={{ fontWeight: 700, fontSize: '14.5px', color: remaining > 0 ? '#DC2626' : '#0F172A', fontVariantNumeric: 'tabular-nums' }}>
+                  <span style={{ fontWeight: 700, fontSize: '14.5px', color: remaining > 0 ? '#DC2626' : 'var(--text-primary)', fontVariantNumeric: 'tabular-nums' }}>
                     {formatCurrency(remaining)}
                   </span>
                 </td>
@@ -122,7 +122,7 @@ export function CustomerTable({
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                       <Calendar size={13} color="var(--primary-orange)" />
-                      <span style={{ fontWeight: 600, fontSize: '13px', color: '#1E293B' }}>
+                      <span style={{ fontWeight: 600, fontSize: '13px', color: 'var(--text-primary)' }}>
                         {formatIndianDate(c.policyEndDate)}
                       </span>
                     </div>

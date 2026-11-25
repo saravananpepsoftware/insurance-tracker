@@ -316,9 +316,9 @@ export function CustomerDetails({ onOpenEditCustomer }) {
               padding: '7px 16px',
               borderRadius: '10px',
               fontWeight: 700,
-              color: '#0F172A',
-              borderColor: '#FED7AA',
-              backgroundColor: '#FFFBF7',
+              color: 'var(--text-primary)',
+              borderColor: 'var(--card-border)',
+              backgroundColor: 'var(--surface-alt)',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
@@ -1112,7 +1112,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                   <ShieldCheck size={16} />
                 </div>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '14.5px', color: '#0F172A' }}>Customer Registered in Ashok Auto Insurance</div>
+                  <div style={{ fontWeight: 700, fontSize: '14.5px', color: 'var(--text-primary)' }}>Customer Registered in Ashok Auto Insurance</div>
                   <div style={{ fontSize: '12.5px', color: '#64748B', marginTop: '2px' }}>
                     Policy issued by {customer.insuranceCompany} ({customer.insuranceType})
                   </div>
@@ -1128,7 +1128,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                     <Coins size={16} />
                   </div>
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: '14.5px', color: '#0F172A' }}>Payment Received</div>
+                    <div style={{ fontWeight: 700, fontSize: '14.5px', color: 'var(--text-primary)' }}>Payment Received</div>
                     <div style={{ fontSize: '12.5px', color: '#64748B', marginTop: '2px' }}>
                       {formatCurrency(paid)} collected towards total premium of {formatCurrency(total)}
                     </div>
@@ -1141,7 +1141,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                   <Calendar size={16} />
                 </div>
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '14.5px', color: '#0F172A' }}>Policy Renewal Deadline</div>
+                  <div style={{ fontWeight: 700, fontSize: '14.5px', color: 'var(--text-primary)' }}>Policy Renewal Deadline</div>
                   <div style={{ fontSize: '12.5px', color: '#64748B', marginTop: '2px' }}>
                     Scheduled expiry on {formatIndianDate(customer.policyEndDate)} ({urgency.label})
                   </div>
@@ -1156,7 +1156,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                       <BellRing size={16} />
                     </div>
                     <div>
-                      <div style={{ fontWeight: 700, fontSize: '14.5px', color: '#0F172A' }}>
+                      <div style={{ fontWeight: 700, fontSize: '14.5px', color: 'var(--text-primary)' }}>
                         Renewal Notice Sent ({rem.channel?.toUpperCase() || 'WHATSAPP'})
                       </div>
                       <div style={{ fontSize: '12.5px', color: '#64748B', marginTop: '2px' }}>
@@ -1174,7 +1174,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
                     <BellRing size={16} />
                   </div>
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: '14.5px', color: '#0F172A' }}>
+                    <div style={{ fontWeight: 700, fontSize: '14.5px', color: 'var(--text-primary)' }}>
                       Renewal Notice Sent ({customer.lastReminderChannel?.toUpperCase() || 'WHATSAPP'})
                     </div>
                     <div style={{ fontSize: '12.5px', color: '#64748B', marginTop: '2px' }}>

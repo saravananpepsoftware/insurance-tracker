@@ -138,7 +138,7 @@ export function ReminderPopupNotification({ notification, onClose }) {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Wallet size={15} color="#EA580C" />
-                  <span style={{ fontSize: '12.5px', color: '#475569' }}>
+                  <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>
                     Pending Balance Due:
                   </span>
                 </div>
@@ -150,7 +150,7 @@ export function ReminderPopupNotification({ notification, onClose }) {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Shield size={15} color="var(--primary-orange)" />
-                  <span style={{ fontSize: '12.5px', color: '#475569' }}>
+                  <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>
                     Policy Expiration:
                   </span>
                 </div>

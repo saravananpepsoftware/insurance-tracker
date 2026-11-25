@@ -165,7 +165,7 @@ export function RenewalReminderModal({ isOpen, onClose, customer, onRecordRemind
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <Shield size={18} color={isExpired ? '#DC2626' : 'var(--primary-orange)'} />
               <div>
-                <div style={{ fontWeight: 700, fontSize: '13.5px', color: '#0F172A' }}>
+                <div style={{ fontWeight: 700, fontSize: '13.5px', color: 'var(--text-primary)' }}>
                   {customer.insuranceCompany} • {customer.insuranceType}
                 </div>
                 <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px' }}>
@@ -191,7 +191,7 @@ export function RenewalReminderModal({ isOpen, onClose, customer, onRecordRemind
 
           {/* Timing Option Selector */}
           <div>
-            <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+            <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px' }}>
               Select Reminder Window
             </label>
             <div className="reminder-timing-options">
@@ -221,7 +221,7 @@ export function RenewalReminderModal({ isOpen, onClose, customer, onRecordRemind
 
           {/* Delivery Channel Selector */}
           <div>
-            <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+            <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 700, color: 'var(--text-secondary)', marginBottom: '6px' }}>
               Notification Channel
             </label>
             <div className="reminder-channel-tabs">
@@ -255,7 +255,7 @@ export function RenewalReminderModal({ isOpen, onClose, customer, onRecordRemind
           {/* Message Preview and Editor */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-              <label style={{ fontSize: '12.5px', fontWeight: 700, color: '#334155' }}>
+              <label style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text-secondary)' }}>
                 Notice Message Content
               </label>
               <button

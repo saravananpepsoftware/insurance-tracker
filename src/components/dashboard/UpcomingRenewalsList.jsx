@@ -255,7 +255,7 @@ export function UpcomingRenewalsList({ customers = [] }) {
                         </td>
 
                         <td>
-                          <span className="carrier-name" style={{ fontWeight: 600, fontSize: '13.5px', color: '#1E293B' }}>
+                          <span className="carrier-name" style={{ fontWeight: 600, fontSize: '13.5px', color: 'var(--text-primary)' }}>
                             {c.insuranceCompany}
                           </span>
                         </td>
@@ -379,7 +379,7 @@ export function UpcomingRenewalsList({ customers = [] }) {
 
                     {/* Middle row: Carrier and Policy End Date */}
                     <div className="mobile-renewal-meta">
-                      <span style={{ fontSize: '12px', fontWeight: 600, color: '#334155' }}>
+                      <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)' }}>
                         {c.insuranceCompany}
                       </span>
 

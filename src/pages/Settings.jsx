@@ -202,17 +202,17 @@ export function Settings() {
 
           <div className="card-body">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginBottom: '14px' }}>
-              <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: '#F8FAFC', border: '1px solid #E2E8F0' }}>
-                <span style={{ fontSize: '11px', color: '#64748B', display: 'block', fontWeight: 600 }}>PROJECT ID</span>
-                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>ashok-auto-insurnace</span>
+              <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: 'var(--surface-alt)', border: '1px solid var(--card-border)' }}>
+                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', fontWeight: 600 }}>PROJECT ID</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>ashok-auto-insurnace</span>
               </div>
-              <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: '#F8FAFC', border: '1px solid #E2E8F0' }}>
-                <span style={{ fontSize: '11px', color: '#64748B', display: 'block', fontWeight: 600 }}>DATABASE</span>
-                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>Cloud Firestore (Real-time)</span>
+              <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: 'var(--surface-alt)', border: '1px solid var(--card-border)' }}>
+                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', fontWeight: 600 }}>DATABASE</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>Cloud Firestore (Real-time)</span>
               </div>
-              <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: '#F8FAFC', border: '1px solid #E2E8F0' }}>
-                <span style={{ fontSize: '11px', color: '#64748B', display: 'block', fontWeight: 600 }}>STORAGE BUCKET</span>
-                <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>ashok-auto-insurnace.firebasestorage.app</span>
+              <div style={{ padding: '10px 14px', borderRadius: '10px', backgroundColor: 'var(--surface-alt)', border: '1px solid var(--card-border)' }}>
+                <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', fontWeight: 600 }}>STORAGE BUCKET</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>ashok-auto-insurnace.firebasestorage.app</span>
               </div>
             </div>
 
