@@ -13,7 +13,7 @@ import {
   Calendar,
   UploadCloud,
   FileText,
-  Trash2,
+  RefreshCw,
   AlertCircle,
   Plus,
   Check
@@ -43,7 +43,6 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
   const [pdfFile, setPdfFile] = useState(null);
   const [existingPdfName, setExistingPdfName] = useState('');
   const [existingPdfSize, setExistingPdfSize] = useState(0);
-  const [removeExistingPdf, setRemoveExistingPdf] = useState(false);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -67,7 +66,6 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
       });
       setExistingPdfName(customerToEdit.pdfFileName || '');
       setExistingPdfSize(customerToEdit.pdfFileSize || 0);
-      setRemoveExistingPdf(false);
       setPdfFile(null);
     } else {
       setFormData({
@@ -82,7 +80,6 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
       });
       setExistingPdfName('');
       setExistingPdfSize(0);
-      setRemoveExistingPdf(false);
       setPdfFile(null);
     }
     setErrors({});
@@ -146,7 +143,6 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
       return;
     }
     setPdfFile(file);
-    setRemoveExistingPdf(false);
     if (errors.pdf) {
       setErrors((prev) => ({ ...prev, pdf: null }));
     }
@@ -212,7 +208,7 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
     setIsSubmitting(true);
     try {
       if (customerToEdit) {
-        await updateCustomer(customerToEdit.id, formData, pdfFile, removeExistingPdf);
+        await updateCustomer(customerToEdit.id, formData, pdfFile, false);
       } else {
         await addCustomer(formData, pdfFile);
       }
@@ -504,7 +500,7 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
                 <span>Policy Document (PDF)</span>
               </div>
 
-              {!pdfFile && existingPdfName && !removeExistingPdf ? (
+              {!pdfFile && existingPdfName ? (
                 <div className="pdf-preview-pill">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <FileText size={20} color="var(--primary-orange)" />
@@ -516,8 +512,35 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <label className="btn btn-secondary btn-sm" style={{ cursor: 'pointer' }}>
+                    <label className="btn btn-secondary btn-sm" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <RefreshCw size={12} />
                       Replace
+                      <input
+                        type="file"
+                        accept="application/pdf,.pdf"
+                        style={{ display: 'none' }}
+                        onChange={(e) => handleFileSelect(e.target.files[0])}
+                      />
+                    </label>
+                  </div>
+                </div>
+              ) : pdfFile ? (
+                <div className="pdf-preview-pill pdf-selected">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <FileText size={20} color="var(--primary-orange)" />
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: '13px', color: 'var(--primary-orange)' }}>
+                        {pdfFile.name} {existingPdfName ? '(Replaces current document)' : '(Ready to Save)'}
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                        {formatFileSize(pdfFile.size)} • PDF Document (Will store in Firebase Storage)
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <label className="btn btn-secondary btn-sm" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <RefreshCw size={12} />
+                      Change
                       <input
                         type="file"
                         accept="application/pdf,.pdf"
@@ -527,33 +550,13 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
                     </label>
                     <button
                       type="button"
-                      className="btn btn-danger btn-sm"
-                      onClick={() => setRemoveExistingPdf(true)}
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => setPdfFile(null)}
+                      title={existingPdfName ? 'Cancel replacement and keep existing PDF' : 'Remove selected file'}
                     >
-                      <Trash2 size={13} />
+                      {existingPdfName ? 'Cancel' : 'Remove'}
                     </button>
                   </div>
-                </div>
-              ) : pdfFile ? (
-                <div className="pdf-preview-pill" style={{ borderColor: 'var(--primary-orange)', backgroundColor: 'var(--light-orange)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <FileText size={20} color="var(--primary-orange)" />
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: '13px', color: 'var(--primary-orange)' }}>
-                        {pdfFile.name} (Ready to Save)
-                      </div>
-                      <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
-                        {formatFileSize(pdfFile.size)} • PDF Document (Will store in Firebase Storage)
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => setPdfFile(null)}
-                  >
-                    Remove
-                  </button>
                 </div>
               ) : (
                 <div

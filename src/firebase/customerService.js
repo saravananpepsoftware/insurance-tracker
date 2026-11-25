@@ -216,12 +216,40 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
       );
     }
 
-    // Delete old file from Storage if name changed
-    if (existing.pdfFileName && existing.pdfFileName !== newPdfFile.name) {
+    // Cleanly delete previous PDF from Firebase Storage when replacing
+    const sanitizedNewName = newPdfFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const newStoragePath = `policies/${id}/${sanitizedNewName}`;
+
+    if (existing.pdfUrl) {
+      try {
+        const oldRef = ref(storage, existing.pdfUrl);
+        if (oldRef.fullPath !== newStoragePath) {
+          await deleteObject(oldRef);
+          console.log(`Deleted replaced PDF from Firebase Storage: ${oldRef.fullPath}`);
+        }
+      } catch (delErr) {
+        console.warn('Could not delete old PDF by URL from Storage:', delErr);
+        if (existing.pdfFileName) {
+          try {
+            const sanitizedOldName = existing.pdfFileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+            if (sanitizedOldName !== sanitizedNewName) {
+              const fallbackRef = ref(storage, `policies/${id}/${sanitizedOldName}`);
+              await deleteObject(fallbackRef);
+              console.log(`Deleted replaced PDF from Firebase Storage via fallback: ${fallbackRef.fullPath}`);
+            }
+          } catch (e2) {
+            console.warn('Fallback delete old PDF error:', e2);
+          }
+        }
+      }
+    } else if (existing.pdfFileName) {
       try {
         const sanitizedOldName = existing.pdfFileName.replace(/[^a-zA-Z0-9._-]/g, '_');
-        const oldStorageRef = ref(storage, `policies/${id}/${sanitizedOldName}`);
-        await deleteObject(oldStorageRef);
+        if (sanitizedOldName !== sanitizedNewName) {
+          const oldStorageRef = ref(storage, `policies/${id}/${sanitizedOldName}`);
+          await deleteObject(oldStorageRef);
+          console.log(`Deleted replaced PDF from Firebase Storage: ${oldStorageRef.fullPath}`);
+        }
       } catch (e) {
         console.warn('Failed to delete old PDF from Storage:', e);
       }

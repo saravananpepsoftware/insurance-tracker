@@ -1153,6 +1153,11 @@
   margin-top: 10px;
 }
 
+.pdf-preview-pill.pdf-selected {
+  border-color: var(--primary-orange);
+  background-color: var(--light-orange);
+}
+
 /* Toast Notifications */
 .toast-container {
   position: fixed;

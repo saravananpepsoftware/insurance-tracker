@@ -967,6 +967,11 @@ body[data-theme="dark"],
   border-color: #333333 !important;
 }
 
+[data-theme="dark"] .pdf-preview-pill.pdf-selected {
+  background-color: rgba(255, 107, 0, 0.08) !important;
+  border-color: rgba(255, 107, 0, 0.45) !important;
+}
+
 [data-theme="dark"] .add-company-box {
   background-color: #262626 !important;
   border-color: #2E2E2E !important;
