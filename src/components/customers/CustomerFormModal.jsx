@@ -19,6 +19,8 @@ import {
   Check
 } from 'lucide-react';
 
+const MAX_PDF_SIZE_BYTES = 2 * 1024 * 1024; // 2MB limit
+
 export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
   const { addCustomer, updateCustomer, companies, addCompany } = useCustomers();
   const { addToast } = useToast();
@@ -137,8 +139,17 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
       addToast('Please upload a valid PDF document only (.pdf)', 'error');
       return;
     }
+    // Strict < 2MB limit check
+    if (file.size >= MAX_PDF_SIZE_BYTES) {
+      addToast(`File size (${(file.size / (1024 * 1024)).toFixed(2)} MB) exceeds 2MB limit. Only PDF files less than 2MB are allowed.`, 'error', 4500);
+      setErrors((prev) => ({ ...prev, pdf: 'File size must be less than 2MB' }));
+      return;
+    }
     setPdfFile(file);
     setRemoveExistingPdf(false);
+    if (errors.pdf) {
+      setErrors((prev) => ({ ...prev, pdf: null }));
+    }
     addToast(`Selected PDF: ${file.name} (${formatFileSize(file.size)})`, 'info', 2000);
   };
 
@@ -182,6 +193,11 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
       errs.policyEndDate = 'End date cannot be earlier than start date';
     }
 
+    // Validate PDF size if selected
+    if (pdfFile && pdfFile.size >= MAX_PDF_SIZE_BYTES) {
+      errs.pdf = 'PDF file size must be less than 2MB';
+    }
+
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -203,7 +219,7 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
       onClose();
     } catch (err) {
       console.error(err);
-      addToast('An error occurred while saving the customer', 'error');
+      addToast(err.message || 'An error occurred while saving the customer', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -562,8 +578,13 @@ export function CustomerFormModal({ isOpen, onClose, customerToEdit = null }) {
                     Click to browse or drag and drop Policy PDF here
                   </p>
                   <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                    Accepted format: PDF up to 25MB (Stored safely in IndexedDB)
+                    Accepted format: PDF less than 2MB (Stored in Firebase Cloud Storage)
                   </p>
+                  {errors.pdf && (
+                    <p style={{ fontSize: '12px', color: '#DC2626', marginTop: '6px', fontWeight: 600 }}>
+                      {errors.pdf}
+                    </p>
+                  )}
                 </div>
               )}
             </div>

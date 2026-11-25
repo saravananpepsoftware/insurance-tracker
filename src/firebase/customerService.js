@@ -12,11 +12,12 @@ import {
   getDownloadURL,
   deleteObject
 } from 'firebase/storage';
-import { db, storage } from './config';
-import { savePdfDocument, deletePdfDocument } from '../utils/indexedDb';
-import { calculateRemaining, getPaymentStatus } from '../utils/calculations';
+import { db, storage } from './config.js';
+import { savePdfDocument, deletePdfDocument } from '../utils/indexedDb.js';
+import { calculateRemaining, getPaymentStatus } from '../utils/calculations.js';
 
 const COLLECTION_NAME = 'customers';
+export const MAX_PDF_SIZE_BYTES = 2 * 1024 * 1024; // 2MB strict limit
 
 /**
  * Converts a File or Blob into a Base64 data URI string
@@ -79,6 +80,7 @@ export function subscribeToCustomers(onData, onError) {
 
 /**
  * Add a new customer to Firebase Firestore
+ * Policy PDFs are stored strictly in Firebase Cloud Storage (NEVER in Firestore)
  */
 export async function addCustomerToFirebase(formData, pdfFile) {
   const total = Math.max(0, Number(formData.totalAmount) || 0);
@@ -91,33 +93,38 @@ export async function addCustomerToFirebase(formData, pdfFile) {
   let pdfFileSize = 0;
   let hasPdf = false;
   let pdfUrl = '';
-  let pdfDataUri = '';
 
   if (pdfFile) {
+    // 1. Strict validation: only allow upload of PDF files less than 2MB
+    if (pdfFile.size >= MAX_PDF_SIZE_BYTES) {
+      throw new Error(
+        `PDF file size (${(pdfFile.size / (1024 * 1024)).toFixed(2)} MB) exceeds 2MB limit. Only PDF files less than 2MB are allowed.`
+      );
+    }
+
     pdfFileName = pdfFile.name;
     pdfFileSize = pdfFile.size;
     hasPdf = true;
 
-    // 1. For files <= 750KB: convert to base64 Data URI and store directly in Firestore!
-    // This completely bypasses any Firebase Storage CORS issues across all devices & localhost.
-    if (pdfFile.size <= 750 * 1024) {
-      try {
-        pdfDataUri = await fileToBase64(pdfFile);
-      } catch (b64Err) {
-        console.warn('Base64 conversion failed:', b64Err);
-      }
-    } else {
-      // 2. For larger files (> 750KB): attempt Firebase Storage
-      try {
-        const storageRef = ref(storage, `policies/${newId}/${pdfFile.name}`);
-        await uploadBytes(storageRef, pdfFile);
-        pdfUrl = await getDownloadURL(storageRef);
-      } catch (storageErr) {
-        console.warn('Firebase Storage upload failed (CORS or rules), caching locally:', storageErr);
-      }
+    // 2. Upload to Firebase Cloud Storage (NEVER store binary/base64 in Firestore)
+    try {
+      const storageRef = ref(storage, `policies/${newId}/${pdfFile.name}`);
+      await uploadBytes(storageRef, pdfFile, {
+        contentType: 'application/pdf',
+        customMetadata: {
+          customerId: newId,
+          fileName: pdfFile.name,
+          fileSize: String(pdfFile.size),
+          uploadedAt: new Date().toISOString()
+        }
+      });
+      pdfUrl = await getDownloadURL(storageRef);
+    } catch (storageErr) {
+      console.warn('Firebase Cloud Storage upload error:', storageErr);
+      // We do NOT store base64 in Firestore even if Storage fails
     }
 
-    // 3. Cache in IndexedDB for instant preview & offline access
+    // 3. Local client cache in IndexedDB for instant preview & offline retrieval
     try {
       await savePdfDocument(newId, pdfFile, pdfFile.name, pdfFile.size);
     } catch (idbErr) {
@@ -152,7 +159,7 @@ export async function addCustomerToFirebase(formData, pdfFile) {
     pdfFileSize,
     hasPdf,
     pdfUrl,
-    pdfDataUri,
+    // NOTE: pdfDataUri is deliberately excluded. Firestore only stores metadata & Cloud Storage URL.
     createdAt: new Date().toISOString()
   };
 
@@ -163,6 +170,7 @@ export async function addCustomerToFirebase(formData, pdfFile) {
 
 /**
  * Update existing customer in Firebase Firestore
+ * Policy PDFs are stored strictly in Firebase Cloud Storage (NEVER in Firestore)
  */
 export async function updateCustomerInFirebase(id, existing, formData, newPdfFile, removePdf = false) {
   const total = Math.max(0, Number(formData.totalAmount) || 0);
@@ -174,14 +182,12 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
   let pdfFileSize = existing.pdfFileSize || 0;
   let hasPdf = existing.hasPdf || false;
   let pdfUrl = existing.pdfUrl || '';
-  let pdfDataUri = existing.pdfDataUri || '';
 
   if (removePdf) {
     pdfFileName = '';
     pdfFileSize = 0;
     hasPdf = false;
     pdfUrl = '';
-    pdfDataUri = '';
 
     // Delete from IndexedDB
     try {
@@ -190,8 +196,8 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
       console.warn('IndexedDB PDF delete error:', e);
     }
 
-    // Try deleting from Firebase Storage if URL existed
-    if (existing.pdfFileName && existing.pdfUrl) {
+    // Delete from Firebase Storage if existed
+    if (existing.pdfFileName) {
       try {
         const storageRef = ref(storage, `policies/${id}/${existing.pdfFileName}`);
         await deleteObject(storageRef);
@@ -200,30 +206,45 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
       }
     }
   } else if (newPdfFile) {
+    // 1. Strict validation: only allow upload of PDF files less than 2MB
+    if (newPdfFile.size >= MAX_PDF_SIZE_BYTES) {
+      throw new Error(
+        `PDF file size (${(newPdfFile.size / (1024 * 1024)).toFixed(2)} MB) exceeds 2MB limit. Only PDF files less than 2MB are allowed.`
+      );
+    }
+
+    // Delete old file from Storage if name changed
+    if (existing.pdfFileName && existing.pdfFileName !== newPdfFile.name) {
+      try {
+        const oldStorageRef = ref(storage, `policies/${id}/${existing.pdfFileName}`);
+        await deleteObject(oldStorageRef);
+      } catch (e) {
+        console.warn('Failed to delete old PDF from Storage:', e);
+      }
+    }
+
     pdfFileName = newPdfFile.name;
     pdfFileSize = newPdfFile.size;
     hasPdf = true;
 
-    // Convert to base64 if <= 750KB
-    if (newPdfFile.size <= 750 * 1024) {
-      try {
-        pdfDataUri = await fileToBase64(newPdfFile);
-        pdfUrl = '';
-      } catch (b64Err) {
-        console.warn('Base64 conversion failed:', b64Err);
-      }
-    } else {
-      try {
-        const storageRef = ref(storage, `policies/${id}/${newPdfFile.name}`);
-        await uploadBytes(storageRef, newPdfFile);
-        pdfUrl = await getDownloadURL(storageRef);
-        pdfDataUri = '';
-      } catch (storageErr) {
-        console.warn('Firebase Storage upload error:', storageErr);
-      }
+    // 2. Upload to Firebase Cloud Storage (NEVER in Firestore!)
+    try {
+      const storageRef = ref(storage, `policies/${id}/${newPdfFile.name}`);
+      await uploadBytes(storageRef, newPdfFile, {
+        contentType: 'application/pdf',
+        customMetadata: {
+          customerId: id,
+          fileName: newPdfFile.name,
+          fileSize: String(newPdfFile.size),
+          uploadedAt: new Date().toISOString()
+        }
+      });
+      pdfUrl = await getDownloadURL(storageRef);
+    } catch (storageErr) {
+      console.warn('Firebase Storage upload error:', storageErr);
     }
 
-    // Cache in IndexedDB
+    // 3. Cache in IndexedDB
     try {
       await savePdfDocument(id, newPdfFile, newPdfFile.name, newPdfFile.size);
     } catch (idbErr) {
@@ -248,9 +269,13 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
     pdfFileSize,
     hasPdf,
     pdfUrl,
-    pdfDataUri,
     updatedAt: new Date().toISOString()
   };
+
+  // Strip out any legacy pdfDataUri so Firestore remains completely free of PDF data
+  if ('pdfDataUri' in updatedCustomer) {
+    delete updatedCustomer.pdfDataUri;
+  }
 
   const docRef = doc(db, COLLECTION_NAME, id);
   await updateDoc(docRef, updatedCustomer);

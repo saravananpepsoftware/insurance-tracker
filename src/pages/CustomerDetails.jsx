@@ -244,6 +244,8 @@ export function CustomerDetails({ onOpenEditCustomer }) {
         a.click();
         document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } else if (customer?.pdfUrl) {
+        window.open(customer.pdfUrl, '_blank');
       } else if (customer?.pdfDataUri) {
         const res = await fetch(customer.pdfDataUri);
         const blob = await res.blob();
@@ -255,8 +257,6 @@ export function CustomerDetails({ onOpenEditCustomer }) {
         a.click();
         document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(url), 1000);
-      } else if (customer?.pdfUrl) {
-        window.open(customer.pdfUrl, '_blank');
       } else {
         alert('No policy PDF document is currently attached to this record.');
       }
