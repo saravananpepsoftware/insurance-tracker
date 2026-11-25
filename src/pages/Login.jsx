@@ -23,7 +23,7 @@ export function Login() {
   const navigate = useNavigate();
 
   const [portalType, setPortalType] = useState('admin'); // 'admin' | 'staff'
-  const [email, setEmail] = useState('ashokinsurance@gmail.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -40,11 +40,7 @@ export function Login() {
     setPortalType(type);
     setError('');
     setPassword('');
-    if (type === 'staff') {
-      setEmail('staff@gmail.com');
-    } else {
-      setEmail('ashokinsurance@gmail.com');
-    }
+    setEmail('');
   };
 
   const handleSubmit = async (e) => {
@@ -284,7 +280,7 @@ export function Login() {
                       id="portalEmail"
                       type="email"
                       className="login-native-input"
-                      placeholder={portalType === 'staff' ? 'staff@gmail.com' : 'ashokinsurance@gmail.com'}
+                      placeholder="Enter your email ID"
                       value={email}
                       onChange={(e) => {
                         setEmail(e.target.value);
