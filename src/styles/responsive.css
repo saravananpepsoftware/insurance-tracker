@@ -320,15 +320,19 @@
   }
 
   .card-header {
-    padding: 12px 14px !important;
+    padding: 11px 13px !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
   }
 
   .card-title {
-    font-size: 15.5px !important;
+    font-size: 14px !important;
+    gap: 7px !important;
   }
 
   .chart-header-subtext {
-    font-size: 12px !important;
+    font-size: 11.5px !important;
+    margin-left: auto !important;
   }
 
   .chart-split-layout {
