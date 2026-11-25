@@ -181,6 +181,17 @@
     filter: drop-shadow(0 4px 14px rgba(255, 107, 0, 0.05)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.02)) !important;
     clear: both !important;
     border-radius: 18px !important;
+    position: relative !important;
+    z-index: 10 !important;
+    background: #FFFFFF !important;
+  }
+
+  /* Force hide any orphaned or legacy stat-grid elements on Dashboard */
+  .dashboard-page .stat-grid,
+  .dashboard-header-wrapper ~ .stat-grid,
+  .stat-ribbon-container ~ .stat-grid,
+  .dashboard-header-wrapper + .stat-grid {
+    display: none !important;
   }
 
   .stat-ribbon-bar {

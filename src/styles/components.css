@@ -8,6 +8,16 @@
   width: 100%;
   margin-bottom: 22px;
   filter: drop-shadow(0 6px 20px rgba(255, 107, 0, 0.06)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.02));
+  position: relative;
+  z-index: 5;
+  background: #FFFFFF;
+}
+
+/* Ensure no legacy stat-grid can ever render or bleed through on Dashboard */
+.dashboard-page .stat-grid,
+.dashboard-header-wrapper + .stat-grid,
+.stat-ribbon-container ~ .stat-grid {
+  display: none !important;
 }
 
 .stat-ribbon-bar {

@@ -10,7 +10,7 @@ export function Dashboard() {
   const { customers, metrics } = useCustomers();
 
   return (
-    <div className="page-container">
+    <div className="page-container dashboard-page">
       {/* Header with Orange Accent Bar and Right Artwork from Reference */}
       <div className="dashboard-header-wrapper" style={{
         display: 'flex',
