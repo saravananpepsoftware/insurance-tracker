@@ -1,0 +1,595 @@
+/* ==========================================================================
+   ASHOK AUTO INSURANCE — COMPREHENSIVE DARK MODE THEME
+   ========================================================================== */
+
+/* Day / Night Toggle Switch in Navbar */
+.theme-toggle-switch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.theme-toggle-switch:hover {
+  transform: translateY(-1px);
+}
+
+.theme-toggle-switch:active {
+  transform: translateY(0);
+}
+
+.theme-toggle-track {
+  position: relative;
+  width: 58px;
+  height: 30px;
+  border-radius: 9999px;
+  background-color: #F1E9E2;
+  border: 1.5px solid #E2D5C8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+  box-sizing: border-box;
+}
+
+.theme-toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  z-index: 1;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.theme-toggle-icon.sun-icon {
+  color: #F59E0B;
+}
+
+.theme-toggle-icon.moon-icon {
+  color: #94A3B8;
+}
+
+.theme-toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF7A00 0%, #FA5200 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(255, 107, 0, 0.35);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, box-shadow 0.25s ease;
+  z-index: 2;
+}
+
+/* Dark State for Toggle */
+.theme-toggle-switch.is-dark .theme-toggle-track {
+  background-color: #1E293B;
+  border-color: #334155;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.theme-toggle-switch.is-dark .theme-toggle-icon.sun-icon {
+  color: #64748B;
+  opacity: 0.6;
+}
+
+.theme-toggle-switch.is-dark .theme-toggle-icon.moon-icon {
+  color: #38BDF8;
+  opacity: 1;
+}
+
+.theme-toggle-switch.is-dark .theme-toggle-thumb {
+  transform: translateX(27px);
+  background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.45);
+}
+
+/* ==========================================================================
+   CSS CUSTOM PROPERTIES IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] {
+  --primary-orange: #FF7A1A;
+  --secondary-orange: #FF8533;
+  --hover-orange: #FF9248;
+  --light-orange: #2A170F;
+  --subtle-orange: #20130C;
+  --peach-orange: #4D2611;
+  --peach-badge: #351A0B;
+  --orange-glow: rgba(255, 122, 26, 0.25);
+  --orange-ring: rgba(255, 122, 26, 0.35);
+
+  --bg-app: #0B0F17;
+  --card-bg: #121A26;
+  --card-border: #1E293B;
+  --card-border-subtle: #182332;
+  --header-tint: #16202E;
+  --surface-alt: #162030;
+
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-on-orange: #FFFFFF;
+
+  --status-paid-bg: #052E16;
+  --status-paid-border: #14532D;
+
+  --status-partial-bg: #351A0B;
+  --status-partial-border: #7C2D12;
+
+  --status-pending-bg: #351C05;
+  --status-pending-border: #78350F;
+
+  --status-danger-bg: #380D0D;
+  --status-danger-border: #7F1D1D;
+
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 2px 8px -1px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 8px 26px -4px rgba(0, 0, 0, 0.5), 0 4px 12px -2px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   GLOBAL & BODY IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] html,
+[data-theme="dark"] body {
+  background-color: #0B0F17 !important;
+  background-image: radial-gradient(circle at 85% -5%, rgba(255, 107, 0, 0.08) 0%, rgba(255, 107, 0, 0.02) 35%, #0B0F17 70%) !important;
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #243042 !important;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #334155 !important;
+}
+
+/* ==========================================================================
+   SIDEBAR IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] .sidebar {
+  background-color: #0D141F !important;
+  background-image: radial-gradient(ellipse at 100% 0%, rgba(255, 107, 0, 0.07) 0%, transparent 60%) !important;
+  border-right-color: #1E293B !important;
+}
+
+[data-theme="dark"] .logo-brand {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .logo-tagline {
+  color: #64748B !important;
+}
+
+[data-theme="dark"] .sidebar-section-header {
+  color: #64748B !important;
+}
+
+[data-theme="dark"] .nav-link {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .nav-link:hover {
+  background-color: #16202E !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .nav-link.active {
+  background: linear-gradient(135deg, #FF7A00 0%, #FA5200 100%) !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .sidebar-artwork-container,
+[data-theme="dark"] .sidebar-summary-card {
+  background-color: #121A26 !important;
+  border-color: #1E293B !important;
+}
+
+[data-theme="dark"] .sidebar-summary-item {
+  border-bottom-color: #1E293B !important;
+}
+
+/* ==========================================================================
+   NAVBAR & USER PROFILE IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] .navbar {
+  background-color: rgba(13, 20, 31, 0.88) !important;
+  border-bottom-color: #1E293B !important;
+}
+
+[data-theme="dark"] .navbar-mobile-brand-text {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .user-name {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .user-role {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .user-profile-dropdown {
+  background-color: #121A26 !important;
+  border-color: #1E293B !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* ==========================================================================
+   DASHBOARD STAT RIBBON & CARDS IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] .stat-ribbon-bar,
+[data-theme="dark"] .stat-ribbon-container {
+  background: #121A26 !important;
+  border-color: #1E293B !important;
+}
+
+[data-theme="dark"] .stat-ribbon-segment.segment-business,
+[data-theme="dark"] .stat-ribbon-segment.segment-payments,
+[data-theme="dark"] .stat-ribbon-segment.segment-renewals {
+  background: #121A26 !important;
+}
+
+[data-theme="dark"] .stat-ribbon-segment.segment-dark {
+  background-color: #162030 !important;
+}
+
+[data-theme="dark"] .stat-ribbon-segment .stat-label {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .stat-ribbon-segment .stat-value {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .stat-ribbon-segment .stat-subtext {
+  color: #64748B !important;
+}
+
+[data-theme="dark"] .stat-card {
+  background: #121A26 !important;
+  border-color: #1E293B !important;
+}
+
+[data-theme="dark"] .stat-card-title {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .stat-card-value {
+  color: #F8FAFC !important;
+}
+
+/* ==========================================================================
+   CHARTS & GRAPHS IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] .chart-card,
+[data-theme="dark"] .exact-chart-card {
+  background: #121A26 !important;
+  border: 1px solid #1E293B !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .chart-header {
+  border-bottom-color: #1E293B !important;
+}
+
+[data-theme="dark"] .chart-title {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .chart-subtitle {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .donut-center-amount {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .donut-center-label {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .chart-legend-row,
+[data-theme="dark"] .chart-legend-box,
+[data-theme="dark"] .donut-legend-item {
+  background: #16202E !important;
+  border-color: #1E293B !important;
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .legend-item-title {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .chart-tab-btn {
+  background: #16202E !important;
+  color: #94A3B8 !important;
+  border-color: #1E293B !important;
+}
+
+[data-theme="dark"] .chart-tab-btn.active {
+  background: var(--primary-orange) !important;
+  color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   TABLES & REGISTRY IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] .customer-table-card,
+[data-theme="dark"] .exact-customer-table {
+  background-color: #121A26 !important;
+  border-color: #1E293B !important;
+}
+
+[data-theme="dark"] .exact-customer-table th,
+[data-theme="dark"] .table-header th {
+  background-color: #16202E !important;
+  color: #94A3B8 !important;
+  border-bottom: 1px solid #1E293B !important;
+}
+
+[data-theme="dark"] .exact-customer-table td,
+[data-theme="dark"] .table-row td {
+  border-bottom: 1px solid #1E293B !important;
+  color: #E2E8F0 !important;
+}
+
+[data-theme="dark"] .exact-customer-table tr:hover td,
+[data-theme="dark"] .table-row:hover td {
+  background-color: #162334 !important;
+}
+
+[data-theme="dark"] .customer-name-text {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .customer-phone-text,
+[data-theme="dark"] .policy-number-text {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .search-pill-container,
+[data-theme="dark"] .filter-pill-select-box {
+  background-color: #16202E !important;
+  border-color: #1E293B !important;
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .search-pill-container input {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .filter-pill-select-box select {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .filter-pill-select-box select option {
+  background-color: #121A26 !important;
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .pagination-container {
+  background-color: #121A26 !important;
+  border-top-color: #1E293B !important;
+}
+
+[data-theme="dark"] .pagination-btn {
+  background-color: #16202E !important;
+  border-color: #1E293B !important;
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .pagination-btn:hover:not(:disabled) {
+  background-color: #1E293B !important;
+  color: #F8FAFC !important;
+}
+
+/* ==========================================================================
+   CUSTOMER DETAILS, CARDS & PANELS IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] .customer-details-card,
+[data-theme="dark"] .profile-hero-card,
+[data-theme="dark"] .policy-detail-card,
+[data-theme="dark"] .payment-summary-card,
+[data-theme="dark"] .renewal-card,
+[data-theme="dark"] .mobile-renewal-card,
+[data-theme="dark"] .report-card,
+[data-theme="dark"] .settings-card,
+[data-theme="dark"] .card {
+  background-color: #121A26 !important;
+  border: 1px solid #1E293B !important;
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .detail-item,
+[data-theme="dark"] .info-item,
+[data-theme="dark"] .policy-metric-box {
+  background-color: #16202E !important;
+  border: 1px solid #1E293B !important;
+}
+
+[data-theme="dark"] .detail-label,
+[data-theme="dark"] .info-label {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .detail-value,
+[data-theme="dark"] .info-value {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .pdf-card-preview {
+  background-color: #16202E !important;
+  border-color: #1E293B !important;
+}
+
+/* ==========================================================================
+   MODALS & FORMS IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] .modal-overlay {
+  background-color: rgba(0, 0, 0, 0.78) !important;
+}
+
+[data-theme="dark"] .modal-content {
+  background-color: #121A26 !important;
+  border: 1px solid #243042 !important;
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6) !important;
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .modal-header {
+  background-color: #16202E !important;
+  border-bottom: 1px solid #1E293B !important;
+}
+
+[data-theme="dark"] .modal-header h2,
+[data-theme="dark"] .modal-header h3,
+[data-theme="dark"] .modal-title {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .modal-footer {
+  background-color: #16202E !important;
+  border-top: 1px solid #1E293B !important;
+}
+
+[data-theme="dark"] .form-group label,
+[data-theme="dark"] .form-label,
+[data-theme="dark"] .input-label {
+  color: #E2E8F0 !important;
+}
+
+[data-theme="dark"] .form-input,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] .form-textarea,
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] input[type="date"],
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background-color: #16202E !important;
+  border-color: #243042 !important;
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .form-input:focus,
+[data-theme="dark"] .form-select:focus,
+[data-theme="dark"] .form-textarea:focus,
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus,
+[data-theme="dark"] textarea:focus {
+  border-color: var(--primary-orange) !important;
+  box-shadow: 0 0 0 3px var(--orange-ring) !important;
+}
+
+[data-theme="dark"] .file-dropzone,
+[data-theme="dark"] .upload-dropzone {
+  background-color: #16202E !important;
+  border-color: #2E3C50 !important;
+  color: #94A3B8 !important;
+}
+
+/* ==========================================================================
+   MOBILE BOTTOM NAVIGATION IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] .mobile-bottom-nav {
+  background-color: #0D141F !important;
+  border-top-color: #1E293B !important;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .mobile-nav-item {
+  color: #64748B !important;
+}
+
+[data-theme="dark"] .mobile-nav-item.active {
+  color: var(--primary-orange) !important;
+}
+
+/* ==========================================================================
+   LOGIN PAGE IN DARK MODE
+   ========================================================================== */
+
+[data-theme="dark"] .login-container {
+  background: #0B0F17 !important;
+}
+
+[data-theme="dark"] .login-card-right {
+  background: #121A26 !important;
+}
+
+[data-theme="dark"] .login-portal-title {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .login-input-shell {
+  background: #16202E !important;
+  border-color: #243042 !important;
+}
+
+[data-theme="dark"] .login-input-shell input {
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .login-portal-pill-container {
+  background: #16202E !important;
+  border-color: #243042 !important;
+}
+
+[data-theme="dark"] .login-portal-pill-btn {
+  color: #94A3B8 !important;
+}
+
+[data-theme="dark"] .login-portal-pill-btn.active {
+  background: var(--primary-orange) !important;
+  color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE ADJUSTMENTS FOR THEME TOGGLE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .theme-toggle-track {
+    width: 52px;
+    height: 28px;
+    padding: 0 4px;
+  }
+  .theme-toggle-thumb {
+    width: 20px;
+    height: 20px;
+    top: 2.5px;
+    left: 3px;
+  }
+  .theme-toggle-switch.is-dark .theme-toggle-thumb {
+    transform: translateX(23px);
+  }
+}

@@ -1,16 +1,20 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import {
   Plus,
   ShieldCheck,
   ChevronDown,
   LogOut,
-  UserCheck
+  UserCheck,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export function Navbar({ onOpenAddCustomer }) {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileMenuRef = useRef(null);
   const navigate = useNavigate();
@@ -46,6 +50,31 @@ export function Navbar({ onOpenAddCustomer }) {
 
       {/* Right Controls */}
       <div className="navbar-right">
+        {/* Day / Night Theme Switch */}
+        <button
+          type="button"
+          className={`theme-toggle-switch ${theme === 'dark' ? 'is-dark' : 'is-light'}`}
+          onClick={toggleTheme}
+          title={theme === 'dark' ? 'Switch to Day Mode (Light)' : 'Switch to Night Mode (Dark)'}
+          aria-label="Toggle theme mode"
+        >
+          <div className="theme-toggle-track">
+            <span className="theme-toggle-icon sun-icon" title="Day Mode">
+              <Sun size={13} strokeWidth={2.4} />
+            </span>
+            <span className="theme-toggle-icon moon-icon" title="Night Mode">
+              <Moon size={13} strokeWidth={2.4} />
+            </span>
+            <div className="theme-toggle-thumb">
+              {theme === 'dark' ? (
+                <Moon size={11} strokeWidth={2.5} />
+              ) : (
+                <Sun size={11} strokeWidth={2.5} />
+              )}
+            </div>
+          </div>
+        </button>
+
         {/* + Add Customer Orange Pill Button */}
         <button
           className="btn btn-primary btn-navbar-add"
@@ -94,10 +123,10 @@ export function Navbar({ onOpenAddCustomer }) {
                 top: 'calc(100% + 10px)',
                 right: 0,
                 width: '260px',
-                backgroundColor: '#FFFFFF',
+                backgroundColor: 'var(--card-bg)',
                 borderRadius: '16px',
-                boxShadow: '0 12px 36px -4px rgba(255, 107, 0, 0.12), 0 4px 16px -2px rgba(0, 0, 0, 0.06)',
-                border: '1px solid #F1E9E2',
+                boxShadow: 'var(--shadow-card)',
+                border: '1px solid var(--card-border)',
                 padding: '14px',
                 zIndex: 100,
                 display: 'flex',
@@ -105,7 +134,7 @@ export function Navbar({ onOpenAddCustomer }) {
                 gap: '10px'
               }}
             >
-              <div style={{ paddingBottom: '10px', borderBottom: '1px solid #F1F5F9' }}>
+              <div style={{ paddingBottom: '10px', borderBottom: '1px solid var(--card-border)' }}>
                 <div
                   style={{
                     display: 'flex',
@@ -120,7 +149,7 @@ export function Navbar({ onOpenAddCustomer }) {
                   <UserCheck size={13} />
                   <span>{user?.role === 'staff' ? 'Authenticated Staff' : 'Authenticated Admin'}</span>
                 </div>
-                <div style={{ fontWeight: 800, fontSize: '13.5px', color: '#0F172A', marginTop: '4px' }}>
+                <div style={{ fontWeight: 800, fontSize: '13.5px', color: 'var(--text-primary)', marginTop: '4px' }}>
                   {user?.name || (user?.role === 'staff' ? 'Ashok Insurance Staff' : 'Ashok Insurance Admin')}
                 </div>
                 <div style={{ fontSize: '11.5px', color: 'var(--primary-orange)', fontWeight: 600, wordBreak: 'break-all', marginTop: '2px' }}>

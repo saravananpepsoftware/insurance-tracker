@@ -182,7 +182,7 @@ export function PdfViewerModal({ isOpen, customer, onClose }) {
               alignItems: 'center',
               justifyContent: 'center',
               height: '100%',
-              backgroundColor: '#FFFFFF',
+              backgroundColor: 'var(--card-bg)',
               color: 'var(--text-secondary)',
               padding: '24px',
               gap: '12px'

@@ -127,12 +127,14 @@ export function AnalyticsCharts({ metrics = {} }) {
                 <Tooltip
                   formatter={(val) => [formatCurrency(val), 'Value']}
                   contentStyle={{
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: 'var(--card-bg)',
+                    color: 'var(--text-primary)',
                     borderRadius: '8px',
-                    border: '1px solid #F1E9E2',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                    border: '1px solid var(--card-border)',
+                    boxShadow: 'var(--shadow-card)',
                     fontSize: '12px'
                   }}
+                  itemStyle={{ color: 'var(--text-primary)' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -257,12 +259,14 @@ export function AnalyticsCharts({ metrics = {} }) {
                   <Tooltip
                     formatter={(val) => [formatCurrency(val), 'Amount']}
                     contentStyle={{
-                      backgroundColor: '#FFFFFF',
+                      backgroundColor: 'var(--card-bg)',
+                      color: 'var(--text-primary)',
                       borderRadius: '8px',
-                      border: '1px solid #F1E9E2',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                      border: '1px solid var(--card-border)',
+                      boxShadow: 'var(--shadow-card)',
                       fontSize: '12px'
                     }}
+                    itemStyle={{ color: 'var(--text-primary)' }}
                   />
                   <Bar dataKey="value" radius={[8, 8, 0, 0]}>
                     {amountData.map((entry, index) => (
@@ -304,12 +308,14 @@ export function AnalyticsCharts({ metrics = {} }) {
                       item?.payload?.sub || name
                     ]}
                     contentStyle={{
-                      backgroundColor: '#FFFFFF',
+                      backgroundColor: 'var(--card-bg)',
+                      color: 'var(--text-primary)',
                       borderRadius: '8px',
-                      border: '1px solid #F1E9E2',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
+                      border: '1px solid var(--card-border)',
+                      boxShadow: 'var(--shadow-card)',
                       fontSize: '12px'
                     }}
+                    itemStyle={{ color: 'var(--text-primary)' }}
                   />
                   <Bar dataKey="count" radius={[8, 8, 0, 0]}>
                     {statusData.map((entry, index) => (

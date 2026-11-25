@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastProvider } from './context/ToastContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CustomerProvider, useCustomers } from './context/CustomerContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { ToastContainer } from './components/common/ToastContainer';
 import { ReminderPopupNotification } from './components/common/ReminderPopupNotification';
 import { Sidebar } from './components/layout/Sidebar';
@@ -26,6 +27,7 @@ import './styles/global.css';
 import './styles/layout.css';
 import './styles/components.css';
 import './styles/responsive.css';
+import './styles/dark-mode.css';
 
 function AuthenticatedApp() {
   const { popupNotification, closeAppNotification } = useCustomers();
@@ -136,11 +138,13 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <ToastProvider>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
-      </ToastProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </ToastProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }
