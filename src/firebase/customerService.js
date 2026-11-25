@@ -21,6 +21,20 @@ const COLLECTION_NAME = 'customers';
 export const MAX_PDF_SIZE_BYTES = 2 * 1024 * 1024; // 2MB strict limit
 
 /**
+ * Generate a human-readable storage folder combining customer name and customer ID
+ * Format: {sanitizedCustomerName}_{customerId}
+ * e.g. "Saravan_cust-1795577948409"
+ */
+export function getCustomerStorageFolder(customerId, customerName) {
+  const cleanName = (customerName || 'customer')
+    .trim()
+    .replace(/[^a-zA-Z0-9_-]/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '') || 'customer';
+  return `${cleanName}_${customerId}`;
+}
+
+/**
  * Converts a File or Blob into a Base64 data URI string
  */
 export function fileToBase64(file) {
@@ -109,19 +123,21 @@ export async function addCustomerToFirebase(formData, pdfFile) {
 
     // 2. Upload to Firebase Cloud Storage (NEVER store binary/base64 in Firestore)
     try {
+      const folder = getCustomerStorageFolder(newId, formData.name);
       const sanitizedFileName = pdfFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const storageRef = ref(storage, `policies/${newId}/${sanitizedFileName}`);
+      const storageRef = ref(storage, `policies/${folder}/${sanitizedFileName}`);
       await uploadBytes(storageRef, pdfFile, {
         contentType: 'application/pdf',
         customMetadata: {
           customerId: newId,
+          customerName: formData.name.trim(),
           fileName: pdfFile.name,
           fileSize: String(pdfFile.size),
           uploadedAt: new Date().toISOString()
         }
       });
       pdfUrl = await getDownloadURL(storageRef);
-      console.log(`PDF uploaded to Firebase Storage successfully for ${newId}:`, pdfUrl);
+      console.log(`PDF uploaded to Firebase Storage successfully for ${newId} in folder ${folder}:`, pdfUrl);
     } catch (storageErr) {
       console.error('Firebase Cloud Storage upload error:', storageErr);
       throw new Error(`Failed to upload PDF to Firebase Cloud Storage: ${storageErr.message || 'Storage error'}`);
@@ -217,8 +233,10 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
     }
 
     // Cleanly delete previous PDF from Firebase Storage when replacing
+    const customerName = formData.name || existing.name;
+    const folder = getCustomerStorageFolder(id, customerName);
     const sanitizedNewName = newPdfFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-    const newStoragePath = `policies/${id}/${sanitizedNewName}`;
+    const newStoragePath = `policies/${folder}/${sanitizedNewName}`;
 
     if (existing.pdfUrl) {
       try {
@@ -229,29 +247,20 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
         }
       } catch (delErr) {
         console.warn('Could not delete old PDF by URL from Storage:', delErr);
-        if (existing.pdfFileName) {
-          try {
-            const sanitizedOldName = existing.pdfFileName.replace(/[^a-zA-Z0-9._-]/g, '_');
-            if (sanitizedOldName !== sanitizedNewName) {
-              const fallbackRef = ref(storage, `policies/${id}/${sanitizedOldName}`);
-              await deleteObject(fallbackRef);
-              console.log(`Deleted replaced PDF from Firebase Storage via fallback: ${fallbackRef.fullPath}`);
-            }
-          } catch (e2) {
-            console.warn('Fallback delete old PDF error:', e2);
-          }
-        }
       }
     } else if (existing.pdfFileName) {
       try {
         const sanitizedOldName = existing.pdfFileName.replace(/[^a-zA-Z0-9._-]/g, '_');
-        if (sanitizedOldName !== sanitizedNewName) {
-          const oldStorageRef = ref(storage, `policies/${id}/${sanitizedOldName}`);
-          await deleteObject(oldStorageRef);
-          console.log(`Deleted replaced PDF from Firebase Storage: ${oldStorageRef.fullPath}`);
-        }
+        const oldRef = ref(storage, `policies/${folder}/${sanitizedOldName}`);
+        await deleteObject(oldRef);
       } catch (e) {
-        console.warn('Failed to delete old PDF from Storage:', e);
+        try {
+          const sanitizedOldName = existing.pdfFileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const oldRef = ref(storage, `policies/${id}/${sanitizedOldName}`);
+          await deleteObject(oldRef);
+        } catch (e2) {
+          console.warn('Failed to delete old PDF from Storage:', e2);
+        }
       }
     }
 
@@ -261,19 +270,19 @@ export async function updateCustomerInFirebase(id, existing, formData, newPdfFil
 
     // 2. Upload to Firebase Cloud Storage (NEVER in Firestore!)
     try {
-      const sanitizedFileName = newPdfFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const storageRef = ref(storage, `policies/${id}/${sanitizedFileName}`);
+      const storageRef = ref(storage, newStoragePath);
       await uploadBytes(storageRef, newPdfFile, {
         contentType: 'application/pdf',
         customMetadata: {
           customerId: id,
+          customerName: customerName.trim(),
           fileName: newPdfFile.name,
           fileSize: String(newPdfFile.size),
           uploadedAt: new Date().toISOString()
         }
       });
       pdfUrl = await getDownloadURL(storageRef);
-      console.log(`PDF updated in Firebase Storage successfully for ${id}:`, pdfUrl);
+      console.log(`PDF updated in Firebase Storage successfully for ${id} in folder ${folder}:`, pdfUrl);
     } catch (storageErr) {
       console.error('Firebase Storage upload error:', storageErr);
       throw new Error(`Failed to upload PDF to Firebase Cloud Storage: ${storageErr.message || 'Storage error'}`);
@@ -372,13 +381,28 @@ export async function deleteCustomerFromFirebase(id, customer) {
   await deleteDoc(docRef);
 
   // 2. Delete from Firebase Storage if had file URL
-  if (customer?.pdfFileName) {
+  if (customer?.pdfUrl) {
     try {
+      const storageRef = ref(storage, customer.pdfUrl);
+      await deleteObject(storageRef);
+      console.log(`Deleted customer PDF from Storage: ${storageRef.fullPath}`);
+    } catch (e) {
+      console.warn('Firebase Storage file delete by url error:', e);
+    }
+  } else if (customer?.pdfFileName) {
+    try {
+      const folder = getCustomerStorageFolder(id, customer?.name);
       const sanitizedFileName = customer.pdfFileName.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const storageRef = ref(storage, `policies/${id}/${sanitizedFileName}`);
+      const storageRef = ref(storage, `policies/${folder}/${sanitizedFileName}`);
       await deleteObject(storageRef);
     } catch (e) {
-      console.warn('Firebase Storage file delete error:', e);
+      try {
+        const sanitizedFileName = customer.pdfFileName.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const storageRef = ref(storage, `policies/${id}/${sanitizedFileName}`);
+        await deleteObject(storageRef);
+      } catch (e2) {
+        console.warn('Firebase Storage file delete error:', e2);
+      }
     }
   }
 
