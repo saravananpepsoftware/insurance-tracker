@@ -1303,6 +1303,43 @@
   margin-top: 5px;
 }
 
+/* Customer Details Top Bar */
+.customer-details-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.customer-details-nav-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.customer-details-actions-grid {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.customer-action-item {
+  position: relative;
+}
+
+.customer-hero-mobile-badge {
+  display: none;
+}
+
+.customer-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
 /* Customer View Section Matching Reference Mockup */
 .customer-hero-banner {
   background-color: #FFFFFF;

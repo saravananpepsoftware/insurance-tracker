@@ -266,3 +266,4 @@ export function MobileCustomerDetailModal({
 }
 
 export default MobileCustomerDetailModal;
+

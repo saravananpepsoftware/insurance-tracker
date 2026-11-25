@@ -278,71 +278,40 @@ export function CustomerDetails({ onOpenEditCustomer }) {
   return (
     <div className="page-container">
       {/* Top Action Bar matching reference */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: '18px',
-        flexWrap: 'wrap',
-        gap: '12px'
-      }}>
-        <button
-          className="btn btn-secondary btn-sm"
-          onClick={() => navigate('/customers')}
-          style={{ padding: '7px 16px', borderRadius: '10px', fontWeight: 600 }}
-        >
-          <ArrowLeft size={16} />
-          <span>Back to Customers</span>
-        </button>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-          {/* Download Full Customer Details Statement PDF */}
+      <div className="customer-details-top-bar">
+        <div className="customer-details-nav-row">
           <button
-            type="button"
-            className="btn btn-secondary btn-sm"
-            onClick={handleDownloadDetailsPdf}
-            style={{
-              padding: '7px 16px',
-              borderRadius: '10px',
-              fontWeight: 700,
-              color: 'var(--text-primary)',
-              borderColor: 'var(--card-border)',
-              backgroundColor: 'var(--surface-alt)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              cursor: 'pointer'
-            }}
-            title="Download complete customer details, policy coverage, and financial ledger as PDF"
+            className="btn btn-secondary btn-sm customer-back-btn"
+            onClick={() => navigate('/customers')}
           >
-            <FileDown size={15} color="var(--primary-orange)" />
-            <span>Download PDF</span>
+            <ArrowLeft size={16} />
+            <span>Back to Customers</span>
           </button>
 
+          {remaining > 0 && (
+            <button
+              className="btn btn-primary btn-sm customer-top-pay-btn"
+              onClick={() => setShowPaymentModal(true)}
+            >
+              <PlusCircle size={15} />
+              <span>Add Payment</span>
+            </button>
+          )}
+        </div>
+
+        <div className="customer-details-actions-grid">
           {/* WhatsApp Reminder Button with Compact Popover */}
-          <div style={{ position: 'relative' }} ref={whatsappReminderRef}>
+          <div className="customer-action-item" ref={whatsappReminderRef}>
             <button
               type="button"
-              className="btn btn-secondary btn-sm"
+              className="btn btn-secondary btn-sm action-btn-whatsapp"
               onClick={() => setShowWhatsappDropdown(!showWhatsappDropdown)}
-              style={{
-                padding: '7px 16px',
-                borderRadius: '10px',
-                borderColor: customer.reminderSent ? '#22C55E' : '#25D366',
-                color: customer.reminderSent ? '#16A34A' : '#25D366',
-                backgroundColor: 'var(--surface-alt)',
-                fontWeight: 700,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                cursor: 'pointer'
-              }}
               title="Click to select WhatsApp reminder"
             >
-              <WhatsAppIcon size={16} color={customer.reminderSent ? '#16A34A' : '#25D366'} />
-              <span>{customer.reminderSent ? 'Send Reminder in WhatsApp' : 'Send Reminder in WhatsApp'}</span>
+              <WhatsAppIcon size={15} color={customer.reminderSent ? '#16A34A' : '#25D366'} />
+              <span>WhatsApp</span>
               <ChevronDown
-                size={14}
+                size={13}
                 style={{
                   transition: 'transform 0.15s ease',
                   transform: showWhatsappDropdown ? 'rotate(180deg)' : 'none'
@@ -406,30 +375,32 @@ export function CustomerDetails({ onOpenEditCustomer }) {
             )}
           </div>
 
-          {remaining > 0 && (
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={() => setShowPaymentModal(true)}
-              style={{ padding: '7px 16px', borderRadius: '10px' }}
-            >
-              <PlusCircle size={15} />
-              <span>Add Payment</span>
-            </button>
-          )}
-
+          {/* Download Full Customer Details Statement PDF */}
           <button
-            className="btn btn-secondary btn-sm"
-            onClick={() => onOpenEditCustomer(customer)}
-            style={{ padding: '7px 16px', borderRadius: '10px' }}
+            type="button"
+            className="btn btn-secondary btn-sm customer-action-btn action-btn-pdf"
+            onClick={handleDownloadDetailsPdf}
+            title="Download complete customer details as PDF"
           >
-            <Edit3 size={15} />
-            <span>Edit Profile</span>
+            <FileDown size={15} color="var(--primary-orange)" />
+            <span>PDF</span>
           </button>
 
+          {/* Edit Profile */}
           <button
-            className="btn btn-danger btn-sm"
+            type="button"
+            className="btn btn-secondary btn-sm customer-action-btn action-btn-edit"
+            onClick={() => onOpenEditCustomer(customer)}
+          >
+            <Edit3 size={15} />
+            <span>Edit</span>
+          </button>
+
+          {/* Delete Profile */}
+          <button
+            type="button"
+            className="btn btn-danger btn-sm customer-action-btn action-btn-delete"
             onClick={() => setShowDeleteConfirm(true)}
-            style={{ padding: '7px 16px', borderRadius: '10px' }}
           >
             <Trash2 size={15} />
             <span>Delete</span>
@@ -449,6 +420,9 @@ export function CustomerDetails({ onOpenEditCustomer }) {
             <div className="customer-hero-name-row">
               <h1 className="customer-hero-name">{customer.name}</h1>
               <PaymentStatusBadge status={customer.paymentStatus} />
+              <div className="customer-hero-mobile-badge">
+                <RenewalUrgencyBadge endDate={customer.policyEndDate} short />
+              </div>
             </div>
 
             <div className="customer-hero-meta-row">
@@ -687,11 +661,7 @@ export function CustomerDetails({ onOpenEditCustomer }) {
           )}
 
           {/* Two-Column Grid: Financial Summary & Policy Duration */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '20px'
-          }}>
+          <div className="customer-details-grid">
             {/* Left Card: Financial & Payment Summary */}
             <div className="app-card">
               <div className="card-header">

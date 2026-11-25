@@ -95,3 +95,4 @@ export function MobileCustomerTable({
 }
 
 export default MobileCustomerTable;
+

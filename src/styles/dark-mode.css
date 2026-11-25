@@ -702,6 +702,24 @@ body[data-theme="dark"],
    CUSTOMER DETAILS, CARDS & PANELS IN DARK MODE
    ========================================================================== */
 
+[data-theme="dark"] .customer-details-actions-grid .btn {
+  background-color: #262626 !important;
+  border-color: #333333 !important;
+  color: #F8FAFC !important;
+}
+
+[data-theme="dark"] .customer-details-actions-grid .action-btn-whatsapp {
+  background-color: rgba(37, 211, 102, 0.12) !important;
+  border-color: rgba(37, 211, 102, 0.35) !important;
+  color: #4ADE80 !important;
+}
+
+[data-theme="dark"] .customer-details-actions-grid .action-btn-delete {
+  background-color: rgba(220, 38, 38, 0.12) !important;
+  border-color: rgba(220, 38, 38, 0.35) !important;
+  color: #EF4444 !important;
+}
+
 [data-theme="dark"] .customer-hero-banner {
   background-color: #212121 !important;
   border-color: #333333 !important;
