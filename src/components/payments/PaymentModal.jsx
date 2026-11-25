@@ -112,37 +112,26 @@ export function PaymentModal({ isOpen, customer, onClose }) {
         <form onSubmit={handleSubmit} noValidate>
           <div className="modal-body">
             {/* Customer Summary Box */}
-            <div style={{
-              backgroundColor: '#F8FAFC',
-              border: '1px solid var(--border-light)',
-              borderRadius: 'var(--radius-md)',
-              padding: '16px',
-              marginBottom: '20px'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Customer Name:</span>
-                <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>{customer.name}</span>
+            <div className="payment-modal-customer-box">
+              <div className="payment-modal-summary-row">
+                <span className="payment-modal-row-label">Customer Name:</span>
+                <span className="payment-modal-row-val font-semibold">{customer.name}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Insurance Carrier:</span>
-                <span style={{ fontSize: '13px', color: 'var(--text-primary)' }}>{customer.insuranceCompany}</span>
+              <div className="payment-modal-summary-row">
+                <span className="payment-modal-row-label">Insurance Carrier:</span>
+                <span className="payment-modal-row-val">{customer.insuranceCompany}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Total Policy Amount:</span>
-                <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-primary)' }}>{formatCurrency(total)}</span>
+              <div className="payment-modal-summary-row">
+                <span className="payment-modal-row-label">Total Policy Amount:</span>
+                <span className="payment-modal-row-val font-semibold">{formatCurrency(total)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Previously Paid:</span>
-                <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--status-success)' }}>{formatCurrency(previousPaid)}</span>
+              <div className="payment-modal-summary-row">
+                <span className="payment-modal-row-label">Previously Paid:</span>
+                <span className="payment-modal-row-val font-semibold status-paid-text">{formatCurrency(previousPaid)}</span>
               </div>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                paddingTop: '8px',
-                borderTop: '1px dashed var(--border-light)'
-              }}>
-                <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)' }}>Current Balance Remaining:</span>
-                <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--status-danger)' }}>{formatCurrency(currentRemaining)}</span>
+              <div className="payment-modal-summary-row payment-modal-balance-row">
+                <span className="payment-modal-row-label font-semibold">Current Balance Remaining:</span>
+                <span className="payment-modal-row-val font-bold status-danger-text">{formatCurrency(currentRemaining)}</span>
               </div>
             </div>
 
@@ -184,52 +173,31 @@ export function PaymentModal({ isOpen, customer, onClose }) {
 
             {/* Live Calculation Preview */}
             {parsedNewAmount > 0 && !error && (
-              <div style={{
-                backgroundColor: 'var(--light-orange)',
-                border: '1px solid var(--subtle-orange)',
-                borderRadius: 'var(--radius-md)',
-                padding: '14px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px'
-              }}>
-                <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--primary-orange)', textTransform: 'uppercase' }}>
+              <div className="payment-modal-calc-preview">
+                <div className="payment-modal-calc-title">
                   Live Calculation Preview
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Current Paid Amount:</span>
-                  <span style={{ fontWeight: 600 }}>{formatCurrency(previousPaid)}</span>
+                <div className="payment-modal-summary-row">
+                  <span className="payment-modal-row-label">Current Paid Amount:</span>
+                  <span className="payment-modal-row-val font-semibold">{formatCurrency(previousPaid)}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                  <span style={{ color: 'var(--primary-orange)', fontWeight: 600 }}>+ Adding Payment:</span>
-                  <strong style={{ color: 'var(--primary-orange)' }}>+ {formatCurrency(parsedNewAmount)}</strong>
+                <div className="payment-modal-summary-row">
+                  <span className="payment-modal-row-label highlight-orange">+ Adding Payment:</span>
+                  <strong className="payment-modal-row-val highlight-orange">+ {formatCurrency(parsedNewAmount)}</strong>
                 </div>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  fontSize: '13.5px',
-                  paddingTop: '6px',
-                  borderTop: '1px dashed #FDBA74'
-                }}>
-                  <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>= New Paid Amount:</span>
-                  <strong style={{ color: 'var(--status-paid)', fontSize: '14.5px' }}>{formatCurrency(updatedPaid)}</strong>
+                <div className="payment-modal-summary-row payment-modal-calc-divider">
+                  <span className="payment-modal-row-label font-bold">= New Paid Amount:</span>
+                  <strong className="payment-modal-row-val font-bold status-paid-text">{formatCurrency(updatedPaid)}</strong>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13.5px' }}>
-                  <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>New Remaining Balance:</span>
-                  <strong style={{ color: updatedRemaining > 0 ? '#DC2626' : 'var(--status-paid)', fontSize: '14.5px' }}>
+                <div className="payment-modal-summary-row">
+                  <span className="payment-modal-row-label font-bold">New Remaining Balance:</span>
+                  <strong className={`payment-modal-row-val font-bold ${updatedRemaining > 0 ? 'status-danger-text' : 'status-paid-text'}`}>
                     {formatCurrency(updatedRemaining)}
                   </strong>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', paddingTop: '4px' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Updated Payment Status:</span>
-                  <span style={{
-                    fontWeight: 700,
-                    color: updatedStatus === 'Paid' ? 'var(--status-paid)' : 'var(--primary-orange)',
-                    backgroundColor: updatedStatus === 'Paid' ? '#DCFCE7' : '#FFEFE5',
-                    padding: '2px 8px',
-                    borderRadius: '12px',
-                    fontSize: '12px'
-                  }}>
+                <div className="payment-modal-summary-row" style={{ paddingTop: '4px' }}>
+                  <span className="payment-modal-row-label">Updated Payment Status:</span>
+                  <span className={`payment-status-pill ${updatedStatus === 'Paid' ? 'pill-paid' : 'pill-partial'}`}>
                     {updatedStatus}
                   </span>
                 </div>
