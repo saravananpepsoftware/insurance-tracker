@@ -776,6 +776,13 @@
 }
 
 /* Dashboard Table Filter Tabs & Controls */
+.tab-label-full {
+  display: inline;
+}
+.tab-label-short {
+  display: none;
+}
+
 .dashboard-table-tabs {
   display: flex;
   align-items: center;

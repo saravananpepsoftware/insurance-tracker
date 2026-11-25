@@ -498,41 +498,117 @@
     display: block !important;
   }
 
+  /* Dashboard Card Header on Mobile */
+  .dashboard-renewals-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    padding: 12px 14px !important;
+  }
+
   .dashboard-table-tabs {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
     width: 100% !important;
-    gap: 6px !important;
+    gap: 8px !important;
+  }
+
+  .tab-label-full {
+    display: none !important;
+  }
+
+  .tab-label-short {
+    display: inline !important;
   }
 
   .dashboard-filter-tab {
-    padding: 6px 12px !important;
-    font-size: 12px !important;
+    width: 100% !important;
+    height: 38px !important;
+    padding: 0 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     gap: 6px !important;
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    border-radius: 9px !important;
+    box-sizing: border-box !important;
   }
 
   .dashboard-filter-tab .tab-count-pill {
-    font-size: 10.5px !important;
-    padding: 2px 6px !important;
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    padding: 1px 6px !important;
+    border-radius: 9999px !important;
+  }
+
+  .dashboard-view-all-btn {
+    width: 100% !important;
+    height: 34px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
   }
 
   .dashboard-table-subbar {
-    padding: 10px 12px !important;
+    padding: 10px 14px !important;
     flex-direction: column !important;
-    align-items: flex-start !important;
+    align-items: stretch !important;
     gap: 8px !important;
   }
 
   .days-filter-container {
     width: 100% !important;
-    gap: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .days-filter-label {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    flex-shrink: 0 !important;
   }
 
   .days-filter-pills {
-    gap: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    width: 100% !important;
+    flex-wrap: nowrap !important;
+    padding: 2px 0 !important;
+  }
+
+  .days-filter-pills::-webkit-scrollbar {
+    display: none !important;
   }
 
   .days-filter-pill {
-    padding: 4px 8px !important;
+    padding: 4px 9px !important;
     font-size: 11px !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    height: 26px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .days-filter-summary {
+    font-size: 11.5px !important;
+    color: var(--text-secondary) !important;
+    line-height: 1.4 !important;
   }
 
   .mobile-card-list {

@@ -116,7 +116,7 @@ export function UpcomingRenewalsList({ customers = [] }) {
   return (
     <div className="app-card renewals-dashboard-card" style={{ marginBottom: '24px' }}>
       {/* Card Header with Two Filter Tabs & View All Button */}
-      <div className="card-header" style={{ flexWrap: 'wrap', gap: '12px' }}>
+      <div className="card-header dashboard-renewals-header">
         <div className="dashboard-table-tabs">
           {/* Tab 1: Pending Amounts */}
           <button
@@ -124,10 +124,11 @@ export function UpcomingRenewalsList({ customers = [] }) {
             className={`dashboard-filter-tab ${activeTab === 'pending' ? 'active' : ''}`}
             onClick={() => setActiveTab('pending')}
           >
-            <Coins size={16} />
-            <span>Pending Amounts</span>
+            <Coins size={14} />
+            <span className="tab-label-full">Pending Amounts</span>
+            <span className="tab-label-short">Pending</span>
             <span className="tab-count-pill">
-              {pendingCount} Pending {pendingTotalSum > 0 ? `(₹${pendingTotalSum.toLocaleString('en-IN')})` : ''}
+              {pendingCount}
             </span>
           </button>
 
@@ -137,22 +138,22 @@ export function UpcomingRenewalsList({ customers = [] }) {
             className={`dashboard-filter-tab ${activeTab === 'expiring' ? 'active' : ''}`}
             onClick={() => setActiveTab('expiring')}
           >
-            <CalendarClock size={16} />
-            <span>Expire Customers</span>
+            <CalendarClock size={14} />
+            <span className="tab-label-full">Expiring Soon</span>
+            <span className="tab-label-short">Expiring</span>
             <span className="tab-count-pill">
-              {expiring30Count} Due
+              {expiring30Count}
             </span>
           </button>
         </div>
 
         <button
           type="button"
-          className="btn btn-outline-orange btn-sm"
+          className="btn btn-outline-orange btn-sm dashboard-view-all-btn"
           onClick={() => navigate(activeTab === 'expiring' ? '/renewals' : '/payments')}
-          style={{ padding: '6px 14px', fontSize: '13px' }}
         >
           <span>{activeTab === 'expiring' ? 'View All Renewals' : 'View All Payments'}</span>
-          <ArrowRight size={14} />
+          <ArrowRight size={13} />
         </button>
       </div>
 
