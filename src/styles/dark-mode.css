@@ -405,6 +405,7 @@ body[data-theme="dark"],
 
 [data-theme="dark"] .stat-ribbon-segment.segment-business,
 [data-theme="dark"] .stat-ribbon-segment.segment-payments,
+[data-theme="dark"] .stat-ribbon-segment.segment-pending-customers,
 [data-theme="dark"] .stat-ribbon-segment.segment-renewals {
   background: #212121 !important;
 }
@@ -432,6 +433,12 @@ body[data-theme="dark"],
   background-color: #2D1A0D !important;
   border-color: #593116 !important;
   color: #FB923C !important;
+}
+
+[data-theme="dark"] .stat-icon-circle.icon-rose {
+  background-color: #2D1414 !important;
+  border-color: #5C2222 !important;
+  color: #F87171 !important;
 }
 
 [data-theme="dark"] .stat-icon-circle.icon-mint {

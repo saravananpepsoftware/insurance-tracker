@@ -340,7 +340,8 @@
     padding-left: 16px !important;
   }
 
-  .stat-ribbon-segment.segment-payments {
+  .stat-ribbon-segment.segment-payments,
+  .stat-ribbon-segment.segment-pending-customers {
     border-radius: 0 !important;
   }
 

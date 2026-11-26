@@ -1,12 +1,13 @@
 import React from 'react';
-import { Users, Layers, Wallet, CalendarDays } from 'lucide-react';
+import { Users, Layers, Wallet, Clock, CalendarDays } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 export function DashboardStatRibbon({ metrics }) {
   const motorCount = metrics?.insuranceTypeStats?.motor?.count || 0;
   const accidentalCount = metrics?.insuranceTypeStats?.accidental?.count || 0;
-  const balanceCount =
-    (metrics?.paymentStatusCounts?.pending || 0) + (metrics?.paymentStatusCounts?.partial || 0);
+  const partialCount = metrics?.paymentStatusCounts?.partial || 0;
+  const pendingCount = metrics?.paymentStatusCounts?.pending || 0;
+  const balanceCount = partialCount + pendingCount;
   const expiredCount = metrics?.expiredPoliciesCount || 0;
 
   return (
@@ -66,7 +67,27 @@ export function DashboardStatRibbon({ metrics }) {
           </svg>
         </div>
 
-        {/* SEGMENT 4: Upcoming Renewals */}
+        {/* SEGMENT 4: Customers With Pending Payments */}
+        <div className="stat-ribbon-segment segment-pending-customers">
+          <div className="segment-content">
+            <div className="stat-icon-circle icon-rose">
+              <Clock size={19} strokeWidth={2.4} />
+            </div>
+            <div className="stat-info-group">
+              <span className="stat-title">Pending Customers</span>
+              <span className="stat-metric">{balanceCount}</span>
+              <span className="stat-subtitle">
+                {partialCount} Partial, {pendingCount} Pending
+              </span>
+            </div>
+          </div>
+          {/* Slanted divider line */}
+          <svg className="segment-slant-line" viewBox="0 0 24 76" preserveAspectRatio="none">
+            <line x1="24" y1="0" x2="2" y2="76" stroke="#EBE4DE" strokeWidth="1.5" />
+          </svg>
+        </div>
+
+        {/* SEGMENT 5: Upcoming Renewals */}
         <div className="stat-ribbon-segment segment-renewals">
           <div className="segment-content">
             <div className="stat-icon-circle icon-lavender">
