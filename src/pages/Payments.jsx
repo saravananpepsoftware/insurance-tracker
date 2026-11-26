@@ -24,7 +24,7 @@ import {
 export function Payments() {
   const navigate = useNavigate();
   const { customers, metrics } = useCustomers();
-  const [activeFilter, setActiveFilter] = useState('ALL');
+  const [activeFilter, setActiveFilter] = useState('Partial Payment');
   const [search, setSearch] = useState('');
   const [customerForPayment, setCustomerForPayment] = useState(null);
 
